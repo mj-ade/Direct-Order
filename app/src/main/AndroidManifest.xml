@@ -8,7 +8,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.DirectOrder">
+        android:theme="@style/Theme.AppCompat.NoActionBar">
+        <activity android:name=".IntroActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,6 +24,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.login.Login_buy"
+            android:label="@string/title_activity_login_buy" />
+
+        <activity
+            android:name=".ui.login.Login_sell1"
+            android:label="@string/title_activity_login_sell1" />
+
+        <activity android:name=".Join" />
+
+        <activity android:name=".Main_who"></activity>
     </application>
 
 </manifest>

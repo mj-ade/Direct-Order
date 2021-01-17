@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.login;
+package com.example.direct_order.ui.login;
 
 import android.app.Activity;
 
@@ -22,9 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.myapplication.R;
-import com.example.myapplication.ui.login.LoginViewModel;
-import com.example.myapplication.ui.login.LoginViewModelFactory;
+import com.example.direct_order.R;
 
 public class Login_buy extends AppCompatActivity {
 

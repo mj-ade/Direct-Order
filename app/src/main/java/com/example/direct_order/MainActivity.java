@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.direct_order;
 
 import android.os.Bundle;
 
@@ -13,7 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.myapplication.ui.main.SectionsPagerAdapter;
+import com.example.direct_order.ui.main.SectionsPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 

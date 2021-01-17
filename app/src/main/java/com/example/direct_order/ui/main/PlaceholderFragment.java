@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.main;
+package com.example.direct_order.ui.main;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,8 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStore;
 
-import com.example.myapplication.R;
+import com.example.direct_order.R;
 
 /**
  * A placeholder fragment containing a simple view.

@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.login;
+package com.example.direct_order.ui.login;
 
 import android.app.Activity;
 
@@ -23,20 +23,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.myapplication.Join;
-import com.example.myapplication.MainActivity;
-import com.example.myapplication.R;
+import com.example.direct_order.Join;
+import com.example.direct_order.MainActivity;
+import com.example.direct_order.R;
 
 public class Login_sell1 extends AppCompatActivity {
 
-    private LoginViewModel loginViewModel;
+    private com.example.direct_order.ui.login.LoginViewModel loginViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_sell2);
-        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
-                .get(LoginViewModel.class);
+        loginViewModel = new ViewModelProvider(this, new com.example.direct_order.ui.login.LoginViewModelFactory())
+                .get(com.example.direct_order.ui.login.LoginViewModel.class);
 
         final EditText usernameEditText = findViewById(R.id.id);
         final EditText passwordEditText = findViewById(R.id.password);

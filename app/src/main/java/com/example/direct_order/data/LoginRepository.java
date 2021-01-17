@@ -1,6 +1,6 @@
-package com.example.myapplication.data;
+package com.example.direct_order.data;
 
-import com.example.myapplication.data.model.LoggedInUser;
+import com.example.direct_order.data.model.LoggedInUser;
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -46,8 +46,8 @@ public class LoginRepository {
     public Result<LoggedInUser> login(String username, String password) {
         // handle login
         Result<LoggedInUser> result = dataSource.login(username, password);
-        if (result instanceof Result.Success) {
-            setLoggedInUser(((Result.Success<LoggedInUser>) result).getData());
+        if (result instanceof com.example.direct_order.data.Result.Success) {
+            setLoggedInUser(((com.example.direct_order.data.Result.Success<LoggedInUser>) result).getData());
         }
         return result;
     }

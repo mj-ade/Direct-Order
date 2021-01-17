@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.login;
+package com.example.direct_order.ui.login;
 
 /**
  * Class exposing authenticated user details to the UI.

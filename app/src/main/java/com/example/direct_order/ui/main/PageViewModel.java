@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.main;
+package com.example.direct_order.ui.main;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;

@@ -1,11 +1,11 @@
-package com.example.myapplication.ui.login;
+package com.example.direct_order.ui.login;
 
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.annotation.NonNull;
 
-import com.example.myapplication.data.LoginDataSource;
-import com.example.myapplication.data.LoginRepository;
+import com.example.direct_order.data.LoginDataSource;
+import com.example.direct_order.data.LoginRepository;
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.

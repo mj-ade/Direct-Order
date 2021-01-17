@@ -9,17 +9,17 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#5A594C"
-        android:theme="@style/Theme.MyApplication.AppBarOverlay">
+        android:background="@color/main_gray"
+        android:theme="@style/Theme.DirectOrder">
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="357dp"
+            android:layout_width="match_parent"
             android:layout_height="44dp"
-            android:background="#E4D335"
+            android:background="@color/main_yellow"
             android:gravity="center"
             android:minHeight="?actionBarSize"
-            android:padding="@dimen/appbar_padding"
+            android:padding="16dp"
             android:text="DO"
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
             android:textSize="10sp" />
@@ -28,7 +28,7 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#5A594C" />
+            android:background="@color/main_gray" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_margin="16dp"
         app:srcCompat="@android:drawable/ic_dialog_email" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

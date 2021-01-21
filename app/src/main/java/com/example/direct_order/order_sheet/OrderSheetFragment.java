@@ -20,29 +20,108 @@ import com.example.direct_order.R;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class OrderSheetFragment extends Fragment {
+public class OrderSheetFragment extends Fragment implements com.example.direct_order.onBackPressedListener{
     private ArrayList<OptionForm> optionFormArrayList = new ArrayList<>();
 
     ViewGroup viewGroup;
+    LinearLayout buttonTypeLayout;
+    int selectedType;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_optionsheet, container, false);
 
-        Button button = viewGroup.findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        buttonTypeLayout = viewGroup.findViewById(R.id.sub_button_layout); //sub button panel
+
+        Button txtButton = viewGroup.findViewById(R.id.text_button);
+        txtButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OptionForm optionFormLayout = new OptionForm(getContext(), optionFormArrayList);
-                LinearLayout container = viewGroup.findViewById(R.id.container);
-                container.addView(optionFormLayout);
-                optionFormArrayList.add(optionFormLayout);
+                addOptionFrom(OptionType.TEXT);
+                buttonTypeLayout.setVisibility(View.GONE);
+            }
+        });
+
+        Button imgButton=viewGroup.findViewById(R.id.image_button);
+        imgButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addOptionFrom(OptionType.IMAGE);
+                buttonTypeLayout.setVisibility(View.GONE);
+                //버튼 누르면 갤러리 창으로 이동하고 바로 이미지 추가
+            }
+        });
+
+        Button cbButton = viewGroup.findViewById(R.id.cb_button);
+        cbButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedType = OptionType.CHECKBOX;
+                buttonTypeLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        Button rbButton = viewGroup.findViewById(R.id.rb_button);
+        rbButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedType = OptionType.RADIOBUTTON;
+                buttonTypeLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        Button calendarButton = viewGroup.findViewById(R.id.calendar_button);
+        calendarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addOptionFrom(OptionType.CALENDAR);
+                buttonTypeLayout.setVisibility(View.GONE);
+            }
+        });
+
+        Button subTextButton = viewGroup.findViewById(R.id.sub_button_text);
+        subTextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(selectedType == OptionType.CHECKBOX)
+                    addOptionFrom(OptionType.CHECKBOX_TEXT);
+                else
+                    addOptionFrom(OptionType.RADIOBUTTON_TEXT);
+
+                buttonTypeLayout.setVisibility(View.GONE);
+            }
+        });
+
+        Button subImageButton = viewGroup.findViewById(R.id.sub_button_image);
+        subImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(selectedType == OptionType.CHECKBOX)
+                    addOptionFrom(OptionType.CHECKBOX_IMAGE);
+                else
+                    addOptionFrom(OptionType.RADIOBUTTON_IMAGE);
+
+                buttonTypeLayout.setVisibility(View.GONE);
             }
         });
 
         return viewGroup;
     }
+
+    private void addOptionFrom(int type) {
+        OptionForm optionForm = new OptionForm(getContext(), type);
+        optionFormArrayList.add(optionForm);
+        optionForm.setOptionFormArrayList(optionFormArrayList);
+        LinearLayout container = viewGroup.findViewById(R.id.container);
+        container.addView(optionForm);
+    }
+
+    @Override
+    public void onBackPressed() {
+        buttonTypeLayout.setVisibility(View.GONE);
+    }
+
 
     /*@Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

@@ -1,51 +1,76 @@
 package com.example.direct_order.order_sheet;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Path;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CalendarView;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.direct_order.R;
 
 import java.util.ArrayList;
 
 public class OptionForm extends LinearLayout {
+    InputMethodManager inputMethodManager;
+    LinearLayout sub_container, inputPanel;
+    TextView textView;
+    EditText editText_numOfOptions;
+    Button inputButton;
+
+    private int count;
     private int index;
+    private int optionType;
     private ArrayList<OptionForm> optionFormArrayList = new ArrayList<>();
 
-    private ArrayList<CheckBoxTool> checkBoxToolArrayList = new ArrayList<>();
-
-    public OptionForm(Context context, ArrayList<OptionForm> optionFormAL) {
+    public OptionForm(Context context, int optionType) {
         super(context);
+        this.optionType = optionType;
+    }
 
-        this.optionFormArrayList = optionFormAL;
-        this.index = optionFormAL.size() + 1;
-
-        init(context);
+    public void setOptionFormArrayList(ArrayList<OptionForm> optionFormArrayList) {
+        this.optionFormArrayList = optionFormArrayList;
+        this.index = optionFormArrayList.size();
+        init(getContext());
     }
 
     private void init(Context context) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View optionFormView = (View) inflater.inflate(R.layout.option_form, this, true);
 
-        LinearLayout sub_container = findViewById(R.id.sub_container);
-        addItem(sub_container);
+        inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        sub_container = findViewById(R.id.sub_container);
 
-        TextView textView = findViewById(R.id.option_number);
+        textView = findViewById(R.id.option_number);
         textView.setText(index + ".");
 
-        Button addButton = findViewById(R.id.add_option);
-        addButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addItem(sub_container);
-            }
-        });
+        if (optionType >= OptionType.CHECKBOX_TEXT && optionType <= OptionType.RADIOBUTTON_IMAGE) {
+            displayNumberOfOptionInputPanel();
+            inputButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    hideKeyboard();
+                    if (verifyNumberOfOptionInput())
+                        displayOption(optionType);
+                }
+            });
+        }
+        else {
+            displayOption(optionType);
+        }
 
-        Button deleteButton = findViewById(R.id.delete_all_option);
+        Button deleteButton = findViewById(R.id.delete_button);
         deleteButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,9 +89,100 @@ public class OptionForm extends LinearLayout {
         });
     }
 
-    public void addItem(LinearLayout container) {
-        checkBoxToolArrayList.add(new CheckBoxTool(getContext(), checkBoxToolArrayList));
-        container.addView(checkBoxToolArrayList.get(checkBoxToolArrayList.size()-1));
+    public void displayOption(int type){
+        switch (type) {
+            case 0:
+                EditText editText = new EditText(getContext());
+                sub_container.addView(editText);
+                break;
+            case 1:
+                ImageView imageView = new ImageView(getContext());
+                sub_container.addView(imageView);
+                break;
+            case 2: case 3:
+                displayCheckBox();
+                setOptionDescription(type, 10);
+                break;
+            case 4: case 5:
+                displayRadioButton();
+                setOptionDescription(type, 1000);
+                break;
+            case 6:
+                CalendarView calendarView = new CalendarView(getContext());
+                sub_container.addView(calendarView);
+        }
+    }
+
+    public void displayCheckBox() {
+        LinearLayout linearLayout = new LinearLayout(getContext());
+        linearLayout.setOrientation(VERTICAL);
+        linearLayout.setBackgroundColor(Color.GREEN);
+        for (int i = 0; i < count; i++) {
+            CheckBox checkBox = new CheckBox(getContext());
+            checkBox.setId(10 + i);
+            linearLayout.addView(checkBox);
+        }
+        sub_container.addView(linearLayout);
+    }
+
+    public void displayRadioButton() {
+        RadioGroup radioGroup = new RadioGroup(getContext());
+        for (int i = 0; i < count; i++) {
+            RadioButton radioButton = new RadioButton(getContext());
+            radioButton.setText("new" + i);
+            radioButton.setId(1000 + i);
+            //RadioGroup.LayoutParams layoutParams = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            radioGroup.addView(radioButton);    //radioGroup.addView(radioButton, layoutParams);
+        }
+        sub_container.addView(radioGroup);
+    }
+
+    public void setOptionDescription(int type, int typeId) {
+        if (type % 2 == 0)
+            displayOptionDescriptionEditText(typeId);
+        else
+            displayOptionDescriptionImageView(typeId);
+    }
+
+    public void displayOptionDescriptionEditText(int typeId) {
+        LinearLayout editContainer = new LinearLayout(getContext());
+        editContainer.setOrientation(VERTICAL);
+        for (int i = 0; i < count; i++) {
+            EditText editText = new EditText(getContext());
+            editText.setId(typeId+i+100);   // ID = buttonID + 100, buttonID = typeId + i
+            editContainer.addView(editText);
+        }
+        sub_container.addView(editContainer);
+    }
+
+    public void displayOptionDescriptionImageView(int typeId){ //image도 위에랑 똑같이 만들기
+
+    }
+
+    private void displayNumberOfOptionInputPanel() {
+        inputPanel = findViewById(R.id.input_panel);
+        inputPanel.setVisibility(VISIBLE);
+        editText_numOfOptions = findViewById(R.id.numberOfOptions);
+        inputButton = findViewById(R.id.input_button);
+    }
+
+    private boolean verifyNumberOfOptionInput() {
+        String value = editText_numOfOptions.getText().toString();
+        try {
+            count = Integer.parseInt(value);
+            inputPanel.setVisibility(GONE);
+        } catch (NumberFormatException e) {
+            if (value.equals(""))
+                Toast.makeText(getContext(), "옵션 개수를 입력해주세요", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(getContext(), "유효하느 값을 입력해주세요", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    private void hideKeyboard() {
+        inputMethodManager.hideSoftInputFromWindow(editText_numOfOptions.getWindowToken(), 0);
     }
 
     public int getIndex() {

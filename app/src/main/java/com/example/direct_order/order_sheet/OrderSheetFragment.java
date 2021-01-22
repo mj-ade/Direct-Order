@@ -6,11 +6,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,12 +25,13 @@ import com.example.direct_order.R;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class OrderSheetFragment extends Fragment implements com.example.direct_order.onBackPressedListener{
+public class OrderSheetFragment extends Fragment implements com.example.direct_order.onBackPressedListener, View.OnTouchListener {
     private ArrayList<OptionForm> optionFormArrayList = new ArrayList<>();
     static int position;
 
     ViewGroup viewGroup;
     LinearLayout buttonTypeLayout;
+    RelativeLayout touchPanel;
     ImageView imageView;
     int selectedType;
 
@@ -37,6 +41,7 @@ public class OrderSheetFragment extends Fragment implements com.example.direct_o
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_optionsheet, container, false);
 
         buttonTypeLayout = viewGroup.findViewById(R.id.sub_button_layout); //sub button panel
+        touchPanel = viewGroup.findViewById(R.id.touch_panel);
 
         Button textButton = viewGroup.findViewById(R.id.text_button);
         textButton.setOnClickListener(new View.OnClickListener() {
@@ -125,6 +130,12 @@ public class OrderSheetFragment extends Fragment implements com.example.direct_o
         optionForm.setOptionFormArrayList(optionFormArrayList);
         LinearLayout container = viewGroup.findViewById(R.id.container);
         container.addView(optionForm);
+
+        if (type != OptionType.CALENDAR) {
+            TextView textView = new TextView(getContext());
+            textView.setText("option" + optionFormArrayList.size());
+            textView.setOnTouchListener(this);
+        }
     }
 
     @Override
@@ -164,5 +175,32 @@ public class OrderSheetFragment extends Fragment implements com.example.direct_o
                 Toast.makeText(getContext(), "사진 선택 취소", Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        int parentWidth = ((ViewGroup) v.getParent()).getWidth();
+        int parentHeight = ((ViewGroup) v.getParent()).getHeight();
+
+        if(event.getAction() == MotionEvent.ACTION_DOWN){
+
+        }
+        else if(event.getAction() == MotionEvent.ACTION_MOVE){
+            v.setX(v.getX() + event.getX() - v.getWidth()/2);
+            v.setY(v.getY() + event.getY() - v.getHeight()/2);
+        }
+        else if(event.getAction() == MotionEvent.ACTION_UP){
+            if (v.getX() < 0)
+                v.setX(0);
+            else if ((v.getX() + v.getWidth()) > parentWidth)
+                v.setX(parentWidth - v.getWidth());
+
+            if (v.getY() < 0)
+                v.setY(0);
+            else if ((v.getY() + v.getHeight()) > parentHeight)
+                v.setY(parentHeight - v.getHeight());
+        }
+        return true;
     }
 }

@@ -51,14 +51,19 @@
             </LinearLayout>
         </HorizontalScrollView>
 
+        <RelativeLayout
+            android:id="@+id/touch_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:clickable="true"
-            app:srcCompat="@drawable/ic_launcher_background" />
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_centerHorizontal="true"
+                android:clickable="true"
+                app:srcCompat="@drawable/ic_launcher_background" />
+        </RelativeLayout>
 
         <ScrollView
             android:layout_width="match_parent"

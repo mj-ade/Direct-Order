@@ -20,6 +20,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
 import com.example.direct_order.MainActivity;
 import com.example.direct_order.R;
 
@@ -32,6 +35,7 @@ public class OptionForm extends LinearLayout {
     public static ViewGroup.LayoutParams optionTextButtonSize = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 160);
     public static ViewGroup.LayoutParams optionImageButtonSize = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 450);
 
+    Fragment fragment;
     InputMethodManager inputMethodManager;
     LinearLayout sub_container, sub_con, inputPanel;
     TextView textView;
@@ -48,6 +52,7 @@ public class OptionForm extends LinearLayout {
     public OptionForm(Context context, int optionType) {
         super(context);
         this.optionType = optionType;
+        fragment = ((AppCompatActivity) context).getSupportFragmentManager().findFragmentByTag("tag");
     }
 
     public void setOptionFormArrayList(ArrayList<OptionForm> optionFormArrayList) {
@@ -137,8 +142,7 @@ public class OptionForm extends LinearLayout {
                 imageView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        OrderSheetFragment orderSheetFragment = new OrderSheetFragment();
-                        orderSheetFragment.openGallery(imageView.getId());
+                        ((OrderSheetFragment) fragment).openGallery(imageView.getId());
                         OrderSheetFragment.position = imageView.getId();
                     }
                 });
@@ -219,8 +223,7 @@ public class OptionForm extends LinearLayout {
             imageView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    OrderSheetFragment orderSheetFragment = new OrderSheetFragment();
-                    orderSheetFragment.openGallery(imageView.getId());
+                    ((OrderSheetFragment) fragment).openGallery(imageView.getId());
                     OrderSheetFragment.position = imageView.getId();
                 }
             });

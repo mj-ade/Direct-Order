@@ -1,5 +1,6 @@
 package com.example.direct_order.order_sheet;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -22,9 +24,11 @@ import java.util.ArrayList;
 
 public class OrderSheetFragment extends Fragment implements com.example.direct_order.onBackPressedListener{
     private ArrayList<OptionForm> optionFormArrayList = new ArrayList<>();
+    static int position;
 
     ViewGroup viewGroup;
     LinearLayout buttonTypeLayout;
+    ImageView imageView;
     int selectedType;
 
     @Nullable
@@ -34,8 +38,8 @@ public class OrderSheetFragment extends Fragment implements com.example.direct_o
 
         buttonTypeLayout = viewGroup.findViewById(R.id.sub_button_layout); //sub button panel
 
-        Button txtButton = viewGroup.findViewById(R.id.text_button);
-        txtButton.setOnClickListener(new View.OnClickListener() {
+        Button textButton = viewGroup.findViewById(R.id.text_button);
+        textButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addOptionFrom(OptionType.TEXT);
@@ -49,7 +53,6 @@ public class OrderSheetFragment extends Fragment implements com.example.direct_o
             public void onClick(View v) {
                 addOptionFrom(OptionType.IMAGE);
                 buttonTypeLayout.setVisibility(View.GONE);
-                //버튼 누르면 갤러리 창으로 이동하고 바로 이미지 추가
             }
         });
 
@@ -106,6 +109,13 @@ public class OrderSheetFragment extends Fragment implements com.example.direct_o
             }
         });
 
+        imageView = viewGroup.findViewById(R.id.imageView);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGallery(R.id.imageView);
+            }
+        });
         return viewGroup;
     }
 
@@ -122,26 +132,37 @@ public class OrderSheetFragment extends Fragment implements com.example.direct_o
         buttonTypeLayout.setVisibility(View.GONE);
     }
 
+    public void openGallery(int imgId) {
+        position = imgId;
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 101);
+    }
 
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 0) {
-            if (resultCode == RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK) {
                 try {
                     // 선택한 이미지에서 비트맵 생성
-                    InputStream inputStream = getContentResolver().openInputStream(data.getData());
+                    InputStream inputStream = getActivity().getContentResolver().openInputStream(data.getData());
                     Bitmap image = BitmapFactory.decodeStream(inputStream);
-                    inputStream.close();
+                    if(position == R.id.imageView)
+                        imageView = viewGroup.findViewById(R.id.imageView);
+                    else
+                        imageView = (ImageView) viewGroup.findViewById(position);   //viewGroup 맞는지 실행 확인 필요
                     imageView.setImageBitmap(image);
+                    inputStream.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "사진 선택 취소", Toast.LENGTH_LONG).show();
+            else if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(getContext(), "사진 선택 취소", Toast.LENGTH_LONG).show();
             }
         }
-    }*/
+    }
 }

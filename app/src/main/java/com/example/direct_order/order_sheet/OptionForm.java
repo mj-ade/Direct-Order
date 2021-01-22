@@ -18,11 +18,16 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.direct_order.MainActivity;
 import com.example.direct_order.R;
 
 import java.util.ArrayList;
 
 public class OptionForm extends LinearLayout {
+    public static ViewGroup.LayoutParams optionImageSize = new ViewGroup.LayoutParams(450, 450);
+    public static ViewGroup.LayoutParams optionTextButtonSize = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 160);
+    public static ViewGroup.LayoutParams optionImageButtonSize = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 450);
+
     InputMethodManager inputMethodManager;
     LinearLayout sub_container, inputPanel;
     TextView textView;
@@ -97,14 +102,25 @@ public class OptionForm extends LinearLayout {
                 break;
             case 1:
                 ImageView imageView = new ImageView(getContext());
+                imageView.setImageResource(R.drawable.ic_launcher_background);
+                imageView.setId(10000 + getIndex());
+                imageView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        OrderSheetFragment orderSheetFragment = new OrderSheetFragment();
+                        orderSheetFragment.openGallery(imageView.getId());
+                        OrderSheetFragment.position = imageView.getId();
+                    }
+                });
+                imageView.setLayoutParams(optionImageSize);
                 sub_container.addView(imageView);
                 break;
             case 2: case 3:
-                displayCheckBox();
+                displayCheckBox(type);
                 setOptionDescription(type, 10);
                 break;
             case 4: case 5:
-                displayRadioButton();
+                displayRadioButton(type);
                 setOptionDescription(type, 1000);
                 break;
             case 6:
@@ -113,24 +129,32 @@ public class OptionForm extends LinearLayout {
         }
     }
 
-    public void displayCheckBox() {
+    public void displayCheckBox(int type) {
         LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.setOrientation(VERTICAL);
         linearLayout.setBackgroundColor(Color.GREEN);
         for (int i = 0; i < count; i++) {
             CheckBox checkBox = new CheckBox(getContext());
             checkBox.setId(10 + i);
+            if (type % 2 == 0)
+                checkBox.setLayoutParams(optionTextButtonSize);
+            else
+                checkBox.setLayoutParams(optionImageButtonSize);
             linearLayout.addView(checkBox);
         }
         sub_container.addView(linearLayout);
     }
 
-    public void displayRadioButton() {
+    public void displayRadioButton(int type) {
         RadioGroup radioGroup = new RadioGroup(getContext());
         for (int i = 0; i < count; i++) {
             RadioButton radioButton = new RadioButton(getContext());
             radioButton.setText("new" + i);
             radioButton.setId(1000 + i);
+            if (type % 2 == 0)
+                radioButton.setLayoutParams(optionTextButtonSize);
+            else
+                radioButton.setLayoutParams(optionImageButtonSize);
             //RadioGroup.LayoutParams layoutParams = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             radioGroup.addView(radioButton);    //radioGroup.addView(radioButton, layoutParams);
         }
@@ -138,25 +162,42 @@ public class OptionForm extends LinearLayout {
     }
 
     public void setOptionDescription(int type, int typeId) {
+        LinearLayout descriptionContainer = new LinearLayout(getContext());
+        descriptionContainer.setOrientation(VERTICAL);
         if (type % 2 == 0)
-            displayOptionDescriptionEditText(typeId);
+            descriptionContainer = displayOptionDescriptionEditText(descriptionContainer, typeId);
         else
-            displayOptionDescriptionImageView(typeId);
+            descriptionContainer = displayOptionDescriptionImageView(descriptionContainer, typeId);
+        sub_container.addView(descriptionContainer);
     }
 
-    public void displayOptionDescriptionEditText(int typeId) {
-        LinearLayout editContainer = new LinearLayout(getContext());
-        editContainer.setOrientation(VERTICAL);
+    public LinearLayout displayOptionDescriptionEditText(LinearLayout descriptionContainer, int typeId) {
         for (int i = 0; i < count; i++) {
             EditText editText = new EditText(getContext());
-            editText.setId(typeId+i+100);   // ID = buttonID + 100, buttonID = typeId + i
-            editContainer.addView(editText);
+            editText.setId(typeId+i + 100);   // ID = buttonID + 100, buttonID = typeId + i
+            descriptionContainer.addView(editText);
         }
-        sub_container.addView(editContainer);
+        return descriptionContainer;
+
     }
 
-    public void displayOptionDescriptionImageView(int typeId){ //image도 위에랑 똑같이 만들기
-
+    public LinearLayout displayOptionDescriptionImageView(LinearLayout descriptionContainer, int typeId) {
+        for (int i = 0; i < count; i++) {
+            ImageView imageView = new ImageView(getContext());
+            imageView.setImageResource(R.drawable.ic_launcher_background);
+            imageView.setId(typeId + i + 100000); // ID = buttonID + 100000, buttonID = typeId + i
+            imageView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    OrderSheetFragment orderSheetFragment = new OrderSheetFragment();
+                    orderSheetFragment.openGallery(imageView.getId());
+                    OrderSheetFragment.position = imageView.getId();
+                }
+            });
+            imageView.setLayoutParams(optionImageSize);
+            descriptionContainer.addView(imageView);
+        }
+        return descriptionContainer;
     }
 
     private void displayNumberOfOptionInputPanel() {
@@ -175,7 +216,7 @@ public class OptionForm extends LinearLayout {
             if (value.equals(""))
                 Toast.makeText(getContext(), "옵션 개수를 입력해주세요", Toast.LENGTH_SHORT).show();
             else
-                Toast.makeText(getContext(), "유효하느 값을 입력해주세요", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "유효한 값을 입력해주세요", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.CheckBox;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +24,8 @@ import com.example.direct_order.MainActivity;
 import com.example.direct_order.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class OptionForm extends LinearLayout {
     public static ViewGroup.LayoutParams optionImageSize = new ViewGroup.LayoutParams(450, 450);
@@ -29,15 +33,17 @@ public class OptionForm extends LinearLayout {
     public static ViewGroup.LayoutParams optionImageButtonSize = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 450);
 
     InputMethodManager inputMethodManager;
-    LinearLayout sub_container, inputPanel;
+    LinearLayout sub_container, sub_con, inputPanel;
     TextView textView;
     EditText editText_numOfOptions;
-    Button inputButton;
+    Button inputButton, addButton;
+    Spinner spinner;
 
     private int count;
     private int index;
-    private int optionType;
+    private int optionType, subOptionType;
     private ArrayList<OptionForm> optionFormArrayList = new ArrayList<>();
+    private ArrayList<OptionForm> SubOptionFormArrayList = new ArrayList<>();
 
     public OptionForm(Context context, int optionType) {
         super(context);
@@ -56,6 +62,7 @@ public class OptionForm extends LinearLayout {
 
         inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         sub_container = findViewById(R.id.sub_container);
+        sub_con = findViewById(R.id.sub_con);
 
         textView = findViewById(R.id.option_number);
         textView.setText(index + ".");
@@ -74,6 +81,29 @@ public class OptionForm extends LinearLayout {
         else {
             displayOption(optionType);
         }
+
+        spinner = findViewById(R.id.spinner);
+        addButton = findViewById(R.id.add_button);
+        if (optionType != OptionType.CALENDAR) {
+            setSpinner();
+        }
+        else {
+            spinner.setVisibility(GONE);
+            addButton.setVisibility(GONE);
+        }
+
+        addButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OptionForm subOptionForm = new OptionForm(getContext(), subOptionType);
+                SubOptionFormArrayList.add(subOptionForm);
+                subOptionForm.setOptionFormArrayList(SubOptionFormArrayList);
+                sub_container.setVisibility(GONE);
+                subOptionForm.spinner.setVisibility(GONE);
+                subOptionForm.addButton.setVisibility(GONE);
+                sub_con.addView(subOptionForm);
+            }
+        });
 
         Button deleteButton = findViewById(R.id.delete_button);
         deleteButton.setOnClickListener(new OnClickListener() {
@@ -224,6 +254,27 @@ public class OptionForm extends LinearLayout {
 
     private void hideKeyboard() {
         inputMethodManager.hideSoftInputFromWindow(editText_numOfOptions.getWindowToken(), 0);
+    }
+
+    public void setSpinner() {
+        spinner.setPrompt("옵션 추가");
+        List<String> optionList = new ArrayList<>();
+        optionList.addAll(Arrays.asList(getResources().getStringArray(R.array.option_array)));
+        optionList.add("옵션 추가"); // spinner 생성 시 보이는 항목
+        SubOptionSpinnerAdapter adapter = new SubOptionSpinnerAdapter(getContext(), R.layout.support_simple_spinner_dropdown_item, optionList);
+        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setSelection(adapter.getCount());
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                subOptionType = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     public int getIndex() {

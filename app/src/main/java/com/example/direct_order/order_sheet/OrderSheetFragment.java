@@ -1,10 +1,14 @@
 package com.example.direct_order.order_sheet;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -132,10 +136,42 @@ public class OrderSheetFragment extends Fragment implements com.example.direct_o
         container.addView(optionForm);
 
         if (type != OptionType.CALENDAR) {
-            TextView textView = new TextView(getContext());
-            textView.setText("option" + optionFormArrayList.size());
-            textView.setOnTouchListener(this);
+            addOptionPositionDescription();
         }
+    }
+
+    private void addOptionPositionDescription() {
+        LinearLayout linearLayout = new LinearLayout(getContext());
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        linearLayout.setLayoutParams(layoutParams);
+
+        Button button = new Button(getContext());
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(dpToPx(getContext(), 28), dpToPx(getContext(), 28));
+        button.setLayoutParams(lp);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                touchPanel.removeView(linearLayout);
+            }
+        });
+
+        TextView textView = new TextView(getContext());
+        textView.setText("option" + optionFormArrayList.size());
+        textView.setTextColor(Color.BLACK);
+        textView.setTextSize(18);
+        textView.setLayoutParams(layoutParams);
+        textView.setPadding(dpToPx(getContext(), 4), dpToPx(getContext(), 4), dpToPx(getContext(), 4), dpToPx(getContext(), 4));
+
+        linearLayout.addView(button);
+        linearLayout.addView(textView);
+
+        linearLayout.setOnTouchListener(this);
+        touchPanel.addView(linearLayout);
+    }
+
+    public int dpToPx(Context context, int dp) {
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, dm);
     }
 
     @Override

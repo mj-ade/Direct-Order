@@ -34,18 +34,33 @@ public class OrderSheetFragment extends Fragment implements com.example.direct_o
     static int position;
 
     ViewGroup viewGroup;
-    LinearLayout buttonTypeLayout;
+    LinearLayout container, buttonTypeLayout;
     RelativeLayout touchPanel;
     ImageView imageView;
     int selectedType;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_optionsheet, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup con, @Nullable Bundle savedInstanceState) {
+        viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_optionsheet, con, false);
 
+        container = viewGroup.findViewById(R.id.container);
         buttonTypeLayout = viewGroup.findViewById(R.id.sub_button_layout); //sub button panel
         touchPanel = viewGroup.findViewById(R.id.touch_panel);
+
+        Button saveButton = viewGroup.findViewById(R.id.save_button);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (con.getChildCount() == 1){
+                    Toast.makeText(getContext(), "추가한 옵션이 없습니다", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    // DB에 저장
+                    Toast.makeText(getContext(), "저장되었습니다", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         Button textButton = viewGroup.findViewById(R.id.text_button);
         textButton.setOnClickListener(new View.OnClickListener() {
@@ -132,7 +147,6 @@ public class OrderSheetFragment extends Fragment implements com.example.direct_o
         OptionForm optionForm = new OptionForm(getContext(), type);
         optionFormArrayList.add(optionForm);
         optionForm.setOptionFormArrayList(optionFormArrayList);
-        LinearLayout container = viewGroup.findViewById(R.id.container);
         container.addView(optionForm);
 
         if (type != OptionType.CALENDAR) {

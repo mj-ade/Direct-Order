@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/reg_shop"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Register_Shop">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/fragment_test">
+
+            <TextView
+                android:id="@+id/title_reg_shop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="가게 등록"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/txt_shopname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="100dp"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="36dp"
+                android:layout_marginEnd="101dp"
+                android:layout_marginRight="101dp"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="가게명"
+                android:textColor="@color/yellow"
+                />
+
+            <RadioGroup
+                android:id="@+id/radio_product"
+                android:layout_width="215dp"
+                android:layout_height="158dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="31dp"
+                    android:text="상품 종류" />
+
+                <RadioButton
+                    android:id="@+id/radioButton_cake"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="케이크" />
+
+                <RadioButton
+                    android:id="@+id/radioButton_macaron"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="마카롱" />
+
+                <RadioButton
+                    android:id="@+id/radioButton_case"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="케이스" />
+
+                <RadioButton
+                    android:id="@+id/radioButton_etc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ETC" />
+
+            </RadioGroup>
+
+            <EditText
+                android:id="@+id/txt_shopnum"
+                android:layout_width="243dp"
+                android:layout_height="43dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:ems="10"
+                android:hint="전화번호"
+                android:inputType="phone" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout"
+                android:layout_width="226dp"
+                android:layout_height="58dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="89dp"
+                android:layout_marginLeft="89dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="96dp"
+                android:layout_marginRight="96dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txt_instagram"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:hint="Instagram ID"
+                    android:textColor="#230E0E" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/image_shop"
+                android:layout_width="119dp"
+                android:layout_height="103dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="232dp"
+                android:layout_height="67dp"
+                android:layout_marginStart="90dp"
+                android:layout_marginLeft="90dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="89dp"
+                android:layout_marginRight="89dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txt_shop_ad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:hint="주소"
+                    android:textColor="#230E0E" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout2"
+                android:layout_width="232dp"
+                android:layout_height="53dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="89dp"
+                android:layout_marginLeft="89dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="90dp"
+                android:layout_marginRight="90dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txt_shop_acc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="계좌번호"
+                    android:textColor="#230E0E" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/btn_add"
+                android:layout_width="112dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="등록"
+                android:background="@color/gray"
+                android:textColor="@color/yellow"
+                />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

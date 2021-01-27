@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Main_who">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="275dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="173dp"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="175dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/Seller_login"
+                android:layout_width="124dp"
+                android:layout_height="160dp"
+                android:layout_weight="1"
+                android:text="판매자"
+                android:textColor="#E4D335"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:backgroundTint="#5A594C" />
+
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="171dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/Customer_login"
+                android:layout_width="124dp"
+                android:layout_height="160dp"
+                android:layout_weight="1"
+                android:text="소비자"
+                android:textColor="#5A594C"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:backgroundTint="#E4D335" />
+
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="179dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="275dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

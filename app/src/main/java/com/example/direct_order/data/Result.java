@@ -1,4 +1,4 @@
-package com.example.test.data;
+package com.example.direct_order.data;
 
 /**
  * A generic class that holds a result success w/ data or an error exception.

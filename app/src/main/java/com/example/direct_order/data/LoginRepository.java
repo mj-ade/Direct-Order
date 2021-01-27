@@ -1,6 +1,6 @@
-package com.example.test.data;
+package com.example.direct_order.data;
 
-import com.example.test.data.model.LoggedInUser;
+import com.example.direct_order.data.model.LoggedInUser;
 
 /**
  * Class that requests authentication and user information from the remote data source and

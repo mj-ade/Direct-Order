@@ -1,4 +1,4 @@
-package com.example.test.ui.home2;
+package com.example.direct_order.ui.home2;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.test.R;
+import com.example.direct_order.R;
 
 public class HomeFragment_2 extends Fragment {
 

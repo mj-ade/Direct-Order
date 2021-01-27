@@ -1,4 +1,4 @@
-package com.example.test;
+package com.example.direct_order;
 
 import android.content.DialogInterface;
 import android.os.Bundle;

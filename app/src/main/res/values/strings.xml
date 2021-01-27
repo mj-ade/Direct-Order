@@ -1,6 +1,6 @@
 <resources>
 
-    <string name="app_name">My Application</string>
+    <string name="app_name">Direct-Order</string>
     <string name="OrderList">Order List</string>
     <string name="orderlist">주문 내역</string>
     <string name="title_activity_login_sell1">Login_sell1</string>

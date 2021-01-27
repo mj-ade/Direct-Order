@@ -1,10 +1,8 @@
-package com.example.test.cake;
+package com.example.direct_order.cake;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
-import com.example.test.R;
 
 public class CakeShopViewModel extends ViewModel {
     // TODO: Implement the ViewModel

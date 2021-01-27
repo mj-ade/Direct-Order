@@ -1,4 +1,4 @@
-package com.example.test.ui.login;
+package com.example.direct_order.ui.login;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel;
 
 import android.util.Patterns;
 
-import com.example.test.data.LoginRepository;
-import com.example.test.data.Result;
-import com.example.test.data.model.LoggedInUser;
-import com.example.test.R;
+import com.example.direct_order.R;
+import com.example.direct_order.data.LoginRepository;
+import com.example.direct_order.data.Result;
+import com.example.direct_order.data.model.LoggedInUser;
 
 public class LoginViewModel extends ViewModel {
 

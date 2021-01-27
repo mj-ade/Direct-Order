@@ -1,4 +1,4 @@
-package com.example.test;
+package com.example.direct_order;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.test.ui.home.HomeFragment;
+import com.example.direct_order.R;
+import com.example.direct_order.ui.home.HomeFragment;
 
 import org.w3c.dom.Text;
 

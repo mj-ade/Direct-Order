@@ -1,4 +1,4 @@
-package com.example.test.ui.review;
+package com.example.direct_order.ui.review;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.test.R;
+import com.example.direct_order.R;
 
 public class ReviewFragment extends Fragment {
 

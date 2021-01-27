@@ -1,4 +1,4 @@
-package com.example.test;
+package com.example.direct_order;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,10 +15,9 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
-
-import com.example.test.cake.Cake_shop;
-import com.example.test.ui.home.HomeFragment;
-import com.example.test.ui.review.ReviewFragment;
+import com.example.direct_order.cake.Cake_shop;
+import com.example.direct_order.ui.home.HomeFragment;
+import com.example.direct_order.ui.review.ReviewFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;

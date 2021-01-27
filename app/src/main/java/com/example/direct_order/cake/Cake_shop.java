@@ -1,4 +1,4 @@
-package com.example.test.cake;
+package com.example.direct_order.cake;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -18,9 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.test.R;
-import com.example.test.Register_Shop;
-import com.example.test.ui.home.HomeViewModel;
+import com.example.direct_order.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 

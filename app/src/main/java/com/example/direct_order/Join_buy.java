@@ -1,4 +1,4 @@
-package com.example.test;
+package com.example.direct_order;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.test.ui.login.Login_buy;
+import com.example.direct_order.ui.login.Login_buy;
 
 
 public class Join_buy extends AppCompatActivity {

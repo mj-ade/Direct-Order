@@ -1,4 +1,4 @@
-package com.example.test;
+package com.example.direct_order;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,7 +14,7 @@ public class IntroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
-        com.example.test.IntroThread introThread = new com.example.test.IntroThread(handler);
+        IntroThread introThread = new IntroThread(handler);
         introThread.start();
     }
 
@@ -23,7 +23,7 @@ public class IntroActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
                 finish();
-                Intent intent = new Intent(IntroActivity.this, com.example.test.Main_who.class);
+                Intent intent = new Intent(IntroActivity.this, Main_who.class);
                 startActivity(intent);
             }
         }

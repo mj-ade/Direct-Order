@@ -1,4 +1,4 @@
-package com.example.test.cake;
+package com.example.direct_order.cake;
 
 import android.os.Bundle;
 
@@ -10,9 +10,6 @@ import androidx.lifecycle.ViewModel;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.example.test.R;
-
 
 public class TabOrdersViewModel extends ViewModel {
     private MutableLiveData<String> mText;

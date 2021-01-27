@@ -1,4 +1,4 @@
-package com.example.test.ui.login;
+package com.example.direct_order.ui.login;
 
 import android.app.Activity;
 
@@ -23,9 +23,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.test.Join;
-import com.example.test.MainForSeller;
-import com.example.test.R;
+import com.example.direct_order.Join;
+import com.example.direct_order.MainForSeller;
+import com.example.direct_order.R;
 
 public class Login_sell extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.test.cake;
+package com.example.direct_order.cake;
 
 import android.os.Bundle;
 
@@ -14,8 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.test.R;
-import com.example.test.cake.TabOrderFormViewModel;
 import com.google.android.material.tabs.TabLayout;
 
 

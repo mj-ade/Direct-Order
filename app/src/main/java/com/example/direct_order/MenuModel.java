@@ -1,4 +1,4 @@
-package com.example.test;
+package com.example.direct_order;
 
 
 public class MenuModel {

@@ -1,4 +1,4 @@
-package com.example.test.ui.orderhistory;
+package com.example.direct_order.ui.orderhistory;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.test.R;
+import com.example.direct_order.R;
 
 public class OrderHistory extends Fragment {
 

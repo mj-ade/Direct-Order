@@ -1,4 +1,4 @@
-package com.example.test;
+package com.example.direct_order;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -14,7 +14,7 @@ import java.util.List;
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private Context context;
     private List<MenuModel> listDataHeader;
-    private HashMap<com.example.test.MenuModel, List<MenuModel>> listDataChild;
+    private HashMap<MenuModel, List<MenuModel>> listDataChild;
 
     public ExpandableListAdapter(Context context, List<MenuModel> listDataHeader,
                                  HashMap<MenuModel, List<MenuModel>> listChildData) {

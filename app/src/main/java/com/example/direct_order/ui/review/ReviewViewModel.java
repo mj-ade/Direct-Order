@@ -1,4 +1,4 @@
-package com.example.test.ui.review;
+package com.example.direct_order.ui.review;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

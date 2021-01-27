@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="#BCF1E9"
+    android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/input_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/editText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="옵션 개수를 입력하세요"
+                    android:inputType="numberDecimal"
+                    android:selectAllOnFocus="true" />
+
+                <Button
+                    android:id="@+id/input_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="입력" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/sub_con"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#B4DFE4"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+
+
+</LinearLayout>

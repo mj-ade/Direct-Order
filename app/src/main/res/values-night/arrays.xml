@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="option_array">
+        <item>text</item>
+        <item>image</item>
+        <item>checkboxText</item>
+        <item>checkboxImage</item>
+        <item>radioButtonText</item>
+        <item>radioButtonImage</item>
+    </string-array>
+</resources>

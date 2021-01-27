@@ -1,3 +1,67 @@
 <resources>
-    <string name="app_name">Direct-Order</string>
+
+    <string name="app_name">My Application</string>
+    <string name="OrderList">Order List</string>
+    <string name="orderlist">주문 내역</string>
+    <string name="title_activity_login_sell1">Login_sell1</string>
+
+    <string name="prompt_email">Email</string>
+
+    <string name="prompt_password">Password</string>
+
+    <string name="action_sign_in">Sign in or register</string>
+
+    <string name="action_sign_in_short">Sign in</string>
+
+    <string name="welcome">"Welcome !"</string>
+
+    <string name="invalid_username">Not a valid username</string>
+
+    <string name="invalid_password">Password must be >5 characters</string>
+
+    <string name="login_failed">"Login failed"</string>
+
+    <string name="title_activity_login_buy1">Login_buy1</string>
+
+    <string name="title_activity_login_buy">Login_buy</string>
+
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="tab_text_1">Tab 1</string>
+
+    <string name="tab_text_2">Tab 2</string>
+
+    <string name="title_activity_main_for_seller">MainForSeller</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="nav_header_title">DO</string>
+
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+
+    <string name="nav_header_desc">Navigation header</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="open">Open</string>
+
+    <string name="close">Close</string>
+
+    <string name="account_manage">계정 관리</string>
+
+    <string name="menu_gallery">Gallery</string>
+
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="title_activity_login_sell">Login_sell</string>
+    <string name="title_activity_main_for_customer">MainForCustomer</string>
+
 </resources>

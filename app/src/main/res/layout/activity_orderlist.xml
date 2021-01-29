@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".OrderlistActivity"
+    tools:context=".orderlist.OrderlistActivity"
     android:orientation="vertical">
 
 
@@ -27,11 +27,11 @@
             app:rippleColor="#FFFFFF"/>
 
         <Spinner
-            android:id="@+id/spinner"
+            android:id="@+id/array_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:dropDownSelector="@android:drawable/btn_dropdown"
-            android:entries="@array/정렬" />
+            android:entries="@array/sort" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

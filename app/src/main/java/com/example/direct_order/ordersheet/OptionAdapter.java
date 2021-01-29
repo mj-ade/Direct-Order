@@ -129,7 +129,7 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder
             recyclerView = itemView.findViewById(R.id.sub_recyclerView);
 
             delButton = itemView.findViewById(R.id.delButton);
-            spinner = itemView.findViewById(R.id.spinner);
+            spinner = itemView.findViewById(R.id.option_spinner);
             addButton = itemView.findViewById(R.id.addButton);
         }
 
@@ -158,9 +158,7 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.ViewHolder
                 }
 
                 @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
+                public void onNothingSelected(AdapterView<?> parent) { }
             });
         }
     }

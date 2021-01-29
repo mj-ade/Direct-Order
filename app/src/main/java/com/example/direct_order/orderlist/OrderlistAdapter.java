@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.direct_order.R;
+
 import java.util.ArrayList;
 
 public class OrderlistAdapter extends RecyclerView.Adapter<OrderlistAdapter.ViewHolder> {
@@ -48,15 +50,12 @@ public class OrderlistAdapter extends RecyclerView.Adapter<OrderlistAdapter.View
 
     @NonNull
     @Override
-    public com.example.orderlist.OrderlistAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public OrderlistAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.orderlist_item, parent,false);
 
         ViewHolder holder = new ViewHolder(v);
         return holder;
     }
-
-    //int[] count={0,0,0}; //배열 똑바로하기
-
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {

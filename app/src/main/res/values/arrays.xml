@@ -9,7 +9,7 @@
         <item>radioButtonImage</item>
     </string-array>
 
-    <string-array name="정렬">
+    <string-array name="sort">
         <item>주문순</item>
         <item>픽업순</item>
     </string-array>

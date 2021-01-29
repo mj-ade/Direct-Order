@@ -41,8 +41,8 @@ public class OrderlistActivity extends AppCompatActivity implements Serializable
         mRecyclerView.setAdapter(mAdapter);
 
         //스피너 주문순픽업순 정렬
-        Spinner spinner = (Spinner)findViewById(R.id.spinner);
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(this,R.array.정렬, android.R.layout.simple_spinner_dropdown_item);
+        Spinner spinner = (Spinner)findViewById(R.id.array_spinner);
+        ArrayAdapter adapter = ArrayAdapter.createFromResource(this,R.array.sort, android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

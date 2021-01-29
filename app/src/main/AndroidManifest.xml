@@ -10,6 +10,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar" >
 
+        <activity android:name=".orderlist.OrderDetailActivity"></activity>
+        <activity android:name=".orderlist.MessageActivity" />
+        <activity android:name=".orderlist.OrderlistActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".MainForCustomer"
             android:label="@string/title_activity_main_for_customer"/>

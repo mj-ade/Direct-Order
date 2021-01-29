@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.direct_order.R;
+
 public class MessageActivity extends AppCompatActivity {
 
     @Override
@@ -22,10 +24,7 @@ public class MessageActivity extends AppCompatActivity {
         String mname = messageIntent.getStringExtra("name");
 
         toname.setText("받는 사람 : "+mname);
-
-
     }
-
 
     public void Message(View v){
 

@@ -77,7 +77,7 @@ public class SubOptionForm extends LinearLayout {
                 imageView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ((OrderSheetActivity) getContext()).openGallery(imageView.getId());
+                        ((OrderSheetActivity) getContext()).cropImage(imageView.getId());
                         OrderSheetActivity.position =imageView.getId();
                     }
                 });
@@ -133,7 +133,7 @@ public class SubOptionForm extends LinearLayout {
                 imageView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ((OrderSheetActivity) getContext()).openGallery(imageView.getId());
+                        ((OrderSheetActivity) getContext()).cropImage(imageView.getId());
                         OrderSheetActivity.position = imageView.getId();
                     }
                 });

@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.direct_order.R;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -139,7 +141,7 @@ public class OrderSheetActivity extends AppCompatActivity implements View.OnTouc
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openGallery(R.id.imageView);
+                cropImage(R.id.imageView);
             }
         });
 
@@ -154,17 +156,24 @@ public class OrderSheetActivity extends AppCompatActivity implements View.OnTouc
         startActivityForResult(intent, 101);
     }
 
+    public void cropImage(int a) {
+        position = a;
+        CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .start(this);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 101) {
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                Uri fileUri = data.getData();
-
+                Uri resultUri = result.getUri();
                 try {
                     // 선택한 이미지에서 비트맵 생성
-                    InputStream inputStream = getContentResolver().openInputStream(fileUri);
+                    InputStream inputStream = getContentResolver().openInputStream(resultUri);
                     Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                     if(position == R.id.imageView)
                         imageView = findViewById(R.id.imageView);
@@ -178,6 +187,9 @@ public class OrderSheetActivity extends AppCompatActivity implements View.OnTouc
             }
             else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "사진 선택 취소", Toast.LENGTH_LONG).show();
+            }
+            else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
             }
         }
     }

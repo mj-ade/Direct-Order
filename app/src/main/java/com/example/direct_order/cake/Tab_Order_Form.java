@@ -1,4 +1,4 @@
-package com.example.direct_order.cake;
+package com.example.test.cake;
 
 import android.os.Bundle;
 
@@ -12,23 +12,41 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.test.R;
+import com.example.test.cake.TabOrderFormViewModel;
 import com.google.android.material.tabs.TabLayout;
 
 
 public class Tab_Order_Form extends Fragment {
 
-  /*  private TabOrderFormViewModel tabOrderFormViewModel;
+    private Button btn;
+    private TabOrderFormViewModel tabOrderFormViewModel;
+
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_tab__order__form, container, false);
+        btn=root.findViewById(R.id.add_form);
+        btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                //order form 생성 activity로 이동
+            }
+        });
+        return root;
+    }
+
+  /*
     private static final String ARG_COUNT = "param1";
     private Integer counter;
 
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+  {
         tabOrderFormViewModel =
                 new ViewModelProvider(this).get(TabOrderFormViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_tab__order__form, container, false);
+
         final TextView textView = root.findViewById(R.id.tv_counter);
         tabOrderFormViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override

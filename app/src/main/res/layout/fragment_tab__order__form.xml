@@ -11,4 +11,10 @@
         android:layout_height="match_parent"
         android:text="order form" />
 
+    <Button
+        android:id="@+id/add_form"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+"
+        android:layout_gravity="center"/>
 </FrameLayout>

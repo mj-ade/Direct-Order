@@ -1,4 +1,4 @@
-package com.example.test.ui.home;
+package com.example.direct_order.ui.home;
 
 import android.content.Context;
 import android.content.Intent;
@@ -21,9 +21,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.test.R;
-import com.example.test.Register_Shop;
-import com.example.test.cake.Cake_shop;
+import com.example.direct_order.R;
+import com.example.direct_order.Register_Shop;
+import com.example.direct_order.cake.Cake_shop;
 
 import java.util.ArrayList;
 import java.util.List;

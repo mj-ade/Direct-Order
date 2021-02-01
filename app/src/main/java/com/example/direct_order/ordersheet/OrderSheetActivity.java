@@ -9,9 +9,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -28,12 +28,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderSheetActivity extends AppCompatActivity implements View.OnTouchListener {
+    static FrameLayout touchPanel;
+    static boolean focus;
+    static int position;
     OptionAdapter adapter;
     ImageView imageView;
     LinearLayout buttonTypeLayout;
-    static RelativeLayout touchPanel;
     int selectedType;
-    static int position;
     List<Option> allOptionList = new ArrayList<>();
 
     @Override
@@ -42,6 +43,16 @@ public class OrderSheetActivity extends AppCompatActivity implements View.OnTouc
         setContentView(R.layout.activity_optionsheet);
 
         touchPanel = findViewById(R.id.imageDesc);
+        touchPanel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //touchPanel에 stickerview가 있을 때 실행
+
+                focus = false;
+                StickerView stickerView = (StickerView) touchPanel.getChildAt(touchPanel.getChildCount()-1);//getFocusedChild();
+                stickerView.setControlItemsHidden(true);
+            }
+        });
         buttonTypeLayout = findViewById(R.id.button_type_layout);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);

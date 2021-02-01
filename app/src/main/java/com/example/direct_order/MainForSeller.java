@@ -1,4 +1,4 @@
-package com.example.direct_order;
+package com.example.test;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,9 +15,10 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
-import com.example.direct_order.cake.Cake_shop;
-import com.example.direct_order.ui.home.HomeFragment;
-import com.example.direct_order.ui.review.ReviewFragment;
+
+import com.example.test.cake.Cake_shop;
+import com.example.test.ui.home.HomeFragment;
+import com.example.test.ui.review.ReviewFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -123,14 +124,14 @@ public class MainForSeller extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+
             if(System.currentTimeMillis()-time>=2000){
                 time=System.currentTimeMillis();
                 Toast.makeText(getApplicationContext(),"뒤로 버튼을 한번 더 누르면 종료합니다.",Toast.LENGTH_SHORT).show();
-            }else if(System.currentTimeMillis()-time<2000){
+            }else if(System.currentTimeMillis()-time<2000) {
                 finish();
             }
-
-           // super.onBackPressed();
+           //super.onBackPressed();
         }
     }
 
@@ -179,7 +180,7 @@ public class MainForSeller extends AppCompatActivity
         headerList.add(menuModel);
         List<MenuModel> childModelsList = new ArrayList<>();
 
-       MenuModel childModel = new MenuModel("Cake Shop", false, false);
+        MenuModel childModel = new MenuModel("Cake Shop", false, false);
         childModelsList.add(childModel);
  /*
         childModel = new MenuModel("Macaron Shop", false, false);
@@ -190,7 +191,7 @@ public class MainForSeller extends AppCompatActivity
         if(getIntent().getStringExtra("마켓명")!=null){
 
             String str = getIntent().getStringExtra("마켓명");
-            Toast.makeText(getApplicationContext(), "신규 마켓 \'"+str+"\'이 등록되었습니다.", Toast.LENGTH_LONG).show();
+           // Toast.makeText(getApplicationContext(), "신규 마켓 \'"+str+"\'이 등록되었습니다.", Toast.LENGTH_LONG).show();
             childModel = new MenuModel(str, false, false);
             childModelsList.add(childModel);
 

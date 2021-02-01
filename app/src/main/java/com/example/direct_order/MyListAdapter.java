@@ -1,4 +1,4 @@
-package com.example.test.ui.home;
+package com.example.direct_order.ui.home;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,10 +15,10 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.test.MainForSeller;
-import com.example.test.R;
-import com.example.test.Register_Shop;
-import com.example.test.cake.Cake_shop;
+import com.example.direct_order.MainForSeller;
+import com.example.direct_order.R;
+import com.example.direct_order.Register_Shop;
+import com.example.direct_order.cake.Cake_shop;
 
 import java.util.List;
 

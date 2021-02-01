@@ -29,7 +29,7 @@ public class Cake_shop extends Fragment {
     private CakeShopViewModel mViewModel;
     TabLayout tabLayout;
     ViewPager2 viewPager;
-    String[] TabItem = {"주문서 보기", "주문 보기", "매출 보기", "리뷰 보기"};
+    String[] TabItem = {"주문 보기", "주문서 보기", "매출 보기", "리뷰 보기"};
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -50,9 +50,9 @@ public class Cake_shop extends Fragment {
 
                 switch (position) {
                     case 0:
-                        return new Fragment(R.layout.fragment_tab__order__form);
-                    case 1:
                         return new Fragment(R.layout.tab__orders_fragment);
+                    case 1:
+                        return new Fragment(R.layout.fragment_tab__order__form);
                     case 2:
                         return new Fragment(R.layout.tab__sales_fragment);
                     default:

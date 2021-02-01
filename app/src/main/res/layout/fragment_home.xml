@@ -5,9 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment"
+    android:id="@+id/homehome"
+>
 
-    >
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv2"
+        android:layout_width="409dp"
+        android:layout_height="733dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/home_shop">
+
+    </androidx.recyclerview.widget.RecyclerView>
+   <!-- <TextView
         android:id="@+id/text_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,7 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal" /> -->
     <Button
         android:id="@+id/btn_add"
         android:layout_width="wrap_content"

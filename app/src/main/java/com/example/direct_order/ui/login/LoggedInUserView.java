@@ -6,6 +6,7 @@ package com.example.direct_order.ui.login;
 class LoggedInUserView {
     private String displayName;
     //... other data fields that may be accessible to the UI
+    //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     LoggedInUserView(String displayName) {
         this.displayName = displayName;

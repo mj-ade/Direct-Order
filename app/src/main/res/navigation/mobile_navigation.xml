@@ -3,35 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_slideshow">
+    app:startDestination="@+id/nav_cake">
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.direct_order.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" >
+        android:name="com.example.direct_order.ui.settings.setting_seller"
+        android:label="계정 관리"
+        tools:layout="@layout/setting_seller_fragment" >
 
     </fragment>
 
     <fragment
-        android:id="@+id/nav_review"
-        android:name="com.example.direct_order.ui.review.ReviewFragment"
-        android:label="Review"
-        tools:layout="@layout/fragment_review" >
+        android:id="@+id/nav_market_setting"
+        android:name="com.example.direct_order.ui.settings.MarketSettingFragment"
+        android:label="마켓 관리"
+        tools:layout="@layout/fragment_market_setting" >
     </fragment>
 
     <fragment
         android:id="@+id/nav_cake"
         android:name="com.example.direct_order.cake.Cake_shop"
-        tools:layout="@layout/cake_shop_fragment" >
+        tools:layout="@layout/cake_shop_fragment"
+        android:label="My Shop">
 
     </fragment>
-   <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.example.direct_order.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" >
-   </fragment>
+
 
 
 </navigation>

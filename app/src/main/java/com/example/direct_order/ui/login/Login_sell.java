@@ -2,6 +2,7 @@ package com.example.direct_order.ui.login;
 
 import android.app.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -23,9 +24,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.direct_order.Join;
+import com.example.direct_order.register.Join;
 import com.example.direct_order.MainForSeller;
+import com.example.direct_order.Main_who;
 import com.example.direct_order.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Login_sell extends AppCompatActivity {
 
@@ -35,8 +45,11 @@ public class Login_sell extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_sell);
+
         loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
+
+        FirebaseAuth firebaseAuth =  FirebaseAuth.getInstance();
 
         final EditText usernameEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
@@ -79,15 +92,15 @@ public class Login_sell extends AppCompatActivity {
                     showLoginFailed(loginResult.getError());
                 }
                 if (loginResult.getSuccess() != null) {
-                    updateUiWithUser(loginResult.getSuccess());
+                    //updateUiWithUser(loginResult.getSuccess());
                 }
                 setResult(Activity.RESULT_OK);
 
                 //Complete and destroy login activity once successful
-                finish();
+                //finish();
 
-                Intent intent = new Intent(getApplicationContext(), MainForSeller.class);
-                startActivity(intent);
+
+                //startActivity(intent);
             }
         });
 
@@ -125,19 +138,61 @@ public class Login_sell extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
+                String email = usernameEditText.getText().toString().trim();
+                String pwd = passwordEditText.getText().toString().trim();
+                //loadingProgressBar.setVisibility(View.VISIBLE);
+
+                firebaseAuth.signInWithEmailAndPassword(email,pwd)
+                        .addOnCompleteListener(Login_sell.this, new OnCompleteListener<AuthResult>() {
+
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+
+                                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                            String uid = user.getUid();
+
+                                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                            DocumentReference docRef = db.collection("sellers").document(uid);
+                                            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        DocumentSnapshot document = task.getResult();
+                                                        if (document.exists()) {
+                                                            Main_who mw = (Main_who)Main_who.activity;
+                                                            Intent intent = new Intent(getApplicationContext(), MainForSeller.class);
+                                                            startActivity(intent);
+                                                            String name = document.get("name").toString();
+                                                            Toast.makeText(getApplicationContext(), name+"님 환영합니다!", Toast.LENGTH_SHORT).show();
+                                                            mw.finish();
+                                                            finish();
+                                                            //Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                                                        }
+                                                    } else {
+                                                        Toast.makeText(getApplicationContext(), "로그인 정보를 다시 확인하세요", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            });
+
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "로그인 정보를 다시 확인하세요", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                /*loadingProgressBar.setVisibility(View.VISIBLE);
                 loginViewModel.login(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
+                        passwordEditText.getText().toString());*/
             }
         });
     }
 
-    private void updateUiWithUser(LoggedInUserView model) {
+    /*private void updateUiWithUser(LoggedInUserView model) {
         String welcome = getString(R.string.welcome) + model.getDisplayName();
         // TODO : initiate successful logged in experience
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
     }
-
+*/
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }

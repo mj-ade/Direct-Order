@@ -17,4 +17,10 @@
         android:label="주문 내역"
         tools:layout="@layout/order_history_fragment" />
 
+    <fragment
+        android:id="@+id/nav_buy_setting"
+        android:name="com.example.direct_order.ui.settings.setting_customer"
+        android:label="계정 관리"
+        tools:layout="@layout/setting_customer_fragment" />
+
 </navigation>

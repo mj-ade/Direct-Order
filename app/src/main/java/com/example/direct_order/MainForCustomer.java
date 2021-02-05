@@ -1,14 +1,28 @@
 package com.example.direct_order;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -22,15 +36,12 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MainForCustomer extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-
+    private TextView t1,t2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mainforcustomer);
-
-
-
 
         Toolbar toolbar = findViewById(R.id.toolbar2);
         Button btn = findViewById(R.id.btn_logout2);
@@ -39,13 +50,20 @@ public class MainForCustomer extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
                 show();
             }
 
 
         });
+
+        ImageButton btn_message = findViewById(R.id.message2);
+        btn_message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //메세지 기능
+            }
+        });
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout2);
         NavigationView navigationView = findViewById(R.id.nav_view2);
         // Passing each menu ID as a set of Ids because each
@@ -57,31 +75,44 @@ public class MainForCustomer extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment2);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        View headerView = navigationView.getHeaderView(0);
+        t1 = (TextView) headerView.findViewById(R.id.cus_name);
+        t2 = (TextView) headerView.findViewById(R.id.cus_email);
 
-        /*Button button = (Button)findViewById(R.id.btn_add);
-        Intent myintent =getIntent();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("customers").document(uid);
 
-        if(myintent.getStringExtra("마켓명")!=null){
-            String s = myintent.getStringExtra("마켓명");
-            //Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
-            //button.setVisibility(View.INVISIBLE);
-        }
-        else{
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (value != null && value.exists()) {
+                    String name = value.get("name").toString().trim();
+                    String email = value.get("email").toString().trim();
 
-        }*/
+                    t1.setText(name+"님");
+                    t2.setText(email);
+
+                }
+            }
+        });
+
     }
     void show(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Logout");
         builder.setMessage("로그아웃하시겠습니까?");
-        builder.setNegativeButton("예",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        //Toast.makeText(getApplicationContext(),"예를 선택했습니다.",Toast.LENGTH_LONG).show();
-                        finish();
-                    }
-                });
-        builder.setPositiveButton("아니오",
+        builder.setNegativeButton("예(Yes)", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), Main_who.class);
+                startActivity(intent);
+            }
+        });
+        builder.setPositiveButton("아니오(No)",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 

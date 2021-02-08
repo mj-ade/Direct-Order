@@ -89,9 +89,15 @@ public class OrderHistory extends Fragment {
                                                            String s = " ";
 
                                                            for(int i=0;i<size;i++){
-                                                               s = s + key[i]+": "+value[i];
-                                                               if(i<size-1)
-                                                                   s = s + "\n";
+                                                               key[i]=key[i].replace("[","");
+                                                               key[i]=key[i].replace("]","");
+                                                               if(key[i].trim().equals("shopname"))
+                                                                    s = s + key[i]+": "+value[i];
+                                                               else if(key[i].trim().equals("day")||key[i].trim().equals("goods"))
+                                                                   s = s + "\n" + key[i]+": "+value[i];
+                                                               else
+                                                                   continue;
+
                                                                s = s.replace("[","");
                                                                s = s.replace("]","");
                                                            }

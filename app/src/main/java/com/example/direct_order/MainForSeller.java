@@ -2,7 +2,9 @@ package com.example.direct_order;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
@@ -11,6 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.direct_order.cake.Cake_shop;
+import com.example.direct_order.orderlist.OrderlistActivity;
+import com.example.direct_order.ui.settings.MarketSettingFragment;
+import com.example.direct_order.ui.settings.setting_seller;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,9 +26,12 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -38,7 +47,7 @@ public class MainForSeller extends AppCompatActivity
     private AppBarConfiguration mAppBarConfiguration;
     private long time= 0;
     private TextView t1, t2;
-
+    String myinsta="https://www.naver.com";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,14 +57,15 @@ public class MainForSeller extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
+
         View headerView = navigationView.getHeaderView(0);
         t1 = (TextView) headerView.findViewById(R.id.nav_name);
         t2 = (TextView) headerView.findViewById(R.id.nav_email);
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_cake)
-
                 .setDrawerLayout(drawer)
                 .build();
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
@@ -79,6 +89,17 @@ public class MainForSeller extends AppCompatActivity
             }
         });
 
+        DocumentReference docRef2 = db.collection("markets").document(uid);
+        docRef2.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (value != null && value.exists()) {
+                    myinsta = "https://instagram.com/" + value.get("instagram").toString().trim() + "/";
+
+                    Toast.makeText(getApplicationContext(),myinsta,Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         Button btn_logout=findViewById(R.id.btn_logout);
         btn_logout.setOnClickListener(new View.OnClickListener(){
@@ -96,6 +117,17 @@ public class MainForSeller extends AppCompatActivity
                 //메세지 기능
             }
         });
+
+        ImageButton btn_insta = findViewById(R.id.insta);
+        btn_insta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(myinsta));
+                startActivity(i);
+            }
+        });
+
     }
 
     void showDialog(){

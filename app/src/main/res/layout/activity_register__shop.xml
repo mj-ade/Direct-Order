@@ -52,11 +52,6 @@
                     android:layout_height="wrap_content"
                     android:text="케이크" />
 
-                <RadioButton
-                    android:id="@+id/radioButton_macaron"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="마카롱" />
 
                 <RadioButton
                     android:id="@+id/radioButton_case"

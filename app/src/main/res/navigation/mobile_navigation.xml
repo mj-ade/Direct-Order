@@ -10,7 +10,6 @@
         android:name="com.example.direct_order.ui.settings.setting_seller"
         android:label="계정 관리"
         tools:layout="@layout/setting_seller_fragment" >
-
     </fragment>
 
     <fragment

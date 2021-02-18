@@ -121,17 +121,31 @@ public class Join extends AppCompatActivity {
                                     //Toast.makeText(Join.this, "회원가입에 성공하셨습니다.", Toast.LENGTH_SHORT).show();
 
                                 } else {
+                                    //패스워드가 5자리 이하일때
+                                    if(pwd.length()<6){
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(Join.this);
+                                        builder.setTitle("").setMessage("비밀번호를 6자리 이상 입력해주세요.").setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                            }
+                                        });
+                                        AlertDialog alertDialog = builder.create();
+                                        alertDialog.show();
+
+                                    }
                                     //아이디 중복 시
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(Join.this);
-                                    builder.setTitle("").setMessage("사용할 수 없는 아이디입니다.").setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                    else {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(Join.this);
+                                        builder.setTitle("").setMessage("사용할 수 없는 아이디입니다.").setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
 
-                                        }
-                                    });
-                                    AlertDialog alertDialog = builder.create();
-                                    alertDialog.show();
-
+                                            }
+                                        });
+                                        AlertDialog alertDialog = builder.create();
+                                        alertDialog.show();
+                                    }
                                     return;  //해당 메소드 진행을 멈추고 빠져나감.
 
                                 }

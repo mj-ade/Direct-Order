@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,9 +28,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +42,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
 
     private List<String> myList;
+
 
     public MyListAdapter(List<String> myList) {
         this.myList = myList;
@@ -55,10 +60,26 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
-
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String x = String.valueOf(position);
         String my = myList.get(position);
-
         holder.mText.setText(my);
+
+        //CollectionReference coRef = db.collection("customers").document(uid).collection("orders");
+        DocumentReference doRef = db.collection("customers").document(uid).collection("orders").document(x);
+        doRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (value != null && value.exists()) {
+                    if(value.get("deposit").toString().trim().equals("true"))
+                        holder.mImage.setImageResource(R.drawable.progress2);
+                    else
+                        holder.mImage.setImageResource(R.drawable.progress1);
+                }
+            }
+        });
 
         holder.mContent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,12 +119,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
                 TextView tv = new TextView(context);
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_SP,17);
                 tv.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                String uid = user.getUid();
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                String x = String.valueOf(position);
-                CollectionReference coRef = db.collection("customers").document(uid).collection("orders");
-                DocumentReference doRef = db.collection("customers").document(uid).collection("orders").document(x);
+                //CollectionReference coRef = db.collection("customers").document(uid).collection("orders");
                 doRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                        @Override
                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -118,6 +134,9 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
                                                                String s = " ";
 
                                                                for(int i=0;i<size;i++){
+                                                                   if(key[i].contains("deposit"))
+                                                                       i++;
+
                                                                    s = s + key[i]+": "+value[i];
                                                                    if(i<size-1)
                                                                        s = s + "\n";
@@ -142,7 +161,11 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
             public void onClick(View v) {
                 //입금 완료 버튼
                 Context context = v.getContext();
-                holder.mImage.setImageResource(R.drawable.progress2);
+
+                doRef.update("deposit",true);
+
+
+               // holder.mImage.setImageResource(R.drawable.progress2);
                 //Toast.makeText(context,position+": "+ my+" click!",Toast.LENGTH_LONG).show();
 
             }

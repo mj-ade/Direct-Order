@@ -1,86 +1,111 @@
 package com.example.direct_order.ordersheet;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MotionEvent;
+import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.direct_order.R;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.pedro.library.AutoPermissions;
+import com.pedro.library.AutoPermissionsListener;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
-public class OrderSheetActivity extends AppCompatActivity implements View.OnTouchListener {
-    static FrameLayout touchPanel;
-    static boolean focus;
-    static int position;
-    OptionAdapter adapter;
-    ImageView imageView;
-    LinearLayout buttonTypeLayout;
-    int selectedType;
-    List<Option> allOptionList = new ArrayList<>();
+public class OrderSheetActivity extends ImageCropActivity implements AutoPermissionsListener {
+    static RelativeLayout touchPanel;
+    static boolean isFocus, isUpdate;
+    static int type, numOfOption;
+    static View[] previews = new View[20];
+    static StickerView[] stickerPreviews = new StickerView[20];
+    static boolean[] numberDup = new boolean[20];
+
+    static Option option;
+    static String id;   //id random 아니면 필요없나?
+
+    // 판매자마다 ordersheet가 있음
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference orderSheetRef = db.collection("OrderSheet");
+    private DocumentReference myOptionSheet = orderSheetRef.document("z41tdOLkWUQPwRzzabWw");
+    private CollectionReference optionRef = myOptionSheet.collection("Options");
+    private CollectionReference previewRef = myOptionSheet.collection("Previews");
+
+    private OptionAdapter adapter;
+    private LinearLayout buttonTypeLayout;
+    private String imageName;
+    private int selectedType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_optionsheet);
+        setContentView(R.layout.activity_ordersheet);
 
-        touchPanel = findViewById(R.id.imageDesc);
-        touchPanel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //touchPanel에 stickerview가 있을 때 실행
+        AutoPermissions.Companion.loadAllPermissions(this, 101);
 
-                focus = false;
-                StickerView stickerView = (StickerView) touchPanel.getChildAt(touchPanel.getChildCount()-1);//getFocusedChild();
-                stickerView.setControlItemsHidden(true);
-            }
-        });
         buttonTypeLayout = findViewById(R.id.button_type_layout);
-
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
-        adapter = new OptionAdapter(this, allOptionList);
-
-        Button saveButton = findViewById(R.id.save_button);
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        touchPanel = findViewById(R.id.imageDesc);
+        ImageView iv_main = findViewById(R.id.imageView);
+        setupMainImage(iv_main); // DB에서 image 가져오기
+        setupPreviews();    //DB에서 preview 가져와서 touchPanel에 배치
+        iv_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                buttonTypeLayout.setVisibility(View.GONE);
-                if (recyclerView.getChildCount() == 0)
-                    Toast.makeText(getApplicationContext(), "추가한 옵션이 없습니다", Toast.LENGTH_SHORT).show();
-                else {
-                    // DB에 저장
-                    Toast.makeText(getApplicationContext(), "저장되었습니다", Toast.LENGTH_SHORT).show();
+                if (!isFocus) {
+                    setImageView(iv_main);
+                    pickFromGallery();
+                }
+                isFocus = false;
+                for (int i = 0; i < touchPanel.getChildCount(); i++) {
+                    if (touchPanel.getChildAt(i) instanceof StickerView)
+                        ((StickerView) touchPanel.getChildAt(i)).setControlItemsHidden(true);
                 }
             }
         });
 
-        Button txtButton = findViewById(R.id.txt_button);
-        txtButton.setOnClickListener(new View.OnClickListener() {
+        Button saveButton = findViewById(R.id.save_button);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveSheet();
+            }
+        });
+
+        Button textButton = findViewById(R.id.txt_button);
+        textButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addRecyclerViewItem(OptionType.TEXT);
+                isUpdate = false;
                 buttonTypeLayout.setVisibility(View.GONE);
+                type = OptionType.TEXT;
+                numOfOption = 1;
+                startActivity(new Intent(OrderSheetActivity.this, TextOptionActivity.class));
             }
         });
 
@@ -88,8 +113,11 @@ public class OrderSheetActivity extends AppCompatActivity implements View.OnTouc
         imgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addRecyclerViewItem(OptionType.IMAGE);
+                isUpdate = false;
                 buttonTypeLayout.setVisibility(View.GONE);
+                type = OptionType.IMAGE;
+                numOfOption = 1;
+                startActivity(new Intent(OrderSheetActivity.this, ImageOptionActivity.class));
             }
         });
 
@@ -115,8 +143,11 @@ public class OrderSheetActivity extends AppCompatActivity implements View.OnTouc
         calButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addRecyclerViewItem(OptionType.CALENDAR);
+                isUpdate = false;
                 buttonTypeLayout.setVisibility(View.GONE);
+                type = OptionType.CALENDAR;
+                numOfOption = 1;
+                startActivity(new Intent(OrderSheetActivity.this, CalendarOptionActivity.class));
             }
         });
 
@@ -124,128 +155,366 @@ public class OrderSheetActivity extends AppCompatActivity implements View.OnTouc
         subTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(selectedType == OptionType.CHECKBOX) {
-                    addRecyclerViewItem(OptionType.CHECKBOX_TEXT);
-                }
-                else {
-                    addRecyclerViewItem(OptionType.RADIOBUTTON_TEXT);
-                }
+                isUpdate = false;
                 buttonTypeLayout.setVisibility(View.GONE);
+                if (selectedType == OptionType.CHECKBOX)
+                    type = OptionType.CHECKBOX_TEXT;
+                else
+                    type = OptionType.RADIOBUTTON_TEXT;
+                displayDialog(type);
             }
         });
 
-        Button subImageButton = findViewById(R.id.sub_button_image);
-        subImageButton.setOnClickListener(new View.OnClickListener() {
+        Button subImgButton = findViewById(R.id.sub_button_image);
+        subImgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(selectedType == OptionType.CHECKBOX) {
-                    addRecyclerViewItem(OptionType.CHECKBOX_IMAGE);
-                }
-                else {
-                    addRecyclerViewItem(OptionType.RADIOBUTTON_IMAGE);
-                }
+                isUpdate = false;
                 buttonTypeLayout.setVisibility(View.GONE);
+                if (selectedType == OptionType.CHECKBOX)
+                    type = OptionType.CHECKBOX_IMAGE;
+                else {
+                    type = OptionType.RADIOBUTTON_IMAGE;
+                }
+                displayDialog(type);
             }
         });
 
-        imageView = findViewById(R.id.imageView);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cropImage(R.id.imageView);
-            }
-        });
+        setupRecyclerView();
+    }
 
+    private void setupRecyclerView() {
+        Query query = optionRef.orderBy("number", Query.Direction.ASCENDING);
+
+        FirestoreRecyclerOptions<Option> options = new FirestoreRecyclerOptions.Builder<Option>()
+                .setQuery(query, Option.class)
+                .build();
+
+        adapter = new OptionAdapter(options, this);
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
-    }
 
-    public void openGallery(int a) {
-        position = a;
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 101);
-    }
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
 
-    public void cropImage(int a) {
-        position = a;
-        CropImage.activity()
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .start(this);
-    }
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                if (direction == ItemTouchHelper.LEFT) {
+                    adapter.deleteItem(viewHolder.getAdapterPosition());
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+                    // 아이템 삭제에 따른 num array 갱신
+                    int numberIndex = adapter.getItem(viewHolder.getAdapterPosition()).getNumber() - 1;
+                    numberDup[numberIndex] = false;
 
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-                Uri resultUri = result.getUri();
-                try {
-                    // 선택한 이미지에서 비트맵 생성
-                    InputStream inputStream = getContentResolver().openInputStream(resultUri);
-                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                    if(position == R.id.imageView)
-                        imageView = findViewById(R.id.imageView);
-                    else
-                        imageView = (ImageView) findViewById(position);
-                    imageView.setImageBitmap(bitmap);
-                    inputStream.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    // 아이템 삭제하면 preview도 삭제
+                    if (stickerPreviews[numberIndex] != null) {
+                        touchPanel.removeView(stickerPreviews[numberIndex]);
+                        stickerPreviews[numberIndex] = null;
+                    }
+                    else {
+                        touchPanel.removeView(previews[numberIndex]);
+                        previews[numberIndex] = null;
+                    }
+                    //db에 저장된 내용도 삭제
+                    previewRef.document("stickerID" + (numberIndex + 1)).delete();//.update("desc", desc);    // 나머지는 기존 것과 똑같고 desc만 변경
                 }
             }
-            else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "사진 선택 취소", Toast.LENGTH_LONG).show();
+        }).attachToRecyclerView(recyclerView);
+
+        adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
+                option = documentSnapshot.toObject(Option.class);
+                id = documentSnapshot.getId();
+                isUpdate = true;
+
+                if (option.getType() == OptionType.TEXT)
+                    startActivity(new Intent(OrderSheetActivity.this, TextOptionActivity.class));
+                else if (option.getType() == OptionType.IMAGE)
+                    startActivity(new Intent(OrderSheetActivity.this, ImageOptionActivity.class));
+                else if (option.getType() >= OptionType.CHECKBOX_TEXT && option.getType() <= OptionType.RADIOBUTTON_IMAGE) {
+                    if (option.getType() % 2 == 0)
+                        startActivity(new Intent(OrderSheetActivity.this, CompoundTextOptionActivity.class));
+                    else
+                        startActivity(new Intent(OrderSheetActivity.this, CompoundImageOptionActivity.class));
+                }
+                else if (option.getType() == OptionType.CALENDAR)
+                    startActivity(new Intent(OrderSheetActivity.this, CalendarOptionActivity.class));
             }
-            else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
+        });
+    }
+
+    private void setupMainImage(ImageView imageView) {
+        myOptionSheet.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        imageName = (String) document.get("image");
+                        Log.d("MAIN_IMG", "DocumentSnapshot data: " + document.getData());
+                        if (imageName.trim().isEmpty()) {
+                            imageView.setImageDrawable(getDrawable(R.drawable.c10));  //개발자 기본 제공 이미지
+                            //Glide.with(getApplicationContext()).load(R.drawable.c10).into(iv_main);
+                        }
+                        else {
+                            StorageReference ref = FirebaseStorage.getInstance().getReference(imageName);
+                            GlideApp.with(getApplicationContext()).load(ref).into(imageView);
+                        }
+
+                    }
+                    else {
+                        imageName = "";
+                        Log.d("MAIN_IMG", "No such document");
+                    }
+                }
+                else {
+                    Log.d("MAIN_IMG", "get failed with ", task.getException());
+                }
             }
+        });
+    }
+
+    private void setupPreviews() {  //preview 가져오기
+        for (int i = 0; i < 20; i++) {
+            int finalI = i;
+
+            previewRef.document("stickerID"+(finalI+1)).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Log.d("TAG", "DocumentSnapshot data: " + document.getData());
+                            //번호, 모양, x, y, 내용
+                            String shape = (String) document.get("shape");
+                            int x = ((Long) document.get("x")).intValue();
+                            int y = ((Long) document.get("y")).intValue();
+                            int width = ((Long) document.get("width")).intValue();
+                            int height = ((Long) document.get("height")).intValue();
+                            String desc = (String) document.get("desc");
+
+                            if (shape.equals("text")) {
+                                previews[finalI] = new TextView(getApplicationContext());
+                                ((TextView) previews[finalI]).setText(desc);
+                                ((TextView) previews[finalI]).setTextSize(width);
+                            }
+                            else if (shape.equals("image")) {
+                                previews[finalI] = new ImageView(getApplicationContext());
+                                ((ImageView) previews[finalI]).setScaleType(ImageView.ScaleType.FIT_XY);
+                                if (desc.equals("square"))
+                                    ((ImageView) previews[finalI]).setImageDrawable(getDrawable(R.drawable.square));
+                                else if (desc.equals("circle"))
+                                    ((ImageView) previews[finalI]).setImageDrawable(getDrawable(R.drawable.circle));
+                                else {  // 사용자 지정 이미지
+                                    StorageReference ref = FirebaseStorage.getInstance().getReference(desc);
+                                    GlideApp.with(getApplicationContext()).load(ref).into((ImageView) previews[finalI]);
+                                }
+                                ((ImageView) previews[finalI]).setTag(desc);
+
+                                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
+                                        dpToPx(getApplicationContext(), width),
+                                        dpToPx(getApplicationContext(), height));
+                                previews[finalI].setLayoutParams(layoutParams);
+                            }
+
+                            if (!shape.equals("none")) {
+                                previews[finalI].setX(dpToPx(getApplicationContext(), x));
+                                if(shape.equals("text")) {
+                                    previews[finalI].setY(dpToPx(getApplicationContext(), y+(height-width)/2));}
+                                else
+                                    previews[finalI].setY(dpToPx(getApplicationContext(), y));
+                            }
+                        }
+                        else {
+                            Log.d("PREVIEW_TAG", "No such document");
+                        }
+                        new OnPreviewSetupListener() {
+                            @Override
+                            public void onPreviewSetup(View[] views) {
+                                for (int i = 0; i < 20; i++) {
+                                    if (views[i] != null) {
+                                        if (views[i].getParent() != null)
+                                            ((ViewGroup) views[i].getParent()).removeView(views[i]);
+                                        touchPanel.addView(views[i]);
+                                    }
+                                }
+                            }
+                        }.onPreviewSetup(previews);
+                    }
+                    else {
+                        Log.d("PREVIEW_TAG", "get failed with ", task.getException());
+                    }
+                }
+            });
         }
     }
 
-    public void addRecyclerViewItem(int type) {
-        allOptionList.add(new Option(allOptionList.size()+1, "010-1111-1000", new OptionForm(this, type)));
-        //adapter.addItem(new Option(adapter.items.size(), , ));
-        adapter.notifyDataSetChanged();
-        //adapter.notifyItemInserted(0);
-        /*if (type != OptionType.CALENDAR) { // 그림판에 추가되는 텍스트
-            TextView textView = new TextView(this);
-            textView.setText("option" + allOptionList.size());
-            textView.setOnTouchListener(this);
-            textPanel.addView(textView);
-        }*/
+    private void saveSheet() {
+        Uri uri = getResultUri();
+        if (imageName.trim().isEmpty() && uri == null) {
+            Toast.makeText(this, "이미지를 넣어주세요", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else {
+            if (uri != null)    //uploadImage에 있던 null 체크를 여기로 올림
+                imageName = uploadImage(uri, "option_main/");
+        }
+
+        //판매자가 가게 등록(회원가입)을 하면 무조건 collection 만들고 <image, collection(recyclerview)> document 생성
+        for (int i = 0; i < stickerPreviews.length; i++) {
+            String shape = "";
+            String desc = "";
+            Sticker s = null;
+
+            if (stickerPreviews[i] == null) { // 새로 생성된 스티커뷰가 없을 때
+                if (previews[i] == null) { // db에 저장된 스티커도 없다면
+                    shape = "none";
+                    s = new Sticker(i + 1, "none");
+                }
+                else {
+                    if (previews[i] instanceof TextView)
+                        desc = ((TextView) previews[i]).getText().toString();
+                        //desc가 이미지일 경우
+                    else if (previews[i] instanceof ImageView)
+                        desc = (String) ((ImageView) previews[i]).getTag();
+                    previewRef.document("stickerID" + (i + 1)).update("desc", desc);    // 나머지는 기존 것과 똑같고 desc만 변경
+                    continue;
+                }
+            }
+            else {
+                if (stickerPreviews[i] instanceof StickerTextView) {
+                    shape = "text";
+                    desc = ((StickerTextView) stickerPreviews[i]).getText();
+                }
+                else if (stickerPreviews[i] instanceof StickerImageView) {    //모양에 따라 if 나누기(image, circle, square)
+                    shape = "image";
+                    String stickerTag = (String) ((StickerImageView) stickerPreviews[i]).getIv_main().getTag();
+                    Log.d("testable", stickerTag);
+                    desc = stickerTag;//setPreviewImageDesc(stickerTag, i);
+                }
+
+                if (stickerPreviews[i].isDeleted())
+                    s = new Sticker(i+1, "none");   //shape
+                else {
+                    int margin = stickerPreviews[i].getMargin();
+                    if (stickerPreviews[i] instanceof StickerTextView) {
+                        s = new Sticker(i + 1,
+                                shape,
+                                pxToDp(getApplicationContext(), (int) stickerPreviews[i].getX() + margin),
+                                pxToDp(getApplicationContext(), (int) stickerPreviews[i].getY() + margin),// + 30),
+                                pxToSp(getApplicationContext(), (int) ((StickerTextView) stickerPreviews[i]).getTv_main().getTextSize()),
+                                pxToDp(getApplicationContext(), (int) stickerPreviews[i].getHeight() - margin*2),
+                                desc);
+                    }
+                    else if (stickerPreviews[i] instanceof StickerImageView) {
+                        s = new Sticker(i + 1,
+                                shape,
+                                pxToDp(getApplicationContext(), (int) stickerPreviews[i].getX() + margin),
+                                pxToDp(getApplicationContext(), (int) stickerPreviews[i].getY() + margin),
+                                pxToDp(getApplicationContext(), (int) stickerPreviews[i].getWidth() - margin*2),
+                                pxToDp(getApplicationContext(), (int) stickerPreviews[i].getHeight() - margin*2),
+                                desc);
+                    }
+                }
+            }
+            if (!s.getShape().equals("none"))
+                previewRef.document("stickerID" + (i + 1)).set(s);    //이미 있으면 update, 없으면 add
+        }
+        myOptionSheet.update("image", imageName);
+
+        Toast.makeText(this, "주문서가 저장되었습니다", Toast.LENGTH_SHORT).show();
+    }
+
+    private void displayDialog(int type) {
+        LinearLayout container = new LinearLayout(this);
+        EditText editText = new EditText(this);
+        LinearLayout.LayoutParams params = new  LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.topMargin = dpToPx(getApplicationContext(), 12);
+        params.leftMargin = dpToPx(getApplicationContext(), 24);
+        params.rightMargin = dpToPx(getApplicationContext(), 24);
+        editText.setLayoutParams(params);
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        container.addView(editText);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("옵션 개수를 입력해주세요(1~10)");
+        builder.setView(container);
+        builder.setPositiveButton("확인", null);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String inputString = editText.getText().toString();
+                if (inputString.isEmpty()) {
+                    Toast.makeText(getApplicationContext(),"값을 입력하세요",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    int inputValue = Integer.parseInt(inputString);
+                    if (inputValue == 0 || inputValue > 10)
+                        Toast.makeText(getApplicationContext(), "유효한 값을 입력해주세요(1~10)", Toast.LENGTH_SHORT).show();
+                    else {
+                        numOfOption = inputValue;
+                        alertDialog.dismiss();
+                        //텍스트인지 이미지인지에 따라 갈 곳이 달라짐
+                        if (type % 2 == 0)
+                            startActivity(new Intent(OrderSheetActivity.this, CompoundTextOptionActivity.class));
+                        else
+                            startActivity(new Intent(OrderSheetActivity.this, CompoundImageOptionActivity.class));
+                    }
+                }
+            }
+        });
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        int parentWidth = ((ViewGroup)v.getParent()).getWidth();
-        int parentHeight = ((ViewGroup)v.getParent()).getHeight();
+    protected void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
 
-        if(event.getAction() == MotionEvent.ACTION_DOWN){
-            //oldX = event.getX();// View 내부에서 터치한 지점의 상대 좌표값
-            //oldY = event.getY();
-        }
-        else if(event.getAction() == MotionEvent.ACTION_MOVE){
-            v.setX(v.getX() + event.getX() - v.getWidth()/2);
-            v.setY(v.getY() + event.getY() - v.getHeight()/2);
-        }
-        else if(event.getAction() == MotionEvent.ACTION_UP){
-            if (v.getX() < 0){
-                v.setX(0);
-            }
-            else if ((v.getX() + v.getWidth()) > parentWidth){
-                v.setX(parentWidth - v.getWidth());
-            }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
 
-            if (v.getY() < 0){
-                v.setY(0);
-            }
-            else if ((v.getY() + v.getHeight()) > parentHeight){
-                v.setY(parentHeight - v.getHeight());
-            }
-        }
-        return true;
+    public static int dpToPx(Context context, int dp) {
+        float density = context.getResources().getDisplayMetrics().density; // density = densityDpi / DisplayMetrics.DENSITY_DEFAULT
+        return (int) (dp * density);
+    }
+
+    public static int pxToDp(Context context, int px) {
+        float density = context.getResources().getDisplayMetrics().density; // density = densityDpi / DisplayMetrics.DENSITY_DEFAULT
+        return (int) (px / density);
+    }
+
+    public static int pxToSp(Context context, int px) {
+        float density = context.getResources().getDisplayMetrics().scaledDensity; // density = densityDpi / DisplayMetrics.DENSITY_DEFAULT
+        return (int) (px / density);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        AutoPermissions.Companion.parsePermissions(this, requestCode, permissions, this);
+    }
+
+    @Override
+    public void onGranted(int i, @NotNull String[] strings) {
+        //Toast.makeText(this, "permissions granted", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDenied(int i, @NotNull String[] strings) {
+        //Toast.makeText(this, "permissions denied", Toast.LENGTH_SHORT).show();
     }
 }

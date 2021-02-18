@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/calendar_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_margin="8dp"
+    android:background="#BCF1E9">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,17 +12,19 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/date_button"
+            android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Date" />
+            android:layout_marginEnd="8dp"
+            android:text="Date"/>
 
         <TextView
             android:id="@+id/date_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textSize="18sp" />
+            android:text="Date"
+            android:textSize="18sp"
+            android:textColor="@color/black"/>
     </LinearLayout>
 
     <LinearLayout
@@ -30,16 +33,18 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/time_button"
+            android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Time" />
+            android:layout_marginEnd="8dp"
+            android:text="Time"/>
 
         <TextView
             android:id="@+id/time_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textSize="18sp" />
+            android:text="Time"
+            android:textSize="18sp"
+            android:textColor="@color/black"/>
     </LinearLayout>
 </LinearLayout>

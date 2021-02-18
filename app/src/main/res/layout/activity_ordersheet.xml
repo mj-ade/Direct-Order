@@ -27,59 +27,61 @@
                     android:id="@+id/txt_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="text" />
+                    android:text="text"/>
 
                 <Button
                     android:id="@+id/img_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="image" />
+                    android:text="image"/>
 
                 <Button
                     android:id="@+id/cb_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="checkbox" />
+                    android:text="checkbox"/>
 
                 <Button
                     android:id="@+id/rd_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="radioButton" />
+                    android:text="radioButton"/>
 
                 <Button
                     android:id="@+id/c_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="calendar" />
-
-                <Button
-                    android:id="@+id/save_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="save" />
+                    android:text="calendar"/>
             </LinearLayout>
         </HorizontalScrollView>
 
-        <FrameLayout
+        <RelativeLayout
             android:id="@+id/imageDesc"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:background="#E661EF">
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
-                app:srcCompat="@drawable/ic_launcher_background" />
-        </FrameLayout>
+                app:srcCompat="@drawable/ic_launcher_background"/>
+        </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/purple_200" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/purple_200"/>
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="save"/>
     </LinearLayout>
 
     <LinearLayout
@@ -89,7 +91,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="44dp"
         android:background="#B05A594C"
         android:visibility="gone">
 
@@ -97,13 +99,12 @@
             android:id="@+id/sub_button_text"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="텍스트" />
+            android:text="텍스트"/>
 
         <Button
             android:id="@+id/sub_button_image"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="이미지" />
-
+            android:text="이미지"/>
     </LinearLayout>
 </RelativeLayout>

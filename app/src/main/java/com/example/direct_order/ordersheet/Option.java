@@ -1,21 +1,111 @@
 package com.example.direct_order.ordersheet;
 
-import java.util.ArrayList;
+public class Option {
+    int number;
+    String title;
+    String desc;
+    int type;
+    int numOfOption;
+    String content;
+    String func;
+    String preview;
+    String previewDesc;
+    String answer;
 
-public class Option extends SubOption {
-    public ArrayList<SubOption> subOptionArrayList;
-    OptionForm optionForm;
+    public Option() {
 
-    public Option(int number, String title, SubOptionForm subOptionForm) {
-        super(number, title, subOptionForm);
-        optionForm = (OptionForm) subOptionForm;
     }
 
-    public OptionForm getOptionForm() {
-        return optionForm;
+    public Option(int number, String title, String desc, int type, int numOfOption, String content, String func, String preview, String previewDesc, String answer) {
+        this.number = number;
+        this.title = title;
+        this.desc = desc;
+        this.type = type;
+        this.numOfOption = numOfOption;
+        this.content = content;
+        this.func = func;
+        this.preview = preview;
+        this.previewDesc = previewDesc;
+        this.answer = answer;
     }
 
-    public void setOptionForm(OptionForm optionForm) {
-        this.optionForm = optionForm;
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public int getNumOfOption() {
+        return numOfOption;
+    }
+
+    public void setNumOfOption(int numOfOption) {
+        this.numOfOption = numOfOption;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getFunc() {
+        return func;
+    }
+
+    public void setFunc(String func) {
+        this.func = func;
+    }
+
+    public String getPreview() {
+        return preview;
+    }
+
+    public void setPreview(String preview) {
+        this.preview = preview;
+    }
+
+    public String getPreviewDesc() {
+        return previewDesc;
+    }
+
+    public void setPreviewDesc(String previewDesc) {
+        this.previewDesc = previewDesc;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 }

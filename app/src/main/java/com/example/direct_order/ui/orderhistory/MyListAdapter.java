@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -141,12 +142,9 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
             public void onClick(View v) {
                 //입금 완료 버튼
                 Context context = v.getContext();
+                holder.mImage.setImageResource(R.drawable.progress2);
                 //Toast.makeText(context,position+": "+ my+" click!",Toast.LENGTH_LONG).show();
-                if(position==0) {
-                    /*((AppCompatActivity) context).getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.nav_host_fragment, new Cake_shop())
-                            .commit();*/
-                }
+
             }
 
         });
@@ -162,7 +160,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
         public final View mView;
         public final TextView mText;
         public final Button mContent, mContent2, mContent3, mContent4;
-
+        public final ImageView mImage;
         public ViewHolder(View view) {
 
             super(view);
@@ -173,6 +171,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
             mContent2 = view.findViewById(R.id.write);
             mContent3 = view.findViewById(R.id.detail);
             mContent4 = view.findViewById(R.id.complete);
+            mImage=view.findViewById(R.id.progress);
         }
 
     }

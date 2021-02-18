@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.direct_order.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,7 +25,7 @@ import java.util.HashMap;
 public class Join extends AppCompatActivity {
     public static Activity activity;
     private FirebaseAuth firebaseAuth;
-
+    private long backKeyPressedTime = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,5 +157,21 @@ public class Join extends AppCompatActivity {
         });
 
 
+    }
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() > backKeyPressedTime + 2500) {
+            backKeyPressedTime = System.currentTimeMillis();
+            Toast.makeText(this, "뒤로 가기 버튼을 한 번 더 누르시면 종료됩니다.", Toast.LENGTH_LONG).show();
+
+            return;
+        }
+        if (System.currentTimeMillis() <= backKeyPressedTime + 2500) {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            user.delete();
+            finish();
+            Toast.makeText(this,"회원가입 취소",Toast.LENGTH_LONG).show();
+
+        }
     }
 }

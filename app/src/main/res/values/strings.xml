@@ -5,6 +5,9 @@
     <string name="orderlist">주문 내역</string>
     <string name="title_activity_login_sell1">Login_sell1</string>
 
+    <string name="permission_1">[설정] > [권한] 에서 권한을 허용할 수 있습니다.</string>
+    <string name="permission_2">사진 및 파일을 저장하기 위하여 접근 권한이 필요합니다.</string>
+
     <string name="prompt_email">Email</string>
 
     <string name="prompt_password">Password</string>

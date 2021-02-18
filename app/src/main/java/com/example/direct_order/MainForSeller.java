@@ -96,7 +96,6 @@ public class MainForSeller extends AppCompatActivity
                 if (value != null && value.exists()) {
                     myinsta = "https://instagram.com/" + value.get("instagram").toString().trim() + "/";
 
-                    Toast.makeText(getApplicationContext(),myinsta,Toast.LENGTH_LONG).show();
                 }
             }
         });

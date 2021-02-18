@@ -31,7 +31,8 @@ import java.util.HashMap;
 public class Join_buy extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private EditText et_id, et_pass, et_passcheck, et_name, et_phone, et_add;
-
+    private long backKeyPressedTime = 0;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,5 +151,21 @@ public class Join_buy extends AppCompatActivity {
                 builder.show();
             }
         });
+    }
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() > backKeyPressedTime + 2500) {
+            backKeyPressedTime = System.currentTimeMillis();
+            Toast.makeText(this, "뒤로 가기 버튼을 한 번 더 누르시면 종료됩니다.", Toast.LENGTH_LONG).show();
+
+            return;
+        }
+        if (System.currentTimeMillis() <= backKeyPressedTime + 2500) {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            user.delete();
+            finish();
+            Toast.makeText(this,"회원가입 취소",Toast.LENGTH_LONG).show();
+
+        }
     }
 }

@@ -100,13 +100,21 @@
                     android:textColor="#230E0E" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="마켓 대표 이미지"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/black" />
+
             <ImageView
                 android:id="@+id/image_shop"
-                android:layout_width="119dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="129dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                tools:srcCompat="@tools:sample/avatars" />
+                app:srcCompat="@drawable/photo"
+                android:layout_margin="20dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout2"

@@ -17,6 +17,7 @@ import android.widget.ImageView;
 
 import com.example.direct_order.R;
 
+import static com.example.direct_order.ordersheet.OrderSheetActivity.dpToPx;
 
 public abstract class StickerView extends FrameLayout {
     private final static int BUTTON_SIZE_DP = 30;
@@ -29,14 +30,17 @@ public abstract class StickerView extends FrameLayout {
     private ImageView iv_height;
 
     private LayoutParams params, iv_scale_params, iv_delete_params, iv_width_parmas, iv_height_parmas;
-
+    private float centerX, centerY;
     // For scalling
     private float scale_orgX = -1, scale_orgY = -1;
 
     // For moving
     private float move_orgX =-1, move_orgY = -1;
 
-    private float centerX, centerY;
+    private int size = dpToPx(getContext(), SELF_SIZE_DP);
+    private int margin = dpToPx(getContext(), BUTTON_SIZE_DP) / 2;
+
+    private boolean isDeleted;
 
     public StickerView(Context context) {
         super(context);
@@ -72,9 +76,7 @@ public abstract class StickerView extends FrameLayout {
         iv_width.setTag("iv_width");
         iv_height.setTag("iv_height");
 
-        int margin = convertDpToPx(BUTTON_SIZE_DP, getContext()) / 2;
-        int size = convertDpToPx(SELF_SIZE_DP, getContext());
-        int buttonSize = convertDpToPx(BUTTON_SIZE_DP, getContext());
+        int buttonSize = dpToPx(getContext(), BUTTON_SIZE_DP);
 
         LayoutParams this_params = new LayoutParams(size, size);
         this_params.gravity = Gravity.CENTER;
@@ -90,10 +92,10 @@ public abstract class StickerView extends FrameLayout {
         iv_delete_params.gravity = Gravity.TOP | Gravity.RIGHT;
 
         iv_width_parmas = new LayoutParams(buttonSize, buttonSize);
-        iv_width_parmas.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
+        iv_width_parmas.gravity = Gravity.RIGHT | Gravity.CENTER_VERTICAL;
 
         iv_height_parmas = new LayoutParams(buttonSize, buttonSize);
-        iv_height_parmas.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+        iv_height_parmas.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
 
         this.addView(getMainView(), params);
         this.addView(iv_border, params);
@@ -102,7 +104,7 @@ public abstract class StickerView extends FrameLayout {
         this.addView(iv_width, iv_width_parmas);
         this.addView(iv_height, iv_height_parmas);
 
-        OrderSheetActivity.focus = true;
+        OrderSheetActivity.isFocus = true;
 
         this.setOnTouchListener(touchListener);
         iv_scale.setOnTouchListener(touchListener);
@@ -114,6 +116,7 @@ public abstract class StickerView extends FrameLayout {
                 if(StickerView.this.getParent()!=null){
                     ViewGroup myCanvas = ((ViewGroup) StickerView.this.getParent());
                     myCanvas.removeView(StickerView.this);
+                    isDeleted = true;
                 }
             }
         });
@@ -127,9 +130,9 @@ public abstract class StickerView extends FrameLayout {
             if(view.getTag().equals("DraggableViewGroup")) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        if(!OrderSheetActivity.focus) {
+                        if(!OrderSheetActivity.isFocus) {
                             StickerView.this.setControlItemsHidden(false);
-                            OrderSheetActivity.focus = true;
+                            OrderSheetActivity.isFocus = true;
                         }
                         move_orgX = event.getRawX();
                         move_orgY = event.getRawY();
@@ -152,54 +155,46 @@ public abstract class StickerView extends FrameLayout {
                         scale_orgX = event.getRawX();
                         scale_orgY = event.getRawY();
 
-                        centerX = StickerView.this.getX()+
-                                ((View) StickerView.this.getParent()).getX()+
-                                (float) StickerView.this.getWidth() / 2;
+                        centerX = StickerView.this.getX()
+                                + ((View) StickerView.this.getParent()).getX()
+                                + (float) StickerView.this.getWidth()/2;
 
                         int result = 0;
                         int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
                         if (resourceId > 0) {
                             result = getResources().getDimensionPixelSize(resourceId);
                         }
-                        centerY = StickerView.this.getY() +
-                                ((View) StickerView.this.getParent()).getY() +
-                                result +    // statusBarHeight
-                                // + 액션바 높이
-                                (float) StickerView.this.getHeight()/2;
+                        centerY = StickerView.this.getY()
+                                + ((View) StickerView.this.getParent()).getY()
+                                + result    // statusBarHeight
+                                + (float) StickerView.this.getHeight()/2;
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        double angle_diff = Math.abs(Math.atan2(event.getRawY() - scale_orgY , event.getRawX() - scale_orgX) - Math.atan2(scale_orgY - centerY, scale_orgX - centerX)) * 180 / Math.PI;
-
                         double length1 = getLength(centerX, centerY, scale_orgX, scale_orgY);
                         double length2 = getLength(centerX, centerY, event.getRawX(), event.getRawY());
 
-                        int size = convertDpToPx(SELF_SIZE_DP, getContext());
-
-                        float offsetX = Math.abs(event.getRawX() - scale_orgX);
-                        float offsetY = Math.abs(event.getRawY() - scale_orgY);
+                        float offsetX = getLength(scale_orgX, event.getRawX());
+                        float offsetY = getLength(scale_orgY, event.getRawY());
                         int offset = Math.round(Math.max(offsetX, offsetY));
 
-                        if(length2 > length1 && (angle_diff < 25 || Math.abs(angle_diff-180) < 25)) {
+                        if (length2 > length1) {
                             //scale up
-                            StickerView.this.getLayoutParams().width += offset;
-                            StickerView.this.getLayoutParams().height += offset;
-                            onScaling(true);
+                            if (StickerView.this instanceof StickerImageView ||
+                                    (StickerView.this instanceof StickerView
+                                            && ((StickerTextView) StickerView.this).getTv_main().getTextSize() < 299)) {
+                                StickerView.this.getLayoutParams().width += offset;
+                                StickerView.this.getLayoutParams().height += offset;
+                                onScaling(true);
+                            }
                         }
                         else if(length2 < length1
                                 && StickerView.this.getLayoutParams().height > size/2
-                                && StickerView.this.getLayoutParams().width > size/2
-                                && (angle_diff < 25 || Math.abs(angle_diff-180) < 25)) {
+                                && StickerView.this.getLayoutParams().width > size/2) {
                             //scale down
                             StickerView.this.getLayoutParams().width -= offset;
                             StickerView.this.getLayoutParams().height -= offset;
                             onScaling(false);
                         }
-
-                        //rotate
-                        double angle = Math.atan2(event.getRawY() - centerY, event.getRawX() - centerX) * 180 / Math.PI;
-                        setRotation((float) angle - 60);    //setRotation((float) angle);
-
-                        onRotating();
 
                         scale_orgX = event.getRawX();
                         scale_orgY = event.getRawY();
@@ -215,36 +210,22 @@ public abstract class StickerView extends FrameLayout {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         scale_orgX = event.getRawX();
-                        scale_orgY = event.getRawY();
 
-                        centerX = StickerView.this.getX() +
-                                ((View) StickerView.this.getParent()).getX() +
-                                (float) StickerView.this.getWidth() / 2;
-
-                        int result = 0;
-                        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-                        if (resourceId > 0) {
-                            result = getResources().getDimensionPixelSize(resourceId);
-                        }
-                        centerY = StickerView.this.getY() +
-                                ((View) StickerView.this.getParent()).getY() +
-                                result +    // statusBarHeight
-                                // + 액션바 높이
-                                (float) StickerView.this.getHeight() / 2;
+                        centerX = StickerView.this.getX()
+                                + ((View) StickerView.this.getParent()).getX()
+                                + (float) StickerView.this.getWidth()/2;
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        double length1 = getLength(centerX, centerY, scale_orgX, scale_orgY);
-                        double length2 = getLength(centerX, centerY, event.getRawX(), event.getRawY());
+                        float length1 = getLength(centerX, scale_orgX);
+                        float length2 = getLength(centerX, event.getRawX());
 
-                        int size = convertDpToPx(SELF_SIZE_DP, getContext());
-                        float offsetX = Math.abs(event.getRawX() - scale_orgX);
+                        float offsetX = getLength(scale_orgX, event.getRawX());
                         offsetX = Math.round(offsetX);
 
                         if (length2 > length1) {
                             //scale up
                             StickerView.this.getLayoutParams().width += offsetX;
                             onScaling(true);
-
                         }
                         else if (length2 < length1 && StickerView.this.getLayoutParams().width > size/2) {
                             //scale down
@@ -253,7 +234,6 @@ public abstract class StickerView extends FrameLayout {
                         }
 
                         scale_orgX = event.getRawX();
-                        scale_orgY = event.getRawY();
 
                         postInvalidate();
                         requestLayout();
@@ -265,30 +245,23 @@ public abstract class StickerView extends FrameLayout {
             else if(view.getTag().equals("iv_height")) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        scale_orgX = event.getRawX();
                         scale_orgY = event.getRawY();
-
-                        centerX = StickerView.this.getX() +
-                                ((View) StickerView.this.getParent()).getX() +
-                                (float) StickerView.this.getWidth() / 2;
 
                         int result = 0;
                         int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
                         if (resourceId > 0) {
                             result = getResources().getDimensionPixelSize(resourceId);
                         }
-                        centerY = StickerView.this.getY() +
-                                ((View) StickerView.this.getParent()).getY() +
-                                result +    // statusBarHeight
-                                200 +   //액션바 높이
-                                (float) StickerView.this.getHeight() / 2;
+                        centerY = StickerView.this.getY()
+                                + ((View) StickerView.this.getParent()).getY()
+                                + result    // statusBarHeight
+                                + (float) StickerView.this.getHeight()/2;
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        double length1 = getLength(centerX, centerY, scale_orgX, scale_orgY);
-                        double length2 = getLength(centerX, centerY, event.getRawX(), event.getRawY());
+                        float length1 = getLength(centerY, scale_orgY);
+                        float length2 = getLength(centerY, event.getRawY());
 
-                        int size = convertDpToPx(SELF_SIZE_DP, getContext());
-                        float offsetY = Math.abs(event.getRawY() - scale_orgY);
+                        float offsetY = getLength(scale_orgY, event.getRawY());
                         offsetY = Math.round(offsetY);
 
                         if (length2 > length1) {
@@ -302,7 +275,6 @@ public abstract class StickerView extends FrameLayout {
                             onScaling(false);
                         }
 
-                        scale_orgX = event.getRawX();
                         scale_orgY = event.getRawY();
 
                         postInvalidate();
@@ -338,13 +310,8 @@ public abstract class StickerView extends FrameLayout {
 
     protected void onScaling(boolean scaleUp) {}
 
-    protected void onRotating() {}
-
-    private static int convertDpToPx(float dp, Context context) {
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float px = dp * (metrics.densityDpi / 160f);
-        return (int) px;
+    private float getLength(float a, float b) {
+        return Math.abs(a - b);
     }
 
     private double getLength(double x1, double y1, double x2, double y2) {
@@ -398,5 +365,17 @@ public abstract class StickerView extends FrameLayout {
 
     public ImageView getIv_width() {
         return iv_width;
+    }
+
+    public ImageView getIv_height() {
+        return iv_height;
+    }
+
+    public int getMargin() {
+        return margin;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
     }
 }

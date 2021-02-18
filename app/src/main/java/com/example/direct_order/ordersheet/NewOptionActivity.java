@@ -1,9 +1,7 @@
 package com.example.direct_order.ordersheet;
 
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,8 +20,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.direct_order.MainActivity;
 import com.example.direct_order.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -202,7 +200,12 @@ public abstract class NewOptionActivity extends ImageCropActivity {
             return;
         }
 
-        CollectionReference optionsheetRef = FirebaseFirestore.getInstance().collection("TestOptionSheet").document("z41tdOLkWUQPwRzzabWw").collection("Optionsheet");
+        CollectionReference optionRef = FirebaseFirestore.getInstance()
+                .collection("markets")
+                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .collection("OrderSheet")
+                .document("sheet")
+                .collection("Options");
         setPreviewSticker(number - 1, previewDesc);
 
         if(optionType % 2 == 1) {   // 이미지 관련 옵션
@@ -210,15 +213,15 @@ public abstract class NewOptionActivity extends ImageCropActivity {
                 @Override
                 public void onUploadComplete() {
                     if (isUploaded) {
-                        saveOptionToDB(optionsheetRef, number, title, description, contents, function, preview, previewDesc);
+                        saveOptionToDB(optionRef, number, title, description, contents, function, preview, previewDesc);
                         isUploaded = false;
                     }
                 }
             });
         }
         else
-            saveOptionToDB(optionsheetRef, number, title, description, contents, function, preview, previewDesc);
-        //optionsheetRef.document("question" + number).set(new Option(number, title, description, optionType, numOfOption, contents, function, preview, previewDesc, ""));
+            saveOptionToDB(optionRef, number, title, description, contents, function, preview, previewDesc);
+        //optionRef.document("question" + number).set(new Option(number, title, description, optionType, numOfOption, contents, function, preview, previewDesc, ""));
 
         finish();
     }
@@ -323,7 +326,7 @@ public abstract class NewOptionActivity extends ImageCropActivity {
     protected void setPreviewSticker(int index, String previewDesc) {
         if (OrderSheetActivity.isUpdate) {
             if(!radio01.isChecked()) {
-                if (OrderSheetActivity.stickerPreviews[index] == null && OrderSheetActivity.previews[index] == null) // 이전에 저장하고 종료하지 않아서 새로 생성함
+                if (OrderSheetActivity.stickerPreviews[index] == null) // 이전에 저장하고 종료하지 않아서 새로 생성함
                     addStickerView(index, previewDesc);
             }
         }
@@ -334,11 +337,7 @@ public abstract class NewOptionActivity extends ImageCropActivity {
     }
 
     protected void changePreviewDesc(int index, String previewDesc) {
-        if (OrderSheetActivity.stickerPreviews[index] != null)
-            ((StickerTextView) OrderSheetActivity.stickerPreviews[index]).setText(previewDesc);
-        else
-            ((TextView) OrderSheetActivity.previews[index]).setText(previewDesc);
-            //저장도 여기서 바로 할까?--MainActivity 443
+        ((StickerTextView) OrderSheetActivity.stickerPreviews[index]).setText(previewDesc);
     }
 
     protected abstract void addStickerView(int index, String previewDesc);

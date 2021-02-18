@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,6 +26,7 @@ import com.example.direct_order.R;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -39,11 +39,13 @@ import com.pedro.library.AutoPermissionsListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class OrderSheetActivity extends ImageCropActivity implements AutoPermissionsListener {
     static RelativeLayout touchPanel;
     static boolean isFocus, isUpdate;
     static int type, numOfOption;
-    static View[] previews = new View[20];
     static StickerView[] stickerPreviews = new StickerView[20];
     static boolean[] numberDup = new boolean[20];
 
@@ -52,14 +54,16 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
 
     // 판매자마다 ordersheet가 있음
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference orderSheetRef = db.collection("OrderSheet");
-    private DocumentReference myOptionSheet = orderSheetRef.document("z41tdOLkWUQPwRzzabWw");
-    private CollectionReference optionRef = myOptionSheet.collection("Options");
-    private CollectionReference previewRef = myOptionSheet.collection("Previews");
+    private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private DocumentReference market = db.collection("markets").document(uid);
+    private CollectionReference orderSheetRef = market.collection("OrderSheet");
+    private DocumentReference myOrderSheet = orderSheetRef.document("sheet");
+    private CollectionReference optionRef = myOrderSheet.collection("Options");
+    private CollectionReference previewRef = myOrderSheet.collection("Previews");
 
     private OptionAdapter adapter;
     private LinearLayout buttonTypeLayout;
-    private String imageName;
+    private String imageName="";
     private int selectedType;
 
     @Override
@@ -217,10 +221,6 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                         touchPanel.removeView(stickerPreviews[numberIndex]);
                         stickerPreviews[numberIndex] = null;
                     }
-                    else {
-                        touchPanel.removeView(previews[numberIndex]);
-                        previews[numberIndex] = null;
-                    }
                     //db에 저장된 내용도 삭제
                     previewRef.document("stickerID" + (numberIndex + 1)).delete();//.update("desc", desc);    // 나머지는 기존 것과 똑같고 desc만 변경
                 }
@@ -251,7 +251,7 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
     }
 
     private void setupMainImage(ImageView imageView) {
-        myOptionSheet.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        myOrderSheet.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -259,15 +259,14 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                     if (document.exists()) {
                         imageName = (String) document.get("image");
                         Log.d("MAIN_IMG", "DocumentSnapshot data: " + document.getData());
-                        if (imageName.trim().isEmpty()) {
+                        if (imageName == null || imageName.trim().isEmpty()) {
                             imageView.setImageDrawable(getDrawable(R.drawable.c10));  //개발자 기본 제공 이미지
-                            //Glide.with(getApplicationContext()).load(R.drawable.c10).into(iv_main);
+                            imageName = "";
                         }
                         else {
                             StorageReference ref = FirebaseStorage.getInstance().getReference(imageName);
                             GlideApp.with(getApplicationContext()).load(ref).into(imageView);
                         }
-
                     }
                     else {
                         imageName = "";
@@ -292,44 +291,39 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             Log.d("TAG", "DocumentSnapshot data: " + document.getData());
-                            //번호, 모양, x, y, 내용
+
                             String shape = (String) document.get("shape");
                             int x = ((Long) document.get("x")).intValue();
                             int y = ((Long) document.get("y")).intValue();
                             int width = ((Long) document.get("width")).intValue();
                             int height = ((Long) document.get("height")).intValue();
                             String desc = (String) document.get("desc");
+                            ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
+                                    dpToPx(getApplicationContext(), width),
+                                    dpToPx(getApplicationContext(), height));
 
                             if (shape.equals("text")) {
-                                previews[finalI] = new TextView(getApplicationContext());
-                                ((TextView) previews[finalI]).setText(desc);
-                                ((TextView) previews[finalI]).setTextSize(width);
+                                stickerPreviews[finalI] = new StickerTextView(getApplicationContext());
+                                ((StickerTextView) stickerPreviews[finalI]).setText(desc);
                             }
                             else if (shape.equals("image")) {
-                                previews[finalI] = new ImageView(getApplicationContext());
-                                ((ImageView) previews[finalI]).setScaleType(ImageView.ScaleType.FIT_XY);
+                                stickerPreviews[finalI] = new StickerImageView(getApplicationContext());
+                                ((StickerImageView) stickerPreviews[finalI]).getIv_main().setScaleType(ImageView.ScaleType.FIT_XY);
                                 if (desc.equals("square"))
-                                    ((ImageView) previews[finalI]).setImageDrawable(getDrawable(R.drawable.square));
+                                    ((StickerImageView) stickerPreviews[finalI]).setImageResource(R.drawable.square);
                                 else if (desc.equals("circle"))
-                                    ((ImageView) previews[finalI]).setImageDrawable(getDrawable(R.drawable.circle));
+                                    ((StickerImageView) stickerPreviews[finalI]).setImageResource(R.drawable.circle);
                                 else {  // 사용자 지정 이미지
                                     StorageReference ref = FirebaseStorage.getInstance().getReference(desc);
-                                    GlideApp.with(getApplicationContext()).load(ref).into((ImageView) previews[finalI]);
+                                    GlideApp.with(getApplicationContext()).load(ref).into(((StickerImageView) stickerPreviews[finalI]).getIv_main());
                                 }
-                                ((ImageView) previews[finalI]).setTag(desc);
-
-                                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
-                                        dpToPx(getApplicationContext(), width),
-                                        dpToPx(getApplicationContext(), height));
-                                previews[finalI].setLayoutParams(layoutParams);
+                                ((StickerImageView) stickerPreviews[finalI]).getIv_main().setTag(desc);
                             }
 
                             if (!shape.equals("none")) {
-                                previews[finalI].setX(dpToPx(getApplicationContext(), x));
-                                if(shape.equals("text")) {
-                                    previews[finalI].setY(dpToPx(getApplicationContext(), y+(height-width)/2));}
-                                else
-                                    previews[finalI].setY(dpToPx(getApplicationContext(), y));
+                                stickerPreviews[finalI].setLayoutParams(layoutParams);
+                                stickerPreviews[finalI].setX(dpToPx(getApplicationContext(), x));
+                                stickerPreviews[finalI].setY(dpToPx(getApplicationContext(), y));
                             }
                         }
                         else {
@@ -337,7 +331,7 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                         }
                         new OnPreviewSetupListener() {
                             @Override
-                            public void onPreviewSetup(View[] views) {
+                            public void onPreviewSetup(StickerView[] views) {
                                 for (int i = 0; i < 20; i++) {
                                     if (views[i] != null) {
                                         if (views[i].getParent() != null)
@@ -346,7 +340,7 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                                     }
                                 }
                             }
-                        }.onPreviewSetup(previews);
+                        }.onPreviewSetup(stickerPreviews);
                     }
                     else {
                         Log.d("PREVIEW_TAG", "get failed with ", task.getException());
@@ -363,30 +357,28 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
             return;
         }
         else {
-            if (uri != null)    //uploadImage에 있던 null 체크를 여기로 올림
-                imageName = uploadImage(uri, "option_main/");
-        }
+            if (uri != null) {
+                setUploadCompleteListener(new OnUploadCompleteListener() {
+                    @Override
+                    public void onUploadComplete() {
 
-        //판매자가 가게 등록(회원가입)을 하면 무조건 collection 만들고 <image, collection(recyclerview)> document 생성
+                    }
+                });
+                imageName = uploadImage(uri, "option_main/");
+            }
+        }
+        Map<String, String> data = new HashMap<>();
+        data.put("image", imageName);
+        myOrderSheet.set(data);
+
         for (int i = 0; i < stickerPreviews.length; i++) {
             String shape = "";
             String desc = "";
             Sticker s = null;
 
-            if (stickerPreviews[i] == null) { // 새로 생성된 스티커뷰가 없을 때
-                if (previews[i] == null) { // db에 저장된 스티커도 없다면
-                    shape = "none";
-                    s = new Sticker(i + 1, "none");
-                }
-                else {
-                    if (previews[i] instanceof TextView)
-                        desc = ((TextView) previews[i]).getText().toString();
-                        //desc가 이미지일 경우
-                    else if (previews[i] instanceof ImageView)
-                        desc = (String) ((ImageView) previews[i]).getTag();
-                    previewRef.document("stickerID" + (i + 1)).update("desc", desc);    // 나머지는 기존 것과 똑같고 desc만 변경
-                    continue;
-                }
+            if (stickerPreviews[i] == null) {
+                shape = "none";
+                s = new Sticker(i + 1, "none");
             }
             else {
                 if (stickerPreviews[i] instanceof StickerTextView) {
@@ -395,40 +387,23 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                 }
                 else if (stickerPreviews[i] instanceof StickerImageView) {    //모양에 따라 if 나누기(image, circle, square)
                     shape = "image";
-                    String stickerTag = (String) ((StickerImageView) stickerPreviews[i]).getIv_main().getTag();
-                    Log.d("testable", stickerTag);
-                    desc = stickerTag;//setPreviewImageDesc(stickerTag, i);
+                    desc = (String) ((StickerImageView) stickerPreviews[i]).getIv_main().getTag();
                 }
 
                 if (stickerPreviews[i].isDeleted())
-                    s = new Sticker(i+1, "none");   //shape
+                    s = new Sticker(i+1, "none");
                 else {
-                    int margin = stickerPreviews[i].getMargin();
-                    if (stickerPreviews[i] instanceof StickerTextView) {
-                        s = new Sticker(i + 1,
-                                shape,
-                                pxToDp(getApplicationContext(), (int) stickerPreviews[i].getX() + margin),
-                                pxToDp(getApplicationContext(), (int) stickerPreviews[i].getY() + margin),// + 30),
-                                pxToSp(getApplicationContext(), (int) ((StickerTextView) stickerPreviews[i]).getTv_main().getTextSize()),
-                                pxToDp(getApplicationContext(), (int) stickerPreviews[i].getHeight() - margin*2),
-                                desc);
-                    }
-                    else if (stickerPreviews[i] instanceof StickerImageView) {
-                        s = new Sticker(i + 1,
-                                shape,
-                                pxToDp(getApplicationContext(), (int) stickerPreviews[i].getX() + margin),
-                                pxToDp(getApplicationContext(), (int) stickerPreviews[i].getY() + margin),
-                                pxToDp(getApplicationContext(), (int) stickerPreviews[i].getWidth() - margin*2),
-                                pxToDp(getApplicationContext(), (int) stickerPreviews[i].getHeight() - margin*2),
-                                desc);
-                    }
+                    s = new Sticker(i + 1,
+                            shape,
+                            pxToDp(getApplicationContext(), (int) stickerPreviews[i].getX()),
+                            pxToDp(getApplicationContext(), (int) stickerPreviews[i].getY()),
+                            pxToSp(getApplicationContext(), (int) stickerPreviews[i].getWidth()),
+                            pxToDp(getApplicationContext(), (int) stickerPreviews[i].getHeight()),
+                            desc);
                 }
             }
-            if (!s.getShape().equals("none"))
-                previewRef.document("stickerID" + (i + 1)).set(s);    //이미 있으면 update, 없으면 add
+            previewRef.document("stickerID" + (i + 1)).set(s);
         }
-        myOptionSheet.update("image", imageName);
-
         Toast.makeText(this, "주문서가 저장되었습니다", Toast.LENGTH_SHORT).show();
     }
 

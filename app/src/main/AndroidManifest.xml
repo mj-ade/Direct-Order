@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar"
+        android:theme="@style/Theme.DirectOrder"
 
         >
 
@@ -58,7 +58,7 @@
         <activity
             android:name=".ordersheet.OrderSheetActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.DirectOrder.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity android:name=".ordersheet.TextOptionActivity"
             android:parentActivityName=".ordersheet.OrderSheetActivity"/>

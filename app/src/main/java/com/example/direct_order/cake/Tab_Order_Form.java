@@ -1,5 +1,6 @@
 package com.example.direct_order.cake;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,22 +19,23 @@ import android.widget.TextView;
 
 import com.example.direct_order.R;
 import com.example.direct_order.cake.TabOrderFormViewModel;
+import com.example.direct_order.ordersheet.ImageOptionActivity;
+import com.example.direct_order.ordersheet.OrderSheetActivity;
 import com.google.android.material.tabs.TabLayout;
 
 
 public class Tab_Order_Form extends Fragment {
-
     private Button btn;
     private TabOrderFormViewModel tabOrderFormViewModel;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_tab__order__form, container, false);
-        btn=root.findViewById(R.id.add_form);
+        btn = root.findViewById(R.id.add_form);
         btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //order form 생성 activity로 이동
+                Log.d("button_tag", "OrderSheet 실행");
+                startActivity(new Intent(getActivity(), OrderSheetActivity.class));
             }
         });
         return root;

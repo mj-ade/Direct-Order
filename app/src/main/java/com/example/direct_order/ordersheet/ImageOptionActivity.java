@@ -2,9 +2,7 @@ package com.example.direct_order.ordersheet;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.request.target.Target;
@@ -82,17 +80,10 @@ public class ImageOptionActivity extends NewOptionActivity {
     @Override
     protected void changePreviewDesc(int index, String previewDesc) {
         StorageReference ref = FirebaseStorage.getInstance().getReference(previewDesc);
-
-        if (OrderSheetActivity.stickerPreviews[index] != null) {
-            Log.d("testable", previewDesc);
-            Log.d("testable", test);
-
-            GlideApp.with(getApplicationContext()).load(ref).override(Target.SIZE_ORIGINAL).into(((StickerImageView) OrderSheetActivity.stickerPreviews[index]).getIv_main());
-            ((StickerImageView) OrderSheetActivity.stickerPreviews[index]).getIv_main().setTag(previewDesc);
-        }
-        else {
-            GlideApp.with(getApplicationContext()).load(ref).override(Target.SIZE_ORIGINAL).into((ImageView) OrderSheetActivity.previews[index]);
-            ((ImageView) OrderSheetActivity.previews[index]).setTag(previewDesc);
-        }
+        GlideApp.with(getApplicationContext())
+                .load(ref)
+                .override(Target.SIZE_ORIGINAL)
+                .into(((StickerImageView) OrderSheetActivity.stickerPreviews[index]).getIv_main());
+        ((StickerImageView) OrderSheetActivity.stickerPreviews[index]).getIv_main().setTag(previewDesc);
     }
 }

@@ -6,8 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +30,7 @@ public class OrderlistAdapter extends RecyclerView.Adapter<OrderlistAdapter.View
         public TextView item_name;
         public TextView date;
         public TextView pickup;
+        public EditText won;
         public Button button_change;
 
         public ViewHolder(View v) {
@@ -38,6 +41,7 @@ public class OrderlistAdapter extends RecyclerView.Adapter<OrderlistAdapter.View
             item_name = (TextView) v.findViewById(R.id.textView2);
             date = (TextView) v.findViewById(R.id.textView3);
             pickup = (TextView) v.findViewById(R.id.textView4);
+            won = (EditText) v.findViewById(R.id.won);
             button_change = (Button) v.findViewById(R.id.button2);
         }
     }
@@ -56,6 +60,7 @@ public class OrderlistAdapter extends RecyclerView.Adapter<OrderlistAdapter.View
         ViewHolder holder = new ViewHolder(v);
         return holder;
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
@@ -92,9 +97,14 @@ public class OrderlistAdapter extends RecyclerView.Adapter<OrderlistAdapter.View
         holder.button_change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Context context = v.getContext();
                 ++count[position];
-                if(count[position]==1){
+                if(count[position]==1 && !holder.won.getText().toString().equals("")){ //edittext가 null이 아닐때
                     holder.button_change.setText("입금 확인");
+                    Toast.makeText(context.getApplicationContext(), holder.won.getText(), Toast.LENGTH_SHORT).show(); //Toast 대신 값 전달 (주문자에게 메시지로 가격 전송)
+                    holder.won.setText(" "+holder.won.getText()+"원");
+                    holder.won.setKeyListener(null);
+
                 }else if(count[position]==2){
                     holder.button_change.setText("승인된 주문");
                 }

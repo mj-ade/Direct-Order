@@ -26,28 +26,18 @@ public class AutoResizeTextView extends androidx.appcompat.widget.AppCompatTextV
          */
         public int onTestSize(int suggestedSize, RectF availableSpace);
     }
+    private static final int NO_LINE_LIMIT = -1;
 
     private RectF mTextRect = new RectF();
-
     private RectF mAvailableSpaceRect;
-
     private SparseIntArray mTextCachedSizes;
-
     private TextPaint mPaint;
-
     private float mMaxTextSize;
-
     private float mSpacingMult = 1.0f;
-
     private float mSpacingAdd = 0.0f;
-
     private float mMinTextSize = 20;
-
     private int mWidthLimit;
-
-    private static final int NO_LINE_LIMIT = -1;
     private int mMaxLines;
-
     private boolean mEnableSizeCache = true;
     private boolean mInitiallized;
 
@@ -119,7 +109,8 @@ public class AutoResizeTextView extends androidx.appcompat.widget.AppCompatTextV
         super.setSingleLine(singleLine);
         if (singleLine) {
             mMaxLines = 1;
-        } else {
+        }
+        else {
             mMaxLines = NO_LINE_LIMIT;
         }
         reAdjust();
@@ -137,10 +128,12 @@ public class AutoResizeTextView extends androidx.appcompat.widget.AppCompatTextV
         Context c = getContext();
         Resources r;
 
-        if (c == null)
+        if (c == null) {
             r = Resources.getSystem();
-        else
+        }
+        else {
             r = c.getResources();
+        }
         mMaxTextSize = TypedValue.applyDimension(unit, size, r.getDisplayMetrics());
         mTextCachedSizes.clear();
         adjustTextSize(getText().toString());
@@ -275,7 +268,6 @@ public class AutoResizeTextView extends androidx.appcompat.widget.AppCompatTextV
         // make sure to return last best
         // this is what should always be returned
         return lastBest;
-
     }
 
     @Override

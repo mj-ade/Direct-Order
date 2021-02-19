@@ -1,8 +1,6 @@
 package com.example.direct_order.ordersheet;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
@@ -26,7 +24,7 @@ public class StickerImageView extends StickerView {
 
     @Override
     public View getMainView() {
-        if(iv_main == null) {
+        if (iv_main == null) {
             iv_main = new ImageView(getContext());
             iv_main.setScaleType(ImageView.ScaleType.FIT_XY);
         }
@@ -44,9 +42,6 @@ public class StickerImageView extends StickerView {
     public void setImageUri(Uri uri) {
         iv_main.setImageURI(uri);
     }
-    public void setImageBitmap(Bitmap bmp) {
-        iv_main.setImageBitmap(bmp);
-    }
 
     public void setImageResource(int res_id) {
         iv_main.setImageResource(res_id);
@@ -54,9 +49,5 @@ public class StickerImageView extends StickerView {
 
     public void setImageDrawable(Drawable drawable) {
         iv_main.setImageDrawable(drawable);
-    }
-
-    public Bitmap getImageBitmap() {
-        return ((BitmapDrawable) iv_main.getDrawable()).getBitmap();
     }
 }

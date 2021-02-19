@@ -7,9 +7,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * Created by cheungchingai on 6/15/15.
- */
 public class StickerTextView extends StickerView {
     private AutoResizeTextView tv_main;
 
@@ -27,10 +24,6 @@ public class StickerTextView extends StickerView {
 
     public AutoResizeTextView getTv_main() {
         return tv_main;
-    }
-
-    public void setTv_main(AutoResizeTextView tv_main) {
-        this.tv_main = tv_main;
     }
 
     @Override
@@ -51,8 +44,8 @@ public class StickerTextView extends StickerView {
         params.gravity = Gravity.CENTER;
         tv_main.setLayoutParams(params);
         if (getIv_width() != null && getIv_height() != null) {
-            getIv_width().setVisibility(View.GONE);
-            getIv_height().setVisibility(View.GONE);
+            getIv_width().setVisibility(GONE);
+            getIv_height().setVisibility(GONE);
         }
         return tv_main;
     }
@@ -77,8 +70,8 @@ public class StickerTextView extends StickerView {
     public void setControlItemsHidden(boolean isHidden) {
         super.setControlItemsHidden(isHidden);
         if (getIv_width() != null && getIv_height() != null) {
-            getIv_width().setVisibility(View.GONE);
-            getIv_height().setVisibility(View.GONE);
+            getIv_width().setVisibility(GONE);
+            getIv_height().setVisibility(GONE);
         }
     }
 }

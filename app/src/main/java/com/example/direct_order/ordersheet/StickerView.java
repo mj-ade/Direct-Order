@@ -1,13 +1,11 @@
 package com.example.direct_order.ordersheet;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -289,17 +287,19 @@ public abstract class StickerView extends FrameLayout {
     };
 
     public void setControlItemsHidden(boolean isHidden) {
-        if(isHidden) {
-            iv_border.setVisibility(View.INVISIBLE);
-            iv_scale.setVisibility(View.INVISIBLE);
-            iv_delete.setVisibility(View.INVISIBLE);
-            iv_width.setVisibility(View.INVISIBLE);
+        if (isHidden) {
+            iv_border.setVisibility(INVISIBLE);
+            iv_scale.setVisibility(INVISIBLE);
+            iv_delete.setVisibility(INVISIBLE);
+            iv_width.setVisibility(INVISIBLE);
+            iv_height.setVisibility(INVISIBLE);
         }
-        else{
-            iv_border.setVisibility(View.VISIBLE);
-            iv_scale.setVisibility(View.VISIBLE);
-            iv_delete.setVisibility(View.VISIBLE);
-            iv_width.setVisibility(View.VISIBLE);
+        else {
+            iv_border.setVisibility(VISIBLE);
+            iv_scale.setVisibility(VISIBLE);
+            iv_delete.setVisibility(VISIBLE);
+            iv_width.setVisibility(VISIBLE);
+            iv_height.setVisibility(VISIBLE);
         }
     }
 
@@ -351,28 +351,12 @@ public abstract class StickerView extends FrameLayout {
         }
     }
 
-    public BorderView getIv_border() {
-        return iv_border;
-    }
-
-    public ImageView getIv_scale() {
-        return iv_scale;
-    }
-
-    public ImageView getIv_delete() {
-        return iv_delete;
-    }
-
     public ImageView getIv_width() {
         return iv_width;
     }
 
     public ImageView getIv_height() {
         return iv_height;
-    }
-
-    public int getMargin() {
-        return margin;
     }
 
     public boolean isDeleted() {

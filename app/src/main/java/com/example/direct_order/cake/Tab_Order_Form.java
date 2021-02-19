@@ -1,5 +1,6 @@
 package com.example.direct_order.cake;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,6 +36,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class Tab_Order_Form extends Fragment {
+    private final String TAG = "TAB_ORDER_FORM";
     private Button btn;
     private CardView cardView;
     private ViewGroup viewGroup;
@@ -41,13 +44,19 @@ public class Tab_Order_Form extends Fragment {
     private OptionAdapter adapter;
     private boolean isExist;
 
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public Tab_Order_Form(boolean isExist) {
+        this.isExist = isExist;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_tab__order__form, container, false);
         btn = root.findViewById(R.id.add_form);
         btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), OrderSheetActivity.class));
+                startActivityForResult(new Intent(getActivity(), OrderSheetActivity.class),100);
             }
         });
         cardView = root.findViewById(R.id.cardView);
@@ -56,9 +65,11 @@ public class Tab_Order_Form extends Fragment {
         cover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), OrderSheetActivity.class));
+                startActivityForResult(new Intent(getActivity(), OrderSheetActivity.class),100);
             }
         });
+
+        setupOrderSheetButton();
 
         DocumentReference myOrderSheet = FirebaseFirestore.getInstance()
                 .collection("markets")
@@ -70,6 +81,10 @@ public class Tab_Order_Form extends Fragment {
         setupCardImageView(myOrderSheet);
         setupCardRecyclerView(optionRef);
 
+        return root;
+    }
+
+    private void setupOrderSheetButton() {
         if (isExist) {
             btn.setVisibility(View.GONE);
             cardView.setVisibility(View.VISIBLE);
@@ -78,8 +93,6 @@ public class Tab_Order_Form extends Fragment {
             btn.setVisibility(View.VISIBLE);
             cardView.setVisibility(View.GONE);
         }
-
-        return root;
     }
 
     private void setupCardRecyclerView(CollectionReference optionRef) {
@@ -118,8 +131,20 @@ public class Tab_Order_Form extends Fragment {
         });
     }
 
-    public Tab_Order_Form(boolean isExist) {
-        this.isExist = isExist;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 100 && data != null) {
+                Log.d(TAG, "resultCode = RESULT_OK");
+                isExist = data.getBooleanExtra("isExist", false);
+                setupOrderSheetButton();
+            }
+        }
+        else if (resultCode == Activity.RESULT_CANCELED) {
+            Log.d(TAG, "resultCode = RESULT_CANCELED");
+        }
     }
 
     @Override

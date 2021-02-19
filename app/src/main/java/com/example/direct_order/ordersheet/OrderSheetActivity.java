@@ -23,8 +23,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.direct_order.R;
-import com.example.direct_order.cake.Cake_shop;
-import com.example.direct_order.cake.OnOrderSheetCountListener;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -51,7 +49,6 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
     static int type, numOfOption;
     static StickerView[] stickerPreviews = new StickerView[20];
     static boolean[] numberDup = new boolean[20];
-
     static Option option;
 
     // 판매자마다 ordersheet가 있음
@@ -68,6 +65,7 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
     private ViewGroup viewGroup;
     private String imageName = "";
     private int selectedType;
+    private Boolean isExist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -407,31 +405,29 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
             }
             previewRef.document("stickerID" + (i + 1)).set(s);
         }
-        Toast.makeText(this, "주문서가 저장되었습니다", Toast.LENGTH_SHORT).show();
 
-        new OnOrderSheetCountListener() {
+        optionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onOrderSheetCount() {
-                optionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if (task.getResult().size() > 0) {
-                                Cake_shop.isExist = true;
-                                Log.d("when", "cardview!");
-                            }
-                            else {
-                                Cake_shop.isExist = false;
-                                Log.d("when", "button!");
-                            }
-                        }
-                        else
-                            Log.d("ORDER_SHEET", "Error getting documents: ", task.getException());
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().size() > 0) {
+                        isExist = true;
+                        Toast.makeText(getApplicationContext(), "주문서가 저장되었습니다", Toast.LENGTH_SHORT).show();
                     }
-                });
+                    else {
+                        isExist = false;
+                        Toast.makeText(getApplicationContext(), "저장된 주문서가 없습니다", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else
+                    Log.d("ORDER_SHEET", "Error getting documents: ", task.getException());
+
+                Intent intent = new Intent();
+                intent.putExtra("isExist", isExist);
+                setResult(RESULT_OK, intent);
+                finish();
             }
-        }.onOrderSheetCount();
-        finish();
+        });
     }
 
     private void displayDialog(int type) {

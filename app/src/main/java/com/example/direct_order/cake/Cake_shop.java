@@ -27,37 +27,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class Cake_shop extends Fragment {
-    public static boolean isExist = false;
+    private final String TAG = "Cake_shop";
+    private boolean isExist;
     private CakeShopViewModel mViewModel;
     TabLayout tabLayout;
     ViewPager2 viewPager;
     String[] tabItems = {"주문 보기", "주문서 보기", "매출 보기", "리뷰 보기"};
-
-    private void haha() {
-        CollectionReference optionRef = FirebaseFirestore.getInstance()
-                .collection("markets")
-                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .collection("OrderSheet")
-                .document("sheet")
-                .collection("Options");
-        optionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    if (task.getResult().size() > 0) {
-                        isExist = true;
-                        Log.d("when", "cardview");
-                    }
-                    else {
-                        isExist = false;
-                        Log.d("when", "button");
-                    }
-                }
-                else
-                    Log.d("ORDER_SHEET", "Error getting documents: ", task.getException());
-            }
-        });
-    }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mViewModel = new ViewModelProvider(this).get(CakeShopViewModel.class);
@@ -68,8 +43,7 @@ public class Cake_shop extends Fragment {
         new OnOrderSheetCountListener() {
             @Override
             public void onOrderSheetCount() {
-                haha();
-                Log.d("when", "please");
+                checkOptionExist();
             }
         }.onOrderSheetCount();
 
@@ -95,13 +69,12 @@ public class Cake_shop extends Fragment {
             }
         });
 
-        new TabLayoutMediator(tabLayout, viewPager,
-                new TabLayoutMediator.TabConfigurationStrategy() {
-                    @Override
-                    public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                        tab.setText(tabItems[position]);
-                    }
-                }).attach();
+        new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
+            @Override
+            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                tab.setText(tabItems[position]);
+            }
+        }).attach();
 
         mViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -111,5 +84,31 @@ public class Cake_shop extends Fragment {
         });
 
         return root;
+    }
+
+    private void checkOptionExist() {
+        CollectionReference optionRef = FirebaseFirestore.getInstance()
+                .collection("markets")
+                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .collection("OrderSheet")
+                .document("sheet")
+                .collection("Options");
+        optionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().size() > 0) {
+                        isExist = true;
+                        Log.d(TAG, "cardview");
+                    }
+                    else {
+                        isExist = false;
+                        Log.d(TAG, "button");
+                    }
+                }
+                else
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+            }
+        });
     }
 }

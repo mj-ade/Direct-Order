@@ -221,22 +221,22 @@ public abstract class NewOptionActivity extends ImageCropActivity {
         }
         else
             saveOptionToDB(optionRef, number, title, description, contents, function, preview, previewDesc);
-        //optionRef.document("question" + number).set(new Option(number, title, description, optionType, numOfOption, contents, function, preview, previewDesc, ""));
 
         finish();
     }
 
-    private void saveOptionToDB(CollectionReference optionsheetRef, int number, String title, String description, String contents, String function, String preview, String previewDesc) {
+    private void saveOptionToDB(CollectionReference optionRef, int number, String title, String description, String contents, String function, String preview, String previewDesc) {
+        optionRef.document("questionID" + number).set(new Option(number, title, description, optionType, numOfOption, contents, function, preview, previewDesc, ""));
         if (OrderSheetActivity.isUpdate) {
+            if (number != OrderSheetActivity.option.getNumber())
+                optionRef.document("questionID" + OrderSheetActivity.option.getNumber()).delete();
             if (radio02.isChecked()) {
                 if (!previewDesc.equals(OrderSheetActivity.option.getPreviewDesc()))
                     changePreviewDesc(number - 1, previewDesc);
             }
-            optionsheetRef.document(OrderSheetActivity.id).update("number", number, "title", title, "desc", description, "content", contents, "previewDesc", previewDesc);
             Toast.makeText(getApplicationContext(), "옵션이 수정되었습니다", Toast.LENGTH_SHORT).show();
         }
         else {
-            optionsheetRef.add(new Option(number, title, description, optionType, numOfOption, contents, function, preview, previewDesc, ""));
             Toast.makeText(getApplicationContext(), "옵션이 추가되었습니다", Toast.LENGTH_SHORT).show();
         }
     }

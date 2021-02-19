@@ -55,26 +55,12 @@
             </LinearLayout>
         </HorizontalScrollView>
 
-        <RelativeLayout
-            android:id="@+id/imageDesc"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="#E661EF">
-
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal"
-                app:srcCompat="@drawable/ic_launcher_background"/>
-        </RelativeLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <include
+            android:id="@+id/included_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/purple_200"/>
+            layout="@layout/order_sheet"/>
 
         <Button
             android:id="@+id/save_button"

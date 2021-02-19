@@ -2,31 +2,44 @@ package com.example.direct_order.cake;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.direct_order.R;
-import com.example.direct_order.cake.TabOrderFormViewModel;
-import com.example.direct_order.ordersheet.ImageOptionActivity;
+import com.example.direct_order.ordersheet.GlideApp;
+import com.example.direct_order.ordersheet.Option;
+import com.example.direct_order.ordersheet.OptionAdapter;
 import com.example.direct_order.ordersheet.OrderSheetActivity;
-import com.google.android.material.tabs.TabLayout;
-
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class Tab_Order_Form extends Fragment {
     private Button btn;
-    private TabOrderFormViewModel tabOrderFormViewModel;
+    private CardView cardView;
+    private ViewGroup viewGroup;
+    private LinearLayout cover;
+    private OptionAdapter adapter;
+    private boolean isExist;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_tab__order__form, container, false);
@@ -34,51 +47,90 @@ public class Tab_Order_Form extends Fragment {
         btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Log.d("button_tag", "OrderSheet 실행");
                 startActivity(new Intent(getActivity(), OrderSheetActivity.class));
             }
         });
-        return root;
-    }
-
-  /*
-    private static final String ARG_COUNT = "param1";
-    private Integer counter;
-
-
-  {
-        tabOrderFormViewModel =
-                new ViewModelProvider(this).get(TabOrderFormViewModel.class);
-
-        final TextView textView = root.findViewById(R.id.tv_counter);
-        tabOrderFormViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        cardView = root.findViewById(R.id.cardView);
+        viewGroup = root.findViewById(R.id.order_sheet);
+        cover = root.findViewById(R.id.cover);
+        cover.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), OrderSheetActivity.class));
             }
         });
 
+        DocumentReference myOrderSheet = FirebaseFirestore.getInstance()
+                .collection("markets")
+                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .collection("OrderSheet")
+                .document("sheet");
+        CollectionReference optionRef = myOrderSheet.collection("Options");
+
+        setupCardImageView(myOrderSheet);
+        setupCardRecyclerView(optionRef);
+
+        if (isExist) {
+            btn.setVisibility(View.GONE);
+            cardView.setVisibility(View.VISIBLE);
+        }
+        else {
+            btn.setVisibility(View.VISIBLE);
+            cardView.setVisibility(View.GONE);
+        }
+
         return root;
     }
 
-    public static Tab_Order_Form newInstance(Integer counter){
-        Tab_Order_Form fragment = new Tab_Order_Form();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COUNT, counter);
-        fragment.setArguments(args);
-        return fragment;
-    }
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if(getArguments()!=null)
-            counter=getArguments().getInt(ARG_COUNT);
+    private void setupCardRecyclerView(CollectionReference optionRef) {
+        Query query = optionRef.orderBy("number", Query.Direction.ASCENDING);
+        FirestoreRecyclerOptions<Option> options = new FirestoreRecyclerOptions.Builder<Option>()
+                .setQuery(query, Option.class)
+                .build();
+        adapter = new OptionAdapter(options, getContext());
+        RecyclerView recyclerView = viewGroup.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.setAdapter(adapter);
     }
 
-    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        //view.setBackgroundColor(ContextCompat.getColor(getContext(), TabItem[counter]));
-        //TextView textViewCounter = view.findViewById(R.id.tv_counter);
-        //textViewCounter.setText("Fragment No " + (counter+1));
-    }*/
+    private void setupCardImageView(DocumentReference myOrderSheet) {
+        ImageView imageView = viewGroup.findViewById(R.id.imageView);
+        myOrderSheet.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        String imageName = (String) document.get("image");
+                        if (imageName.substring(0, 12).equals("option_main/")) {
+                            StorageReference ref = FirebaseStorage.getInstance().getReference(imageName);
+                            GlideApp.with(getContext()).load(ref).into(imageView);
+                        }
+                    }
+                    else
+                        Log.d("CARD_MAIN_IMG", "No such document");
+                }
+                else {
+                    Log.d("CARD_MAIN_IMG", "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+
+    public Tab_Order_Form(boolean isExist) {
+        this.isExist = isExist;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
 }

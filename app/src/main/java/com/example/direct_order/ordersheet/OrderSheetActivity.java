@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.direct_order.R;
+import com.example.direct_order.cake.Cake_shop;
+import com.example.direct_order.cake.OnOrderSheetCountListener;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,6 +34,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.pedro.library.AutoPermissions;
@@ -50,7 +53,6 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
     static boolean[] numberDup = new boolean[20];
 
     static Option option;
-    static String id;   //id random 아니면 필요없나?
 
     // 판매자마다 ordersheet가 있음
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -63,7 +65,8 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
 
     private OptionAdapter adapter;
     private LinearLayout buttonTypeLayout;
-    private String imageName="";
+    private ViewGroup viewGroup;
+    private String imageName = "";
     private int selectedType;
 
     @Override
@@ -74,8 +77,9 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
         AutoPermissions.Companion.loadAllPermissions(this, 101);
 
         buttonTypeLayout = findViewById(R.id.button_type_layout);
-        touchPanel = findViewById(R.id.imageDesc);
-        ImageView iv_main = findViewById(R.id.imageView);
+        viewGroup = findViewById(R.id.included_view);
+        touchPanel = viewGroup.findViewById(R.id.imageDesc);
+        ImageView iv_main = viewGroup.findViewById(R.id.imageView);
         setupMainImage(iv_main); // DB에서 image 가져오기
         setupPreviews();    //DB에서 preview 가져와서 touchPanel에 배치
         iv_main.setOnClickListener(new View.OnClickListener() {
@@ -196,7 +200,7 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
 
         adapter = new OptionAdapter(options, this);
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = viewGroup.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
@@ -231,7 +235,6 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
             @Override
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
                 option = documentSnapshot.toObject(Option.class);
-                id = documentSnapshot.getId();
                 isUpdate = true;
 
                 if (option.getType() == OptionType.TEXT)
@@ -260,7 +263,7 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                         imageName = (String) document.get("image");
                         Log.d("MAIN_IMG", "DocumentSnapshot data: " + document.getData());
                         if (imageName == null || imageName.trim().isEmpty()) {
-                            imageView.setImageDrawable(getDrawable(R.drawable.c10));  //개발자 기본 제공 이미지
+                            imageView.setImageResource(R.drawable.c10);  //개발자 기본 제공 이미지
                             imageName = "";
                         }
                         else {
@@ -378,7 +381,7 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
 
             if (stickerPreviews[i] == null) {
                 shape = "none";
-                s = new Sticker(i + 1, "none");
+                s = new Sticker(i + 1, shape);
             }
             else {
                 if (stickerPreviews[i] instanceof StickerTextView) {
@@ -391,7 +394,7 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                 }
 
                 if (stickerPreviews[i].isDeleted())
-                    s = new Sticker(i+1, "none");
+                    s = new Sticker(i + 1, "none");
                 else {
                     s = new Sticker(i + 1,
                             shape,
@@ -405,6 +408,30 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
             previewRef.document("stickerID" + (i + 1)).set(s);
         }
         Toast.makeText(this, "주문서가 저장되었습니다", Toast.LENGTH_SHORT).show();
+
+        new OnOrderSheetCountListener() {
+            @Override
+            public void onOrderSheetCount() {
+                optionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            if (task.getResult().size() > 0) {
+                                Cake_shop.isExist = true;
+                                Log.d("when", "cardview!");
+                            }
+                            else {
+                                Cake_shop.isExist = false;
+                                Log.d("when", "button!");
+                            }
+                        }
+                        else
+                            Log.d("ORDER_SHEET", "Error getting documents: ", task.getException());
+                    }
+                });
+            }
+        }.onOrderSheetCount();
+        finish();
     }
 
     private void displayDialog(int type) {

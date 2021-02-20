@@ -9,88 +9,223 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/purple_200"
         android:orientation="vertical">
 
-        <HorizontalScrollView
-            android:id="@+id/scrollView"
+        <LinearLayout
+            android:id="@+id/button_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none">
+            android:layout_height="56dp"
+            android:background="@color/gray"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/text_button_layout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <Button
-                    android:id="@+id/txt_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="text"/>
+                    android:layout_width="44dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/ic_text"
+                    android:backgroundTint="@color/yellow"
+                    android:clickable="false" />
 
-                <Button
-                    android:id="@+id/img_button"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="image"/>
-
-                <Button
-                    android:id="@+id/cb_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="checkbox"/>
-
-                <Button
-                    android:id="@+id/rd_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="radioButton"/>
-
-                <Button
-                    android:id="@+id/c_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="calendar"/>
+                    android:text="텍스트"
+                    android:textColor="@color/yellow"
+                    android:textSize="12sp" />
             </LinearLayout>
-        </HorizontalScrollView>
+
+            <LinearLayout
+                android:id="@+id/image_button_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <Button
+                    android:layout_width="44dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/ic_image"
+                    android:backgroundTint="@color/yellow"
+                    android:clickable="false" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="이미지"
+                    android:textColor="@color/yellow"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cb_button_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <Button
+                    android:layout_width="44dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/ic_check_box"
+                    android:backgroundTint="@color/yellow"
+                    android:clickable="false" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="체크박스"
+                    android:textColor="@color/yellow"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/rb_button_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <Button
+                    android:layout_width="44dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/ic_radio_button"
+                    android:backgroundTint="@color/yellow"
+                    android:clickable="false" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="라디오버튼"
+                    android:textColor="@color/yellow"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/calendar_button_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <Button
+                    android:layout_width="44dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/ic_calendar"
+                    android:backgroundTint="@color/yellow"
+                    android:clickable="false" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="캘린더"
+                    android:textColor="@color/yellow"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
 
         <include
             android:id="@+id/included_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            layout="@layout/order_sheet"/>
+            layout="@layout/order_sheet" />
 
         <Button
             android:id="@+id/save_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="save"/>
+            android:text="save"
+            android:textColor="@color/yellow"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/button_type_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="44dp"
-        android:background="#B05A594C"
+        android:layout_height="56dp"
+        android:background="@color/gray"
+        android:clickable="true"
+        android:orientation="horizontal"
         android:visibility="gone">
 
-        <Button
-            android:id="@+id/sub_button_text"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:text="텍스트"/>
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="36dp"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:tint="@color/yellow"
+            app:srcCompat="@drawable/ic_left" />
 
-        <Button
-            android:id="@+id/sub_button_image"
+        <LinearLayout
+            android:id="@+id/sub_text_button_layout"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="이미지"/>
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <Button
+                android:layout_width="44dp"
+                android:layout_height="40dp"
+                android:background="@drawable/ic_text"
+                android:backgroundTint="@color/yellow"
+                android:clickable="false" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="텍스트 옵션"
+                android:textColor="@color/yellow"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/sub_image_button_layout"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <Button
+                android:layout_width="44dp"
+                android:layout_height="40dp"
+                android:background="@drawable/ic_add_photo"
+                android:backgroundTint="@color/yellow"
+                android:clickable="false" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이미지 옵션"
+                android:textColor="@color/yellow"
+                android:textSize="12sp" />
+        </LinearLayout>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp"
+        android:background="#00000000"
+        android:orientation="vertical"
+        android:visibility="gone" />
 </RelativeLayout>

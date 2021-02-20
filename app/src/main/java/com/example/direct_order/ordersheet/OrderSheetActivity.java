@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -61,7 +62,7 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
     private CollectionReference previewRef = myOrderSheet.collection("Previews");
 
     private OptionAdapter adapter;
-    private LinearLayout buttonTypeLayout;
+    private LinearLayout buttonTypeLayout, cover;
     private ViewGroup viewGroup;
     private String imageName = "";
     private int selectedType;
@@ -74,9 +75,17 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
 
         AutoPermissions.Companion.loadAllPermissions(this, 101);
 
-        buttonTypeLayout = findViewById(R.id.button_type_layout);
         viewGroup = findViewById(R.id.included_view);
         touchPanel = viewGroup.findViewById(R.id.imageDesc);
+        buttonTypeLayout = findViewById(R.id.button_type_layout);
+        cover = findViewById(R.id.cover);
+        cover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displaySubButtonLayout(false);
+            }
+        });
+
         ImageView iv_main = viewGroup.findViewById(R.id.imageView);
         setupMainImage(iv_main); // DB에서 image 가져오기
         setupPreviews();    //DB에서 preview 가져와서 touchPanel에 배치
@@ -103,66 +112,74 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
             }
         });
 
-        Button textButton = findViewById(R.id.txt_button);
-        textButton.setOnClickListener(new View.OnClickListener() {
+        LinearLayout textButtonLayout = findViewById(R.id.text_button_layout);
+        textButtonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isUpdate = false;
-                buttonTypeLayout.setVisibility(View.GONE);
+                displaySubButtonLayout(false);
                 type = OptionType.TEXT;
                 numOfOption = 1;
                 startActivity(new Intent(OrderSheetActivity.this, TextOptionActivity.class));
             }
         });
 
-        Button imgButton = findViewById(R.id.img_button);
-        imgButton.setOnClickListener(new View.OnClickListener() {
+        LinearLayout imageButtonLayout = findViewById(R.id.image_button_layout);
+        imageButtonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isUpdate = false;
-                buttonTypeLayout.setVisibility(View.GONE);
+                displaySubButtonLayout(false);
                 type = OptionType.IMAGE;
                 numOfOption = 1;
                 startActivity(new Intent(OrderSheetActivity.this, ImageOptionActivity.class));
             }
         });
 
-        Button cbButton = findViewById(R.id.cb_button);
-        cbButton.setOnClickListener(new View.OnClickListener() {
+        LinearLayout cbButtonLayout = findViewById(R.id.cb_button_layout);
+        cbButtonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectedType = OptionType.CHECKBOX;
-                buttonTypeLayout.setVisibility(View.VISIBLE);
+                displaySubButtonLayout(true);
             }
         });
 
-        Button rdButton = findViewById(R.id.rd_button);
-        rdButton.setOnClickListener(new View.OnClickListener() {
+        LinearLayout rbButtonLayout = findViewById(R.id.rb_button_layout);
+        rbButtonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectedType = OptionType.RADIOBUTTON;
-                buttonTypeLayout.setVisibility(View.VISIBLE);
+                displaySubButtonLayout(true);
             }
         });
 
-        Button calButton = findViewById(R.id.c_button);
-        calButton.setOnClickListener(new View.OnClickListener() {
+        LinearLayout calendarButtonLayout = findViewById(R.id.calendar_button_layout);
+        calendarButtonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isUpdate = false;
-                buttonTypeLayout.setVisibility(View.GONE);
+                displaySubButtonLayout(false);
                 type = OptionType.CALENDAR;
                 numOfOption = 1;
                 startActivity(new Intent(OrderSheetActivity.this, CalendarOptionActivity.class));
             }
         });
 
-        Button subTextButton = findViewById(R.id.sub_button_text);
-        subTextButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton iv_back = findViewById(R.id.back);
+        iv_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displaySubButtonLayout(false);
+            }
+        });
+
+        LinearLayout subTextButtonLayout = findViewById(R.id.sub_text_button_layout);
+        subTextButtonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isUpdate = false;
-                buttonTypeLayout.setVisibility(View.GONE);
+                displaySubButtonLayout(false);
                 if (selectedType == OptionType.CHECKBOX)
                     type = OptionType.CHECKBOX_TEXT;
                 else
@@ -171,22 +188,32 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
             }
         });
 
-        Button subImgButton = findViewById(R.id.sub_button_image);
-        subImgButton.setOnClickListener(new View.OnClickListener() {
+        LinearLayout subImgButtonLayout = findViewById(R.id.sub_image_button_layout);
+        subImgButtonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isUpdate = false;
-                buttonTypeLayout.setVisibility(View.GONE);
+                displaySubButtonLayout(false);
                 if (selectedType == OptionType.CHECKBOX)
                     type = OptionType.CHECKBOX_IMAGE;
-                else {
+                else
                     type = OptionType.RADIOBUTTON_IMAGE;
-                }
                 displayDialog(type);
             }
         });
 
         setupRecyclerView();
+    }
+
+    private void displaySubButtonLayout(boolean flag) {
+        if (flag) {
+            buttonTypeLayout.setVisibility(View.VISIBLE);
+            cover.setVisibility(View.VISIBLE);
+        }
+        else {
+            buttonTypeLayout.setVisibility(View.GONE);
+            cover.setVisibility(View.GONE);
+        }
     }
 
     private void setupRecyclerView() {

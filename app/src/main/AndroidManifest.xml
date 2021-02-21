@@ -16,7 +16,8 @@
 
         <activity
             android:name=".MainForCustomer"
-            android:label="@string/title_activity_main_for_customer"/>
+            android:label="@string/title_activity_main_for_customer"
+            android:theme="@style/Theme.DirectOrder.NoActionBar"/>
 
 
         <activity

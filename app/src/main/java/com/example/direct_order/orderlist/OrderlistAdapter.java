@@ -2,6 +2,7 @@ package com.example.direct_order.orderlist;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.direct_order.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class OrderlistAdapter extends RecyclerView.Adapter<OrderlistAdapter.ViewHolder> {
 
@@ -94,6 +100,9 @@ public class OrderlistAdapter extends RecyclerView.Adapter<OrderlistAdapter.View
                 context.startActivity(intent);
             }
         });
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> order = new HashMap<>();
         holder.button_change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,8 +114,35 @@ public class OrderlistAdapter extends RecyclerView.Adapter<OrderlistAdapter.View
                     holder.won.setText(" "+holder.won.getText()+"원");
                     holder.won.setKeyListener(null);
 
+                    order.put("price", holder.won.getText().toString());
+                    order.put("process", 1);
+                    db.collection("markets").document("Qu3tzy23GfMcBsBQjI5pw7x3AM12").collection("orderlist").document(String.valueOf(position)).update(order).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("tag", "DocumentSnapshot successfully written!");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("OrderlistAdapter", "Error writing document",e);
+                        }
+                    });
+
                 }else if(count[position]==2){
                     holder.button_change.setText("승인된 주문");
+
+                    order.put("process", 2);
+                    db.collection("orderlist").document(String.valueOf(position)).update(order).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("tag", "DocumentSnapshot successfully written!");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("OrderlistAdapter", "Error writing document",e);
+                        }
+                    });
                 }
             }
         });

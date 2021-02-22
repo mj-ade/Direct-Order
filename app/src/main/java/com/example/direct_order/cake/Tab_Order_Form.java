@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.request.target.Target;
 import com.example.direct_order.R;
 import com.example.direct_order.ordersheet.GlideApp;
 import com.example.direct_order.ordersheet.Option;
@@ -118,7 +119,10 @@ public class Tab_Order_Form extends Fragment {
                         String imageName = (String) document.get("image");
                         if (imageName.substring(0, 12).equals("option_main/")) {
                             StorageReference ref = FirebaseStorage.getInstance().getReference(imageName);
-                            GlideApp.with(getContext()).load(ref).into(imageView);
+                            GlideApp.with(getContext())
+                                    .load(ref)
+                                    .override(Target.SIZE_ORIGINAL)
+                                    .into(imageView);
                         }
                     }
                     else

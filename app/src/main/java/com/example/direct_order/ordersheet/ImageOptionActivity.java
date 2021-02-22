@@ -22,12 +22,12 @@ public class ImageOptionActivity extends NewOptionActivity {
     @Override
     protected void setOption() {
         super.setOption();
+
         getEditTextPreview().setVisibility(View.GONE);
         getImageViewPreview().setVisibility(View.VISIBLE);
         getRadio02().setTag("cus_image");
         getRadio02().setText("이미지");
-        getRadio03().setVisibility(View.GONE);
-        getRadio04().setVisibility(View.GONE);
+
         getContentsLayout().setVisibility(View.GONE);
         getImageViewPreview().setOnClickListener(new View.OnClickListener() {
             @Override

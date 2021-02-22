@@ -102,12 +102,12 @@ public abstract class NewOptionActivity extends ImageCropActivity {
             optionType = OrderSheetActivity.type;
         }
 
-        if (optionType >= 4 && optionType <= 5)
+        if (optionType == 4)
             functionLayout.setVisibility(View.VISIBLE);
         else
             functionLayout.setVisibility(View.GONE);
 
-        addContents(numOfOption);
+        addContents();
     }
 
     protected void setOption() {
@@ -116,6 +116,12 @@ public abstract class NewOptionActivity extends ImageCropActivity {
         editTextDesc.setText("");
         editTextPreview.setText("");
         imageView.setImageDrawable(getDrawable(R.drawable.c10));
+        editTextPreview.setVisibility(View.VISIBLE);
+        imageView.setVisibility(View.GONE);
+        radio02.setTag("text");
+        radio02.setText("텍스트");
+        radio03.setVisibility(View.GONE);
+        radio04.setVisibility(View.GONE);
 
         for (int i = 0; i < functionRadioGroup.getChildCount(); i++) {
             RadioButton rb = (RadioButton) functionRadioGroup.getChildAt(i);
@@ -129,7 +135,9 @@ public abstract class NewOptionActivity extends ImageCropActivity {
         contentsContainer.removeAllViews();
     }
 
-    protected void addContents(int numOfOption) {}
+    protected void addContents() {
+
+    }
 
     protected void setStoredPreviews() {
         String previewType = OrderSheetActivity.option.getPreview();

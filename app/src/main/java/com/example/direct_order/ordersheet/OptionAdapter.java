@@ -4,27 +4,15 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.direct_order.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class OptionAdapter extends FirestoreRecyclerAdapter<Option, OptionAdapter.OptionHolder> {
     private OnItemClickListener listener;
@@ -40,10 +28,11 @@ public class OptionAdapter extends FirestoreRecyclerAdapter<Option, OptionAdapte
         holder.numTextView.setText(model.getNumber() + ". ");
         holder.optionTitle.setText(model.getTitle());
         holder.optionDescription.setText(model.getDesc());
-
+        if (model.getDesc().equals(""))
+            holder.optionDescription.setVisibility(View.GONE);
         if (holder.container.getChildCount() != 0)
             holder.container.removeAllViews();
-        holder.container.addView(new OptionForm(context, model.getType(), model.getNumOfOption(), model.getContent(), model.getPreviewDesc()));
+        holder.container.addView(new OptionForm(context, model.getNumber(), model.getType(), model.getNumOfOption(), model.getContent(), model.getFunc(), model.getPreviewDesc()));
     }
 
     @NonNull

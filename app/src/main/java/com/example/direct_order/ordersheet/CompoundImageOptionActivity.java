@@ -32,24 +32,19 @@ public class CompoundImageOptionActivity extends NewOptionActivity {
     @Override
     protected void setOption() {
         super.setOption();
-        getImageViewPreview().setVisibility(View.GONE);
-        getEditTextPreview().setVisibility(View.VISIBLE);
-        getRadio02().setTag("text");
-        getRadio02().setText("텍스트");
-        getRadio03().setVisibility(View.VISIBLE);
-        getRadio04().setVisibility(View.VISIBLE);
+
         getContentsLayout().setVisibility(View.VISIBLE);
     }
 
     @Override
     protected void retrievePreviewDesc() {
         super.retrievePreviewDesc();
-        st = new StringTokenizer(OrderSheetActivity.option.getContent(), "#");
+        st = new StringTokenizer(OrderSheetActivity.option.getContent(), "&");
     }
 
     @Override
-    protected void addContents(int numOfOption) {
-        for (int i = 0; i < numOfOption; i++) {
+    protected void addContents() {
+        for (int i = 0; i < getNumOfOption(); i++) {
             ImageView imageView = new ImageView(this);
             imageView.setTag("optionImg"+"_"+i);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -112,7 +107,7 @@ public class CompoundImageOptionActivity extends NewOptionActivity {
     @Override
     protected String setContents() {
         if (OrderSheetActivity.isUpdate)
-            st = new StringTokenizer(OrderSheetActivity.option.getContent(), "#");
+            st = new StringTokenizer(OrderSheetActivity.option.getContent(), "&");
 
         String contents = "";
         for (int i = 0; i < getNumOfOption(); i++) {
@@ -126,7 +121,7 @@ public class CompoundImageOptionActivity extends NewOptionActivity {
                 Toast.makeText(this, "입력하지 않은 항목이 있습니다"+i, Toast.LENGTH_SHORT).show();
                 return null;
             }
-            contents += content + "#";
+            contents += content + "&";
         }
         return contents;
     }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.direct_order.R;
@@ -24,24 +25,26 @@ public class CompoundTextOptionActivity extends NewOptionActivity {
     @Override
     protected void setOption() {
         super.setOption();
-        getImageViewPreview().setVisibility(View.GONE);
-        getEditTextPreview().setVisibility(View.VISIBLE);
-        getRadio02().setTag("text");
-        getRadio02().setText("텍스트");
-        getRadio03().setVisibility(View.VISIBLE);
-        getRadio04().setVisibility(View.VISIBLE);
+
         getContentsLayout().setVisibility(View.VISIBLE);
     }
 
     @Override
     protected void retrievePreviewDesc() {
         super.retrievePreviewDesc();
-        st = new StringTokenizer(OrderSheetActivity.option.getContent(), "#");
+        st = new StringTokenizer(OrderSheetActivity.option.getContent(), "&");
     }
 
     @Override
-    protected void addContents(int numOfOption) {
-        for (int i = 0; i < numOfOption; i++) {
+    protected void addContents() {
+        if (getOptionType() == OptionType.RADIOBUTTON_TEXT) {
+            getRadio03().setVisibility(View.VISIBLE);
+            getRadio04().setVisibility(View.VISIBLE);
+            TextView textView = new TextView(this);
+            textView.setText("기능 추가 시 아래의 형식에 맞춰 입력해 주세요.\nex) 색상명:#FFFFFF");
+            getContentsContainer().addView(textView);
+        }
+        for (int i = 0; i < getNumOfOption(); i++) {
             EditText editText = new EditText(this);
             if (OrderSheetActivity.isUpdate)
                 editText.setText(st.nextToken());
@@ -80,7 +83,7 @@ public class CompoundTextOptionActivity extends NewOptionActivity {
                 Toast.makeText(this, "입력하지 않은 항목이 있습니다", Toast.LENGTH_SHORT).show();
                 return null;
             }
-            contents += content + "#";
+            contents += content + "&";
         }
         return contents;
     }

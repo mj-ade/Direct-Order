@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.direct_order.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -102,6 +104,8 @@ public class OrderlistAdapter extends RecyclerView.Adapter<OrderlistAdapter.View
         });
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
         Map<String, Object> order = new HashMap<>();
         holder.button_change.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,7 +120,7 @@ public class OrderlistAdapter extends RecyclerView.Adapter<OrderlistAdapter.View
 
                     order.put("price", holder.won.getText().toString());
                     order.put("process", 1);
-                    db.collection("markets").document("Qu3tzy23GfMcBsBQjI5pw7x3AM12").collection("orderlist").document(String.valueOf(position)).update(order).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    db.collection("markets").document(uid).collection("OrderList").document(String.valueOf(position)).update(order).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d("tag", "DocumentSnapshot successfully written!");
@@ -132,7 +136,7 @@ public class OrderlistAdapter extends RecyclerView.Adapter<OrderlistAdapter.View
                     holder.button_change.setText("승인된 주문");
 
                     order.put("process", 2);
-                    db.collection("orderlist").document(String.valueOf(position)).update(order).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    db.collection("markets").document(uid).collection("OrderList").document(String.valueOf(position)).update(order).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d("tag", "DocumentSnapshot successfully written!");

@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.direct_order.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.Serializable;
@@ -73,8 +75,9 @@ public class OrderlistActivity extends AppCompatActivity implements Serializable
 
         count = new int[itemArrayList.size()];
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
         Map<String, Object> order = new HashMap<>();
-
 
         for (int i=0; i<itemArrayList.size(); i++){
             order.put("name", itemArrayList.get(i).name);
@@ -83,7 +86,7 @@ public class OrderlistActivity extends AppCompatActivity implements Serializable
             order.put("pikup", itemArrayList.get(i).pickup);
             order.put("process", 0);
 
-            db.collection("markets").document("Qu3tzy23GfMcBsBQjI5pw7x3AM12").collection("orderlist").document(String.valueOf(i)).set(order).addOnSuccessListener(new OnSuccessListener<Void>() {
+            db.collection("markets").document(uid).collection("orderlist").document(String.valueOf(i)).set(order).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Log.d("OrderlistActivity", "DocumentSnapshot successfully written!");

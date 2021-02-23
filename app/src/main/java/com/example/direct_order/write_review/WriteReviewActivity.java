@@ -43,7 +43,6 @@ public class WriteReviewActivity extends AppCompatActivity {
     Button button;
     RatingBar ratingBar;
     String shopid;
-    Boolean isImgClicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +81,6 @@ public class WriteReviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openGallery();
-                isImgClicked = true;
             }
         });
 
@@ -91,26 +89,30 @@ public class WriteReviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 //Log.d("tag","masg");
+                String filepath = imageUpload();
                 review.put("stars", ratingBar.getRating());
                 review.put("content", editText.getText().toString().trim());
+                review.put("image", filepath);
                 //해당마켓 document
                 db.collection("markets").document(shopid).collection("ReviewList").document().set(review);
-                imageUpload();
+
                 coRef.document(docId).update("review", true);
+
                 Toast.makeText(getApplicationContext(),"리뷰가 저장되었습니다", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
     }
 
-    private void imageUpload() {
+    private String imageUpload() {
         Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String filename = sdf.format(System.currentTimeMillis());
-        StorageReference ref = FirebaseStorage.getInstance().getReference("review_image/" + filename + ".jpg");
+        String filepath = "review_image/" + filename + ".jpg";
+        StorageReference ref = FirebaseStorage.getInstance().getReference(filepath);
         UploadTask uploadTask = ref.putBytes(data);
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -123,6 +125,7 @@ public class WriteReviewActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "실패", Toast.LENGTH_SHORT).show();
             }
         });
+        return filepath;
     }
 
     private void openGallery() {
@@ -149,7 +152,6 @@ public class WriteReviewActivity extends AppCompatActivity {
             }
             else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "사진 선택 취소", Toast.LENGTH_LONG).show();
-                isImgClicked = false;
             }
         }
     }

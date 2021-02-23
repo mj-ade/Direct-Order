@@ -95,7 +95,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".writereview.WritereviewActivity">
+        <activity android:name=".write_review.WriteReviewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

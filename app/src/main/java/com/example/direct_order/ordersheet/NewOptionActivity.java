@@ -363,6 +363,10 @@ public abstract class NewOptionActivity extends ImageCropActivity {
         return comment;
     }
 
+    public EditText getEditTextTitle() {
+        return editTextTitle;
+    }
+
     public RadioButton getRadio01() {
         return radio01;
     }

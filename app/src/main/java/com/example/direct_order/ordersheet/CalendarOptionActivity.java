@@ -10,6 +10,10 @@ public class CalendarOptionActivity extends NewOptionActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getEditTextTitle().setBackground(null);
+        getEditTextTitle().setText("픽업일");
+        getEditTextTitle().setTextSize(20);
+        getEditTextTitle().setKeyListener(null);
     }
 
     @Override

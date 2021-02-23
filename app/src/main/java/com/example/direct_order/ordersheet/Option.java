@@ -2,6 +2,7 @@ package com.example.direct_order.ordersheet;
 
 public class Option {
     int number;
+    int parentNumber;
     String title;
     String desc;
     int type;
@@ -10,14 +11,14 @@ public class Option {
     String func;
     String preview;
     String previewDesc;
-    String answer;
 
     public Option() {
 
     }
 
-    public Option(int number, String title, String desc, int type, int numOfOption, String content, String func, String preview, String previewDesc, String answer) {
+    public Option(int number, int parentNumber, String title, String desc, int type, int numOfOption, String content, String func, String preview, String previewDesc) {
         this.number = number;
+        this.parentNumber = parentNumber;
         this.title = title;
         this.desc = desc;
         this.type = type;
@@ -26,7 +27,6 @@ public class Option {
         this.func = func;
         this.preview = preview;
         this.previewDesc = previewDesc;
-        this.answer = answer;
     }
 
     public int getNumber() {
@@ -35,6 +35,14 @@ public class Option {
 
     public void setNumber(int number) {
         this.number = number;
+    }
+
+    public int getParentNumber() {
+        return parentNumber;
+    }
+
+    public void setParentNumber(int parentNumber) {
+        this.parentNumber = parentNumber;
     }
 
     public String getTitle() {
@@ -99,13 +107,5 @@ public class Option {
 
     public void setPreviewDesc(String previewDesc) {
         this.previewDesc = previewDesc;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
     }
 }

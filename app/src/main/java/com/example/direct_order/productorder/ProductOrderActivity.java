@@ -114,12 +114,8 @@ public class ProductOrderActivity extends AppCompatActivity {
                     ((StickerImageView) stickerViews[num-1]).getIv_main().setColorFilter(colors[num-1][newVal], PorterDuff.Mode.SRC_IN);
                 else if (stickerViews[num-1] instanceof StickerTextView)
                     ((StickerTextView) stickerViews[num-1]).getTv_main().setTextColor(colors[num-1][newVal]);
-
-                Toast.makeText(getApplicationContext(), myVar.getValue()+"$$", Toast.LENGTH_SHORT).show();
             }
         });
-
-        Toast.makeText(this, myVar.getValue()+"", Toast.LENGTH_SHORT).show();
     }
 
     private void retrieveFunction() {
@@ -128,27 +124,33 @@ public class ProductOrderActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (DocumentSnapshot document : task.getResult()) {
+                        long type = (Long) document.get("type");
+                        if (type != OptionType.RADIOBUTTON_TEXT)
+                            continue;
+
+                        String function = (String) document.get("func");
+                        if (function.charAt(4) == '1')   // 기능 없음이면 저장 안함
+                            continue;
+
                         int index = ((Long) document.get("number")).intValue() - 1;
-                        if (((String) document.get("func")).equals("func3"))
-                            filled[index] = true;
-                        if (filled[index]) {
+                        int parentIndex = ((Long) document.get("parentNumber")).intValue() - 1;
+                        int pos = (index == parentIndex) ? index : parentIndex;
+
+                        if (function.equals("func3"))
+                            filled[pos] = true;
+                        if (filled[pos]) {
                             if (((String) document.get("preview")).equals("circle"))
-                                ((StickerImageView) stickerViews[index]).setImageResource(R.drawable.circle_filled);
+                                ((StickerImageView) stickerViews[pos]).setImageResource(R.drawable.circle_filled);
                             else if (((String) document.get("preview")).equals("square"))
-                                ((StickerImageView) stickerViews[index]).setImageResource(R.drawable.square_filled);
+                                ((StickerImageView) stickerViews[pos]).setImageResource(R.drawable.square_filled);
                         }
 
-                        long type = (Long) document.get("type");
-                        if (type == OptionType.RADIOBUTTON_TEXT) {
-                            if (((String) document.get("func")).charAt(4) == '1')   // 기능 없음이면 저장 안함
-                                continue;
-                            int count = 0;
-                            StringTokenizer st = new StringTokenizer((String) document.get("content"), "&");
+                        int count = 0;
+                        StringTokenizer st = new StringTokenizer((String) document.get("content"), "&");
 
-                            while (st.hasMoreTokens()) {
-                                String s = st.nextToken();
-                                colors[index][count++] = Color.parseColor(s.substring(s.indexOf("#"), s.length()));
-                            }
+                        while (st.hasMoreTokens()) {
+                            String s = st.nextToken();
+                            colors[pos][count++] = Color.parseColor(s.substring(s.indexOf("#"), s.length()));
                         }
                     }
                 }

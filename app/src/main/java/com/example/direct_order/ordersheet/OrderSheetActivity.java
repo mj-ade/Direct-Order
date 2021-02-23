@@ -318,7 +318,7 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            Log.d("TAG", "DocumentSnapshot data: " + document.getData());
+                            Log.d("PREVIEW_TAG", "DocumentSnapshot data: " + document.getData());
 
                             String shape = (String) document.get("shape");
                             int x = ((Long) document.get("x")).intValue();

@@ -30,9 +30,12 @@ public class OptionAdapter extends FirestoreRecyclerAdapter<Option, OptionAdapte
         holder.optionDescription.setText(model.getDesc());
         if (model.getDesc().equals(""))
             holder.optionDescription.setVisibility(View.GONE);
+        else
+            holder.optionDescription.setVisibility(View.VISIBLE);
+
         if (holder.container.getChildCount() != 0)
             holder.container.removeAllViews();
-        holder.container.addView(new OptionForm(context, model.getNumber(), model.getType(), model.getNumOfOption(), model.getContent(), model.getFunc(), model.getPreviewDesc()));
+        holder.container.addView(new OptionForm(context, model.getParentNumber(), model.getType(), model.getNumOfOption(), model.getContent(), model.getFunc(), model.getPreviewDesc()));
     }
 
     @NonNull

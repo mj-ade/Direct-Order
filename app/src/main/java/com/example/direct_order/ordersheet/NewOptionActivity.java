@@ -30,13 +30,16 @@ import java.util.ArrayList;
 
 public abstract class NewOptionActivity extends ImageCropActivity {
     private Spinner spinner;
+    private Spinner spinner2;
+    private LinearLayout parentNumLayout;
+    private TextView comment;
     private EditText editTextTitle;
     private EditText editTextDesc;
     private LinearLayout functionLayout;
     private RadioGroup functionRadioGroup;
     private LinearLayout previewLayout;
     private RadioGroup radioGroup;
-    private RadioButton radio01, radio02, radio03, radio04;
+    private RadioButton radio01, radio02, radio03;
     private LinearLayout previewContentLayout;
     private EditText editTextPreview;
     private ImageView imageView;
@@ -46,6 +49,7 @@ public abstract class NewOptionActivity extends ImageCropActivity {
 
     private int numOfOption, optionType;
     private boolean isUploaded;
+    private int parentNumber;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +72,10 @@ public abstract class NewOptionActivity extends ImageCropActivity {
         };
         spinner = findViewById(R.id.spinner);
         spinner.setAdapter(arrayAdapter);
+        spinner2 = findViewById(R.id.spinner2);
+        spinner2.setAdapter(arrayAdapter);
+        parentNumLayout = findViewById(R.id.parent_num_layout);
+        comment = findViewById(R.id.comment);
         editTextTitle = findViewById(R.id.edit_text_title);
         editTextDesc = findViewById(R.id.edit_text_desc);
         functionLayout = findViewById(R.id.function_layout);
@@ -77,7 +85,6 @@ public abstract class NewOptionActivity extends ImageCropActivity {
         radio01 = findViewById(R.id.radio01);
         radio02 = findViewById(R.id.radio02);
         radio03 = findViewById(R.id.radio03);
-        radio04 = findViewById(R.id.radio04);
         previewContentLayout = findViewById(R.id.preview_content_layout);
         editTextPreview = findViewById(R.id.edit_text_preview);
         imageView = findViewById(R.id.input_imageView);
@@ -91,10 +98,19 @@ public abstract class NewOptionActivity extends ImageCropActivity {
             numOfOption = OrderSheetActivity.option.getNumOfOption();
             optionType = OrderSheetActivity.option.getType();
             spinner.setSelection(OrderSheetActivity.option.getNumber() - 1);
+            spinner2.setSelection(OrderSheetActivity.option.getParentNumber() - 1);
             editTextTitle.setText(OrderSheetActivity.option.getTitle());
             editTextDesc.setText(OrderSheetActivity.option.getDesc());
             functionLayout.setVisibility(View.GONE);
             setStoredPreviews();
+            String funcType = OrderSheetActivity.option.getFunc();
+            for (int i = 0; i < functionRadioGroup.getChildCount(); i++) {
+                RadioButton rb = (RadioButton) functionRadioGroup.getChildAt(i);
+                if (funcType.equals((String) rb.getTag())) {
+                    rb.setChecked(true);
+                    break;
+                }
+            }
         }
         else {
             setTitle("Add option");
@@ -112,16 +128,11 @@ public abstract class NewOptionActivity extends ImageCropActivity {
 
     protected void setOption() {
         spinner.setSelection(0);
+        spinner2.setSelection(0);
         editTextTitle.setText("");
         editTextDesc.setText("");
         editTextPreview.setText("");
         imageView.setImageDrawable(getDrawable(R.drawable.c10));
-        editTextPreview.setVisibility(View.VISIBLE);
-        imageView.setVisibility(View.GONE);
-        radio02.setTag("text");
-        radio02.setText("텍스트");
-        radio03.setVisibility(View.GONE);
-        radio04.setVisibility(View.GONE);
 
         for (int i = 0; i < functionRadioGroup.getChildCount(); i++) {
             RadioButton rb = (RadioButton) functionRadioGroup.getChildAt(i);
@@ -133,6 +144,9 @@ public abstract class NewOptionActivity extends ImageCropActivity {
             rb.setChecked(false);
         }
         contentsContainer.removeAllViews();
+
+        comment.setVisibility(View.GONE);
+        parentNumLayout.setVisibility(View.GONE);
     }
 
     protected void addContents() {
@@ -176,6 +190,10 @@ public abstract class NewOptionActivity extends ImageCropActivity {
     protected void saveNote() {
         isUploaded = true;
         int number = (int) spinner.getSelectedItem();
+        if (optionType == 4)
+            parentNumber = (int) spinner2.getSelectedItem();
+        else
+            parentNumber = number;
 
         String title = editTextTitle.getText().toString();
         if (title.trim().isEmpty()) {
@@ -214,7 +232,7 @@ public abstract class NewOptionActivity extends ImageCropActivity {
                 .collection("OrderSheet")
                 .document("sheet")
                 .collection("Options");
-        setPreviewSticker(number - 1, previewDesc);
+        setPreviewSticker(number - 1, parentNumber - 1, previewDesc);
 
         if(optionType % 2 == 1) {   // 이미지 관련 옵션
             setUploadCompleteListener(new OnUploadCompleteListener() {  //upload image 횟수만큼 call
@@ -234,7 +252,7 @@ public abstract class NewOptionActivity extends ImageCropActivity {
     }
 
     private void saveOptionToDB(CollectionReference optionRef, int number, String title, String description, String contents, String function, String preview, String previewDesc) {
-        optionRef.document("questionID" + number).set(new Option(number, title, description, optionType, numOfOption, contents, function, preview, previewDesc, ""));
+        optionRef.document("questionID" + number).set(new Option(number, parentNumber, title, description, optionType, numOfOption, contents, function, preview, previewDesc));
         if (OrderSheetActivity.isUpdate) {
             if (number != OrderSheetActivity.option.getNumber())
                 optionRef.document("questionID" + OrderSheetActivity.option.getNumber()).delete();
@@ -274,20 +292,7 @@ public abstract class NewOptionActivity extends ImageCropActivity {
     }
 
     protected String setPreviewDescription() {
-        String previewDesc = editTextPreview.getText().toString();
-        if (radio02.isChecked()) {
-            if (previewDesc.trim().isEmpty()) {
-                Toast.makeText(this, "텍스트 미리보기 추가를 선택하였습니다.\n 내용을 입력해주세요.", Toast.LENGTH_LONG).show();
-                return null;
-            }
-        }
-        else {
-            if (!previewDesc.trim().isEmpty()) {
-                Toast.makeText(this, "텍스트 미리보기 추가를 선택하지 않았습니다.\n 내용 입력 창을 비워주세요.", Toast.LENGTH_LONG).show();
-                return null;
-            }
-        }
-        return previewDesc;
+        return "";
     }
 
     protected String setContents() {
@@ -312,7 +317,7 @@ public abstract class NewOptionActivity extends ImageCropActivity {
         }
         else {
             if (OrderSheetActivity.numberDup[index]) {
-                Toast.makeText(getApplicationContext(), "중복 번호+", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "중복 번호", Toast.LENGTH_SHORT).show();
                 return true;
             }
             else
@@ -323,7 +328,7 @@ public abstract class NewOptionActivity extends ImageCropActivity {
 
     private void resetNumber(int number) {
         int index = number - 1;
-        if(OrderSheetActivity.isUpdate) {
+        if (OrderSheetActivity.isUpdate) {
             OrderSheetActivity.numberDup[OrderSheetActivity.option.getNumber()-1] = true;
             OrderSheetActivity.stickerPreviews[OrderSheetActivity.option.getNumber()-1] = OrderSheetActivity.stickerPreviews[index];
             OrderSheetActivity.stickerPreviews[index] = null;
@@ -331,16 +336,16 @@ public abstract class NewOptionActivity extends ImageCropActivity {
         OrderSheetActivity.numberDup[index] = false;
     }
 
-    protected void setPreviewSticker(int index, String previewDesc) {
+    protected void setPreviewSticker(int index, int parentIndex, String previewDesc) {
         if (OrderSheetActivity.isUpdate) {
             if(!radio01.isChecked()) {
                 if (OrderSheetActivity.stickerPreviews[index] == null) // 이전에 저장하고 종료하지 않아서 새로 생성함
-                    addStickerView(index, previewDesc);
+                    addStickerView(index, parentIndex, previewDesc);
             }
         }
         else {
-            if (radio02.isChecked() || radio03.isChecked() || radio04.isChecked())
-                addStickerView(index, previewDesc);
+            if (radio02.isChecked() || radio03.isChecked())
+                addStickerView(index, parentIndex, previewDesc);
         }
     }
 
@@ -348,7 +353,19 @@ public abstract class NewOptionActivity extends ImageCropActivity {
         ((StickerTextView) OrderSheetActivity.stickerPreviews[index]).setText(previewDesc);
     }
 
-    protected abstract void addStickerView(int index, String previewDesc);
+    protected abstract void addStickerView(int index, int parentIndex, String previewDesc);
+
+    public LinearLayout getParentNumLayout() {
+        return parentNumLayout;
+    }
+
+    public TextView getComment() {
+        return comment;
+    }
+
+    public RadioButton getRadio01() {
+        return radio01;
+    }
 
     public RadioButton getRadio02() {
         return radio02;
@@ -356,10 +373,6 @@ public abstract class NewOptionActivity extends ImageCropActivity {
 
     public RadioButton getRadio03() {
         return radio03;
-    }
-
-    public RadioButton getRadio04() {
-        return radio04;
     }
 
     public EditText getEditTextPreview() {

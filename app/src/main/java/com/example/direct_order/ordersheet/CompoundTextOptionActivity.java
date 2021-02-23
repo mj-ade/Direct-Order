@@ -3,6 +3,7 @@ package com.example.direct_order.ordersheet;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +27,14 @@ public class CompoundTextOptionActivity extends NewOptionActivity {
     protected void setOption() {
         super.setOption();
 
+        getRadio02().setTag("circle");
+        getRadio02().setText("원형");
+        getRadio03().setVisibility(View.VISIBLE);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                OrderSheetActivity.dpToPx(this, 24));
+        getPreviewContentLayout().setLayoutParams(layoutParams);
+        getPreviewContentLayout().setVisibility(View.INVISIBLE);
         getContentsLayout().setVisibility(View.VISIBLE);
     }
 
@@ -38,8 +47,8 @@ public class CompoundTextOptionActivity extends NewOptionActivity {
     @Override
     protected void addContents() {
         if (getOptionType() == OptionType.RADIOBUTTON_TEXT) {
-            getRadio03().setVisibility(View.VISIBLE);
-            getRadio04().setVisibility(View.VISIBLE);
+            getComment().setVisibility(View.VISIBLE);
+            getParentNumLayout().setVisibility(View.VISIBLE);
             TextView textView = new TextView(this);
             textView.setText("기능 추가 시 아래의 형식에 맞춰 입력해 주세요.\nex) 색상명:#FFFFFF");
             getContentsContainer().addView(textView);
@@ -58,7 +67,7 @@ public class CompoundTextOptionActivity extends NewOptionActivity {
     @Override
     protected String setOptionFunction() {
         String function = "";
-        if (getOptionType() >= OptionType.RADIOBUTTON_TEXT && !OrderSheetActivity.isUpdate) {
+        if (getOptionType() == OptionType.RADIOBUTTON_TEXT) {
             for (int i = 0; i < getFunctionRadioGroup().getChildCount(); i++) {
                 RadioButton r = (RadioButton) getFunctionRadioGroup().getChildAt(i);
                 if (r.isChecked()) {
@@ -89,22 +98,20 @@ public class CompoundTextOptionActivity extends NewOptionActivity {
     }
 
     @Override
-    protected void addStickerView(int index, String previewDesc) {
-        if (getRadio02().isChecked()) {
-            stickerView = new StickerTextView(getApplicationContext());
-            ((StickerTextView) stickerView).setText(previewDesc);
+    protected void addStickerView(int index, int parentIndex, String previewDesc) {
+        if (index == parentIndex) {
+            if (getRadio02().isChecked()) {
+                stickerView = new StickerImageView(getApplicationContext());
+                ((StickerImageView) stickerView).setImageDrawable(getDrawable(R.drawable.circle));
+                ((StickerImageView) stickerView).getIv_main().setTag("circle");
+            }
+            else if (getRadio03().isChecked()) {
+                stickerView = new StickerImageView(getApplicationContext());
+                ((StickerImageView) stickerView).setImageDrawable(getDrawable(R.drawable.square));
+                ((StickerImageView) stickerView).getIv_main().setTag("square");
+            }
+            OrderSheetActivity.stickerPreviews[index] = stickerView;
+            OrderSheetActivity.touchPanel.addView(OrderSheetActivity.stickerPreviews[index]);
         }
-        else if (getRadio03().isChecked()) {
-            stickerView = new StickerImageView(getApplicationContext());
-            ((StickerImageView) stickerView).setImageDrawable(getDrawable(R.drawable.circle));
-            ((StickerImageView) stickerView).getIv_main().setTag("circle");
-        }
-        else if (getRadio04().isChecked()) {
-            stickerView = new StickerImageView(getApplicationContext());
-            ((StickerImageView) stickerView).setImageDrawable(getDrawable(R.drawable.square));
-            ((StickerImageView) stickerView).getIv_main().setTag("square");
-        }
-        OrderSheetActivity.stickerPreviews[index] = stickerView;
-        OrderSheetActivity.touchPanel.addView(OrderSheetActivity.stickerPreviews[index]);
     }
 }

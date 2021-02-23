@@ -127,22 +127,20 @@ public class CompoundImageOptionActivity extends NewOptionActivity {
     }
 
     @Override
-    protected void addStickerView(int index, String previewDesc) {
-        if (getRadio02().isChecked()) {
-            stickerView = new StickerTextView(getApplicationContext());
-            ((StickerTextView) stickerView).setText(previewDesc);
+    protected void addStickerView(int index, int parentIndex, String previewDesc) {
+        if (index == parentIndex) {
+            if (getRadio02().isChecked()) {
+                stickerView = new StickerImageView(getApplicationContext());
+                ((StickerImageView) stickerView).setImageDrawable(getDrawable(R.drawable.circle));
+                ((StickerImageView) stickerView).getIv_main().setTag("circle");
+            }
+            else if (getRadio03().isChecked()) {
+                stickerView = new StickerImageView(getApplicationContext());
+                ((StickerImageView) stickerView).setImageDrawable(getDrawable(R.drawable.square));
+                ((StickerImageView) stickerView).getIv_main().setTag("square");
+            }
+            OrderSheetActivity.stickerPreviews[index] = stickerView;
+            OrderSheetActivity.touchPanel.addView(OrderSheetActivity.stickerPreviews[index]);
         }
-        else if (getRadio03().isChecked()) {
-            stickerView = new StickerImageView(getApplicationContext());
-            ((StickerImageView) stickerView).setImageDrawable(getDrawable(R.drawable.circle));
-            ((StickerImageView) stickerView).getIv_main().setTag("circle");
-        }
-        else if (getRadio04().isChecked()) {
-            stickerView = new StickerImageView(getApplicationContext());
-            ((StickerImageView) stickerView).setImageDrawable(getDrawable(R.drawable.square));
-            ((StickerImageView) stickerView).getIv_main().setTag("square");
-        }
-        OrderSheetActivity.stickerPreviews[index] = stickerView;
-        OrderSheetActivity.touchPanel.addView(OrderSheetActivity.stickerPreviews[index]);
     }
 }

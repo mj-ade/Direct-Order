@@ -23,12 +23,14 @@ public class ImageOptionActivity extends NewOptionActivity {
     protected void setOption() {
         super.setOption();
 
-        getEditTextPreview().setVisibility(View.GONE);
-        getImageViewPreview().setVisibility(View.VISIBLE);
         getRadio02().setTag("cus_image");
         getRadio02().setText("이미지");
-
+        getRadio03().setVisibility(View.GONE);
+        getPreviewContentLayout().setVisibility(View.VISIBLE);
+        getEditTextPreview().setVisibility(View.GONE);
+        getImageViewPreview().setVisibility(View.VISIBLE);
         getContentsLayout().setVisibility(View.GONE);
+
         getImageViewPreview().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -42,7 +44,10 @@ public class ImageOptionActivity extends NewOptionActivity {
     protected void retrievePreviewDesc() {
         StorageReference ref = FirebaseStorage.getInstance().getReference(OrderSheetActivity.option.getPreviewDesc());
         if (ref != null) {
-            GlideApp.with(getApplicationContext()).load(ref).override(Target.SIZE_ORIGINAL).into(getImageViewPreview());
+            GlideApp.with(getApplicationContext())
+                    .load(ref)
+                    .override(Target.SIZE_ORIGINAL)
+                    .into(getImageViewPreview());
         }
     }
 
@@ -64,11 +69,14 @@ public class ImageOptionActivity extends NewOptionActivity {
     }
 
     @Override
-    protected void addStickerView(int index, String previewDesc) {
+    protected void addStickerView(int index, int parentIndex, String previewDesc) {
         stickerView = new StickerImageView(getApplicationContext());
         if (OrderSheetActivity.isUpdate) {
             StorageReference ref = FirebaseStorage.getInstance().getReference(previewDesc);
-            GlideApp.with(getApplicationContext()).load(ref).override(Target.SIZE_ORIGINAL).into(((StickerImageView) stickerView).getIv_main());
+            GlideApp.with(getApplicationContext())
+                    .load(ref)
+                    .override(Target.SIZE_ORIGINAL)
+                    .into(((StickerImageView) stickerView).getIv_main());
         }
         else
             ((StickerImageView) stickerView).setImageUri(imgUri);

@@ -88,8 +88,8 @@ public class ImageCropActivity extends AppCompatActivity {
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(getApplicationContext(), "Image Uploaded!!", Toast.LENGTH_SHORT).show();
-                        uploadCompleteListener.onUploadComplete();
+                        if (uploadCompleteListener != null)
+                            uploadCompleteListener.onUploadComplete();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

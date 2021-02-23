@@ -36,12 +36,12 @@ public class CalendarOptionActivity extends NewOptionActivity {
     }
 
     @Override
-    protected void setPreviewSticker(int index, String previewDesc) {
+    protected void setPreviewSticker(int index, int parentIndex, String previewDesc) {
 
     }
 
     @Override
-    protected void addStickerView(int index, String previewDesc) {
+    protected void addStickerView(int index, int parentIndex, String previewDesc) {
 
     }
 }

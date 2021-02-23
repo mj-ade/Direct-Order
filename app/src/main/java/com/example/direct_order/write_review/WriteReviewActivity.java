@@ -90,7 +90,7 @@ public class WriteReviewActivity extends AppCompatActivity {
             public void onClick(View v){
                 //Log.d("tag","masg");
                 String filepath = imageUpload();
-                review.put("stars", ratingBar.getRating());
+                review.put("star", ratingBar.getRating());
                 review.put("content", editText.getText().toString().trim());
                 review.put("image", filepath);
                 //해당마켓 document

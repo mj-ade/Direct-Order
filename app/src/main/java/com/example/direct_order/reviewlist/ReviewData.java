@@ -1,24 +1,34 @@
 package com.example.direct_order.reviewlist;
 
 public class ReviewData {
-    private Integer title;
-    private int resId;
+    private int star;
+    private String image;
     private String content;
 
-    public Integer getTitle() {
-        return title;
+    public ReviewData() {
+
     }
 
-    public void setTitle(Integer title) {
-        this.title = title;
+    public ReviewData(int star, String image, String content) {
+        this.star = star;
+        this.image = image;
+        this.content = content;
     }
 
-    public int getResId() {
-        return resId;
+    public int getStar() {
+        return star;
     }
 
-    public void setResId(int resId) {
-        this.resId = resId;
+    public void setStar(int star) {
+        this.star = star;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getContent() {

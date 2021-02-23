@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.direct_order.R;
+import com.example.direct_order.reviewlist.ReviewListFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
@@ -59,7 +60,7 @@ public class Cake_shop extends Fragment {
                     case 2:
                         return new Fragment(R.layout.tab__sales_fragment);
                     default:
-                        return new Fragment(R.layout.tab__reviews_fragment);
+                        return new ReviewListFragment();//Fragment(R.layout.tab__reviews_fragment);
                 }
             }
 

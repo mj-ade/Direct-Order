@@ -79,7 +79,9 @@ public class WritereviewActivity extends AppCompatActivity {
                 db.collection("markets").document(shopid).collection("ReviewList").document().set(review);
 
                 Toast.makeText(getApplicationContext(),"리뷰가 저장되었습니다", Toast.LENGTH_SHORT).show();
-                //textView.setText(editText.getText()); //리뷰 저장되야함. 리뷰 보기에서 볼 수 있게
+
+                coRef.document(docId).update("review", true);
+
                 finish();
             }
         });

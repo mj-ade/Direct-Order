@@ -102,6 +102,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
                 Context context = v.getContext();
                 //Toast.makeText(context,position+": "+ my+" click!",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent((AppCompatActivity) context, WritereviewActivity.class);
+                intent.putExtra("position", position);
                 context.startActivity(intent);
             }
 

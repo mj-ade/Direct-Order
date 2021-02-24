@@ -150,8 +150,12 @@ public class OptionForm extends LinearLayout {
                     radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton button, boolean b) {
-                            if (button.isChecked())
-                                ProductOrderActivity.myVar.setValue(number, finalI);
+                            if (button.isChecked()) {
+                                if (optionType == OptionType.RADIOBUTTON_TEXT)
+                                    ProductOrderActivity.myVar.setValue(number, finalI);
+                                else
+                                    ProductOrderActivity.myVar.setStr(number, (String) button.getTag());
+                            }
                         }
                     });
                 }
@@ -191,11 +195,13 @@ public class OptionForm extends LinearLayout {
         layoutParams.bottomMargin = dpToPx(context, 20);
         imageView.setLayoutParams(layoutParams);
         imageView.setScaleType(ImageView.ScaleType.FIT_START);
-        StorageReference ref = FirebaseStorage.getInstance().getReference(st.nextToken());
+        String s = st.nextToken();
+        StorageReference ref = FirebaseStorage.getInstance().getReference(s);
         GlideApp.with(context)
                 .load(ref)
                 .override(Target.SIZE_ORIGINAL)
                 .into(imageView);
+        compoundButton.setTag(s);
         radioGroup.addView(compoundButton);
         radioGroup.addView(imageView);
     }

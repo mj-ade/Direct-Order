@@ -2,8 +2,6 @@ package com.example.direct_order.ordersheet;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.Spinner;
 
 public class CalendarOptionActivity extends NewOptionActivity {
 
@@ -30,7 +28,7 @@ public class CalendarOptionActivity extends NewOptionActivity {
     }
 
     @Override
-    protected String setPreview() {
+    protected String setPreview(int number) {
         return "";
     }
 

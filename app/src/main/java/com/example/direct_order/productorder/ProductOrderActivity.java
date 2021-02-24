@@ -55,21 +55,28 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import static com.example.direct_order.ordersheet.OrderSheetActivity.dpToPx;
 
 public class ProductOrderActivity extends AppCompatActivity {
+    private final String TAG = "PRODUCTORDER_ACTIVITY";
     private final int IMAGE_REQUEST_CODE = 101;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private DocumentReference market = db.collection("markets").document(uid);
+
+    private DocumentReference customer = db.collection("customers").document(uid);
+    private CollectionReference customerOrderRef = market.collection("orders");
+
     private CollectionReference orderSheetRef = market.collection("OrderSheet");
     private DocumentReference myOrderSheet = orderSheetRef.document("sheet");
     private CollectionReference optionRef = myOrderSheet.collection("Options");
     private CollectionReference previewRef = myOrderSheet.collection("Previews");
-    private CollectionReference answerRef = db.collection("Answers");
+    private CollectionReference orderRef = market.collection("Order");
 
     public static boolean isCustomer;
     public static StickerView[] stickerViews = new StickerView[20];
@@ -90,6 +97,7 @@ public class ProductOrderActivity extends AppCompatActivity {
     private Uri resultUri;
     private int number;
 
+    private int newId;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,10 +118,27 @@ public class ProductOrderActivity extends AppCompatActivity {
         myVar.setOnValueChangeListener(new MyVariable.OnValueChangeListener() {
             @Override
             public void onValueChange(int num, int newVal) {
-                if (stickerViews[num-1] instanceof StickerImageView)
-                    ((StickerImageView) stickerViews[num-1]).getIv_main().setColorFilter(colors[num-1][newVal], PorterDuff.Mode.SRC_IN);
-                else if (stickerViews[num-1] instanceof StickerTextView)
-                    ((StickerTextView) stickerViews[num-1]).getTv_main().setTextColor(colors[num-1][newVal]);
+                String imgTag = (String) ((StickerImageView) stickerViews[num-1]).getIv_main().getTag();
+                if (!imgTag.substring(0, 1).equals("o")) {
+                    if (stickerViews[num - 1] instanceof StickerImageView)
+                        ((StickerImageView) stickerViews[num - 1]).getIv_main().setColorFilter(colors[num - 1][newVal], PorterDuff.Mode.SRC_IN);
+                    else if (stickerViews[num - 1] instanceof StickerTextView)
+                        ((StickerTextView) stickerViews[num - 1]).getTv_main().setTextColor(colors[num - 1][newVal]);
+                }
+            }
+
+            @Override
+            public void onStrChange(int num, String newStr) {
+                String imgTag = (String) ((StickerImageView) stickerViews[num-1]).getIv_main().getTag();
+                if (imgTag.substring(0, 1).equals("o")) {
+                    if (stickerViews[num - 1] instanceof StickerImageView) {
+                        StorageReference ref = FirebaseStorage.getInstance().getReference(newStr);
+                        GlideApp.with(getApplicationContext())
+                                .load(ref)
+                                .override(Target.SIZE_ORIGINAL)
+                                .into(((StickerImageView) stickerViews[num - 1]).getIv_main());
+                    }
+                }
             }
         });
     }
@@ -222,7 +247,10 @@ public class ProductOrderActivity extends AppCompatActivity {
                                     ((StickerImageView) stickerViews[finalI]).setImageResource(R.drawable.circle);
                                 else {  // 사용자 지정 이미지이면
                                     StorageReference ref = FirebaseStorage.getInstance().getReference(desc);
-                                    GlideApp.with(getApplicationContext()).load(ref).into(((StickerImageView) stickerViews[finalI]).getIv_main());
+                                    GlideApp.with(getApplicationContext())
+                                            .load(ref)
+                                            .override(Target.SIZE_ORIGINAL)
+                                            .into(((StickerImageView) stickerViews[finalI]).getIv_main());
                                 }
                                 ((StickerImageView) stickerViews[finalI]).getIv_main().setTag(desc);
                             }
@@ -264,7 +292,6 @@ public class ProductOrderActivity extends AppCompatActivity {
                 }
             });
         }
-        Toast.makeText(getApplicationContext(), "coco", Toast.LENGTH_SHORT).show();
     }
 
     private void setupRecyclerView() {
@@ -281,11 +308,37 @@ public class ProductOrderActivity extends AppCompatActivity {
 
     private void saveNote() {
         NestedScrollView scrollView = findViewById(R.id.nested_scrollview);
-        captureView(scrollView, scrollView.getChildAt(0).getHeight(), scrollView.getChildAt(0).getWidth());
+        String filePath = captureView(scrollView, scrollView.getChildAt(0).getHeight(), scrollView.getChildAt(0).getWidth());
         //filePath를 판매자와 소비자 주문 내역에 필드 추가
         Toast.makeText(getApplicationContext(), "주문이 완료되었습니다", Toast.LENGTH_SHORT).show();
+
+        Map<String, String> data = new HashMap<>();
+        data.put("screenshot", filePath);
+        orderRef.document().set(data);
+
+        Map<String, Object> customerData = new HashMap<>();
+        customerData.put("deposit", false);
+        customerData.put("review", false);
+        customerData.put("screenshot", filePath);
+        //customerData.put("marketId", );
+        customerOrderRef.document(String.valueOf(newId)).set(customerData);
+        //db.주문서 개수를 id로 주기
+
         isCustomer = false;
         finish();
+    }
+
+    private void checkOptionExist() {
+        customerOrderRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    newId = task.getResult().size();
+                }
+                else
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+            }
+        });
     }
 
     private String captureView(View view, int height, int width) {

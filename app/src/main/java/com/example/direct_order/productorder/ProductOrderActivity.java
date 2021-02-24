@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -88,6 +89,7 @@ public class ProductOrderActivity extends AppCompatActivity {
     //OptionType.RADIOBUTTON_TEXT
     public static MyVariable myVar = new MyVariable();
 
+    private NestedScrollView scrollView;
     private ViewGroup viewGroup;
     private OptionAdapter adapter;
     private RelativeLayout touchPanel;
@@ -95,6 +97,7 @@ public class ProductOrderActivity extends AppCompatActivity {
     private boolean[] filled = new boolean[20];
     private int[][] colors = new int[20][10];
     private Uri resultUri;
+    private float move_orgX, move_orgY;
     private int number;
     private int newId;
     private boolean orderEdit;
@@ -107,12 +110,13 @@ public class ProductOrderActivity extends AppCompatActivity {
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
 
+        scrollView = findViewById(R.id.nested_scrollview);
         viewGroup = findViewById(R.id.included_view);
         touchPanel = viewGroup.findViewById(R.id.imageDesc);
         recyclerView = viewGroup.findViewById(R.id.recyclerView);
 
+        orderEdit = getIntent().getBooleanExtra("orderEdit", false);
         checkNumOfOrder();
-        //checkOrderEdit();
         setupImageView();
         setupPreviews();
         setupRecyclerView();
@@ -199,10 +203,6 @@ public class ProductOrderActivity extends AppCompatActivity {
         });
     }
 
-    private void checkOrderEdit() {
-
-    }
-
     private void setupImageView() {
         ImageView imageView = viewGroup.findViewById(R.id.imageView);
         myOrderSheet.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -252,6 +252,9 @@ public class ProductOrderActivity extends AppCompatActivity {
                                     dpToPx(getApplicationContext(), width),
                                     dpToPx(getApplicationContext(), height));
 
+                            if (stickerViews[finalI] != null)   // 중복 생성 방지
+                                touchPanel.removeView(stickerViews[finalI]);
+
                             if (shape.equals("text")) {
                                 stickerViews[finalI] = new StickerTextView(getApplicationContext());
                                 ((StickerTextView) stickerViews[finalI]).setText(desc);
@@ -277,8 +280,35 @@ public class ProductOrderActivity extends AppCompatActivity {
                                 stickerViews[finalI].setLayoutParams(layoutParams);
                                 stickerViews[finalI].setX(dpToPx(getApplicationContext(), x));
                                 stickerViews[finalI].setY(dpToPx(getApplicationContext(), y));
-                                stickerViews[finalI].setOnTouchListener(null);
                                 stickerViews[finalI].setControlItemsHidden(true);
+                                if (orderEdit) {
+                                    stickerViews[finalI].setOnTouchListener(new View.OnTouchListener() {
+                                        @Override
+                                        public boolean onTouch(View view, MotionEvent event) {
+                                            switch (event.getAction()) {
+                                                case MotionEvent.ACTION_DOWN:
+                                                    move_orgX = event.getRawX();
+                                                    move_orgY = event.getRawY();
+                                                    scrollView.requestDisallowInterceptTouchEvent(true);
+                                                    break;
+                                                case MotionEvent.ACTION_MOVE:
+                                                    float offsetX = event.getRawX() - move_orgX;
+                                                    float offsetY = event.getRawY() - move_orgY;
+                                                    stickerViews[finalI].setX(stickerViews[finalI].getX() + offsetX);
+                                                    stickerViews[finalI].setY(stickerViews[finalI].getY() + offsetY);
+                                                    move_orgX = event.getRawX();
+                                                    move_orgY = event.getRawY();
+                                                    break;
+                                                case MotionEvent.ACTION_UP:
+                                                    scrollView.requestDisallowInterceptTouchEvent(false);
+                                                    break;
+                                            }
+                                            return true;
+                                        }
+                                    });
+                                }
+                                else
+                                    stickerViews[finalI].setOnTouchListener(null);
                             }
                         }
                         else {
@@ -325,7 +355,6 @@ public class ProductOrderActivity extends AppCompatActivity {
     }
 
     private void saveNote() {
-        NestedScrollView scrollView = findViewById(R.id.nested_scrollview);
         String filePath = captureView(scrollView, scrollView.getChildAt(0).getHeight(), scrollView.getChildAt(0).getWidth());
         //filePath를 판매자와 소비자 주문 내역에 필드 추가
         Toast.makeText(getApplicationContext(), "주문이 완료되었습니다", Toast.LENGTH_SHORT).show();

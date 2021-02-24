@@ -47,7 +47,7 @@ public class MainForSeller extends AppCompatActivity
     private AppBarConfiguration mAppBarConfiguration;
     private long time= 0;
     private TextView t1, t2;
-    String myinsta="https://www.naver.com";
+    String myinsta;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

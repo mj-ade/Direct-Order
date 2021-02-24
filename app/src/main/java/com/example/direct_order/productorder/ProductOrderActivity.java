@@ -70,7 +70,7 @@ public class ProductOrderActivity extends AppCompatActivity {
     private DocumentReference market = db.collection("markets").document(uid);
 
     private DocumentReference customer = db.collection("customers").document(uid);
-    private CollectionReference customerOrderRef = market.collection("orders");
+    private CollectionReference customerOrderRef = customer.collection("orders");
 
     private CollectionReference orderSheetRef = market.collection("OrderSheet");
     private DocumentReference myOrderSheet = orderSheetRef.document("sheet");
@@ -96,8 +96,9 @@ public class ProductOrderActivity extends AppCompatActivity {
     private int[][] colors = new int[20][10];
     private Uri resultUri;
     private int number;
-
     private int newId;
+    private boolean orderEdit;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +111,8 @@ public class ProductOrderActivity extends AppCompatActivity {
         touchPanel = viewGroup.findViewById(R.id.imageDesc);
         recyclerView = viewGroup.findViewById(R.id.recyclerView);
 
+        checkNumOfOrder();
+        //checkOrderEdit();
         setupImageView();
         setupPreviews();
         setupRecyclerView();
@@ -118,13 +121,10 @@ public class ProductOrderActivity extends AppCompatActivity {
         myVar.setOnValueChangeListener(new MyVariable.OnValueChangeListener() {
             @Override
             public void onValueChange(int num, int newVal) {
-                String imgTag = (String) ((StickerImageView) stickerViews[num-1]).getIv_main().getTag();
-                if (!imgTag.substring(0, 1).equals("o")) {
-                    if (stickerViews[num - 1] instanceof StickerImageView)
-                        ((StickerImageView) stickerViews[num - 1]).getIv_main().setColorFilter(colors[num - 1][newVal], PorterDuff.Mode.SRC_IN);
-                    else if (stickerViews[num - 1] instanceof StickerTextView)
-                        ((StickerTextView) stickerViews[num - 1]).getTv_main().setTextColor(colors[num - 1][newVal]);
-                }
+                if (stickerViews[num - 1] instanceof StickerImageView)
+                    ((StickerImageView) stickerViews[num - 1]).getIv_main().setColorFilter(colors[num - 1][newVal], PorterDuff.Mode.SRC_IN);
+                else if (stickerViews[num - 1] instanceof StickerTextView)
+                    ((StickerTextView) stickerViews[num - 1]).getTv_main().setTextColor(colors[num - 1][newVal]);
             }
 
             @Override
@@ -164,9 +164,10 @@ public class ProductOrderActivity extends AppCompatActivity {
                         if (function.equals("func3"))
                             filled[pos] = true;
                         if (filled[pos]) {
-                            if (((String) document.get("preview")).equals("circle"))
+                            String imgTag = (String) ((StickerImageView) stickerViews[pos]).getIv_main().getTag();
+                            if (imgTag.equals("circle"))
                                 ((StickerImageView) stickerViews[pos]).setImageResource(R.drawable.circle_filled);
-                            else if (((String) document.get("preview")).equals("square"))
+                            else if (imgTag.equals("square"))
                                 ((StickerImageView) stickerViews[pos]).setImageResource(R.drawable.square_filled);
                         }
 
@@ -183,6 +184,23 @@ public class ProductOrderActivity extends AppCompatActivity {
                     Log.d("TAG", "Error getting documents: ", task.getException());
             }
         });
+    }
+
+    private void checkNumOfOrder() {
+        customerOrderRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    newId = task.getResult().size();
+                }
+                else
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+            }
+        });
+    }
+
+    private void checkOrderEdit() {
+
     }
 
     private void setupImageView() {
@@ -320,25 +338,11 @@ public class ProductOrderActivity extends AppCompatActivity {
         customerData.put("deposit", false);
         customerData.put("review", false);
         customerData.put("screenshot", filePath);
-        //customerData.put("marketId", );
+        //customerData.put("shopuid", );
         customerOrderRef.document(String.valueOf(newId)).set(customerData);
-        //db.주문서 개수를 id로 주기
 
         isCustomer = false;
         finish();
-    }
-
-    private void checkOptionExist() {
-        customerOrderRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    newId = task.getResult().size();
-                }
-                else
-                    Log.d(TAG, "Error getting documents: ", task.getException());
-            }
-        });
     }
 
     private String captureView(View view, int height, int width) {

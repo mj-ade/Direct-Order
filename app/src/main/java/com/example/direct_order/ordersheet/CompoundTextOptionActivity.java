@@ -67,9 +67,6 @@ public class CompoundTextOptionActivity extends NewOptionActivity {
     protected String setOptionFunction(int number, int parentNumber) {
         String function = "";
 
-        if (number != parentNumber)
-            return "func1";
-
         if (getOptionType() == OptionType.RADIOBUTTON_TEXT) {
             for (int i = 0; i < getFunctionRadioGroup().getChildCount(); i++) {
                 RadioButton r = (RadioButton) getFunctionRadioGroup().getChildAt(i);

@@ -190,11 +190,11 @@ public class OptionForm extends LinearLayout {
 
     private void setCompoundButtonImage(Context context, StringTokenizer st, RadioGroup radioGroup, CompoundButton compoundButton) {
         ImageView imageView = new ImageView(context);
-        LayoutParams layoutParams = new LayoutParams(dpToPx(context, 180), LayoutParams.WRAP_CONTENT);
+        LayoutParams layoutParams = new LayoutParams(dpToPx(context, 160), dpToPx(context, 160));
         layoutParams.leftMargin = dpToPx(context, 20);
         layoutParams.bottomMargin = dpToPx(context, 20);
         imageView.setLayoutParams(layoutParams);
-        imageView.setScaleType(ImageView.ScaleType.FIT_START);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         String s = st.nextToken();
         StorageReference ref = FirebaseStorage.getInstance().getReference(s);
         GlideApp.with(context)

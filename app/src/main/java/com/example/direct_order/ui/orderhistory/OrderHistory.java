@@ -40,7 +40,9 @@ public class OrderHistory extends Fragment {
     List<String> myList = new ArrayList<>();
     private MyListAdapter mAdapter;
     RecyclerView mRecyclerView;
+    String s;
     int num=0;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class OrderHistory extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         //DocumentReference docRef = db.collection("customers").document(uid);
         CollectionReference coRef = db.collection("customers").document(uid).collection("orders");
+
         /*docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -79,34 +82,27 @@ public class OrderHistory extends Fragment {
                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                    if (task.isSuccessful()) {
                                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                                           s = "";
+                                                           String shopuid = document.get("shopuid").toString().trim();
 
-                                                           String keys = document.getData().keySet().toString();
-                                                           String values = document.getData().values().toString();
-                                                           int size = document.getData().size();
+                                                           db.collection("markets").document(shopuid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>(){
+                                                               @Override
+                                                               public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                   DocumentSnapshot document = task.getResult();
+                                                                   if (document.exists()) {
+                                                                       String shopname = document.get("shopname").toString().trim();
+                                                                       String shopgood = document.get("shopgoods").toString().trim();
+                                                                       String shopnum = document.get("shopnum").toString().trim();
+                                                                       s = "마켓명: "+ shopname +"\n"+"주문 상품: "+ shopgood +"\n"+"마켓 전화번호: "+ shopnum;
+                                                                       myList.add(s);
+                                                                       mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                                                                       mAdapter = new MyListAdapter(myList);
 
-                                                           String key[] =keys.split(",");
-                                                           String value[]=values.split(",");
-                                                           String s = " ";
+                                                                       mRecyclerView.setAdapter(mAdapter);
+                                                                   }
+                                                               }
+                                                           });
 
-                                                           for(int i=0;i<size;i++){
-                                                               key[i]=key[i].replace("[","");
-                                                               key[i]=key[i].replace("]","");
-                                                               if(key[i].trim().equals("shopname"))
-                                                                    s = s + key[i]+": "+value[i];
-                                                               else if(key[i].trim().equals("day")||key[i].trim().equals("goods"))
-                                                                   s = s + "\n" + key[i]+": "+value[i];
-                                                               else
-                                                                   continue;
-
-                                                               s = s.replace("[","");
-                                                               s = s.replace("]","");
-                                                           }
-
-                                                           myList.add(s);
-                                                           mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                                                           mAdapter = new MyListAdapter(myList);
-
-                                                           mRecyclerView.setAdapter(mAdapter);
 
                                                        }
                                                    }

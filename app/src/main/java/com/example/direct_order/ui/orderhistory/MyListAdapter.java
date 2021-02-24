@@ -1,7 +1,9 @@
 package com.example.direct_order.ui.orderhistory;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,9 +19,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.direct_order.R;
 import com.example.direct_order.write_review.WriteReviewActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +32,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
@@ -34,7 +41,6 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
 
     private List<String> myList;
-
 
     public MyListAdapter(List<String> myList) {
         this.myList = myList;
@@ -59,6 +65,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
         String my = myList.get(position);
         holder.mText.setText(my);
 
+
         //CollectionReference coRef = db.collection("customers").document(uid).collection("orders");
         DocumentReference doRef = db.collection("customers").document(uid).collection("orders").document(x);
         doRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -69,9 +76,19 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
                         holder.mImage.setImageResource(R.drawable.progress2);
                     else
                         holder.mImage.setImageResource(R.drawable.progress1);
+
+                    String screenshot = value.get("screenshot").toString().trim();
+                    String file = screenshot.substring(screenshot.lastIndexOf("/"));
+
+                    if(value.get("review").toString().trim().equals("true"))
+                        ;//리뷰보기 버튼 안눌리게
+
+
+
                 }
             }
         });
+
 
         holder.mContent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,9 +110,22 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
                 //리뷰 쓰기
                 Context context = v.getContext();
                 //Toast.makeText(context,position+": "+ my+" click!",Toast.LENGTH_LONG).show();
-                Intent intent = new Intent((AppCompatActivity) context, WriteReviewActivity.class);
-                intent.putExtra("position", position);
-                context.startActivity(intent);
+                doRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (value != null && value.exists()) {
+                            if(value.get("review").toString().trim().equals("true")) {
+                                Toast.makeText(v.getContext(),"리뷰는 한 번만 작성할 수 있습니다.",Toast.LENGTH_LONG).show();
+                            }
+                            else{
+                                Intent intent = new Intent((AppCompatActivity) context, WriteReviewActivity.class);
+                                intent.putExtra("position", position);
+                                context.startActivity(intent);
+                            }
+                        }
+                    }
+                });
+
             }
 
         });
@@ -105,45 +135,44 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
             public void onClick(View v) {
                 //주문 상세 보기
                 Context context = v.getContext();
-                //Toast.makeText(context,position+": "+ my+" click!",Toast.LENGTH_LONG).show();
-                AlertDialog.Builder builder = new AlertDialog.Builder((AppCompatActivity) context).setNegativeButton("확인",null);
-                builder.setTitle("<주문 상세 보기>");
 
-                TextView tv = new TextView(context);
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP,17);
-                tv.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
-                //CollectionReference coRef = db.collection("customers").document(uid).collection("orders");
-                doRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                       @Override
-                                                       public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                           if (task.isSuccessful()) {
-                                                               DocumentSnapshot document = task.getResult();
-                                                               String keys = document.getData().keySet().toString();
-                                                               String values = document.getData().values().toString();
-                                                               int size = document.getData().size();
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View myScrollView = inflater.inflate(R.layout.scroll_detail, null, false);
 
-                                                               String key[] =keys.split(",");
-                                                               String value[]=values.split(",");
-                                                               String s = " ";
-
-                                                               for(int i=0;i<size;i++){
-                                                                   if(key[i].contains("deposit"))
-                                                                       i++;
-
-                                                                   s = s + key[i]+": "+value[i];
-                                                                   if(i<size-1)
-                                                                       s = s + "\n";
-                                                                   s = s.replace("[","");
-                                                                   s = s.replace("]","");
-                                                               }
-                                                               tv.setText(s);
-                                                           }
-                                                       }
-                                                   });
+                ImageView iv = (ImageView) myScrollView.findViewById(R.id.orderdetail);
 
 
-                builder.setView(tv);
+              //  iv.setImageResource(R.drawable.white);
+                doRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (value != null && value.exists()) {
+                            //screenshot 가져오기
+                            String screenshot = value.get("screenshot").toString().trim();
+                            String file = screenshot.substring(screenshot.lastIndexOf("/"));
+
+                            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+                            StorageReference rootRef = firebaseStorage.getReferenceFromUrl(screenshot.replace(file,"").trim());
+                            StorageReference childRef = rootRef.child(file.trim());
+                            childRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Glide.with(v.getContext()).load(uri).placeholder(R.drawable.white).into(iv);                            //네트워크 이미지는 Glide로 해결한다.
+                                }                                                                                   //Glide를 쓰지 않으면 Thread + URL을 써야한다.
+                            });
+                        }
+                    }
+                });
+
+                AlertDialog.Builder builder = new AlertDialog.Builder((AppCompatActivity) v.getContext()).setView(myScrollView).setTitle("<주문 상세 보기>").setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+                //Toast.makeText(holder.itemView.getContext(), "Options was clicked", Toast.LENGTH_LONG).show();
                 builder.create().show();
+
 
             }
 

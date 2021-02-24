@@ -72,6 +72,31 @@
                     android:text="ETC" />
 
             </RadioGroup>
+            <RadioGroup
+                android:id="@+id/editable"
+                android:layout_width="215dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp">
+
+            <TextView
+                android:id="@+id/txt_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="31dp"
+                android:layout_gravity="center"
+                android:text="고객 상품 직접 지정 가능 여부" />
+
+            <RadioButton
+                android:id="@+id/possible"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="가능" />
+                <RadioButton
+                    android:id="@+id/impossib"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="불가능" />
+            </RadioGroup>
 
             <EditText
                 android:id="@+id/txt_shopnum"

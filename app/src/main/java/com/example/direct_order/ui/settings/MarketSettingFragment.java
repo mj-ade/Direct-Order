@@ -48,7 +48,7 @@ import static android.app.Activity.RESULT_OK;
 public class MarketSettingFragment extends Fragment {
     FirebaseStorage storage = FirebaseStorage.getInstance();
     private EditText tv1, tv2, tv3, tv4, tv5;
-    private TextView tv6;
+    private TextView tv6, tv7;
     private Button btn_edit;
     private KeyListener k1, k2, k3, k4, k5;
     private ImageView main;
@@ -65,6 +65,7 @@ public class MarketSettingFragment extends Fragment {
         tv4 = root.findViewById(R.id.shop_acc);
         tv5 = root.findViewById(R.id.shop_add);
         tv6 = root.findViewById(R.id.shop_good);
+        tv7=root.findViewById(R.id.whether);
 
         k1 = tv1.getKeyListener();
         k2 = tv2.getKeyListener();
@@ -95,6 +96,8 @@ public class MarketSettingFragment extends Fragment {
                         String acc = document.get("shopaccount").toString();
                         String add = document.get("shopaddress").toString();
                         String good = document.get("shopgoods").toString();
+                        String possible = document.get("orderedit").toString().trim();
+
 
                         tv1.setText(name);
                         tv2.setText(num);
@@ -102,7 +105,10 @@ public class MarketSettingFragment extends Fragment {
                         tv4.setText(acc);
                         tv5.setText(add);
                         tv6.setText(good);
-
+                        if(possible.equals("true"))
+                            tv7.setText("가능");
+                        else
+                            tv7.setText("불가능");
 
                     }
                 }
@@ -213,7 +219,13 @@ public class MarketSettingFragment extends Fragment {
                         Toast.makeText(getActivity(), "판매 상품 종류는 변경이 불가능합니다.", Toast.LENGTH_LONG).show();
                 }
             });
-
+        tv7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (btn_edit.getText().toString().equals("완료"))
+                    Toast.makeText(getActivity(), "지정 가능 여부는 변경이 불가능합니다.", Toast.LENGTH_LONG).show();
+            }
+        });
             main.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

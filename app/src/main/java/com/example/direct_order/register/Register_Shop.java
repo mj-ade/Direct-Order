@@ -53,8 +53,8 @@ import java.util.HashMap;
 public class Register_Shop extends AppCompatActivity {
 
     EditText et_shopname, et_shopnum, et_instagram, et_shopad, et_shopacc;
-    RadioGroup rg;
-    RadioButton r1;
+    RadioGroup rg, rg2;
+    RadioButton r1, r2;
     ImageView setmain;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     private FirebaseAuth firebaseAuth;
@@ -91,9 +91,14 @@ public class Register_Shop extends AppCompatActivity {
         et_shopacc=findViewById(R.id.txt_shop_acc);
 
         rg=findViewById(R.id.radio_product);
+        rg2=findViewById(R.id.editable);
 
         r1=findViewById(R.id.radioButton_cake);
         r1.setChecked(true);
+
+        r2=findViewById(R.id.possible);
+        r2.setChecked(true);
+
         /*r2=findViewById(R.id.radioButton_macaron);
         r3=findViewById(R.id.radioButton_case);
         r4=findViewById(R.id.radioButton_acc);
@@ -110,12 +115,19 @@ public class Register_Shop extends AppCompatActivity {
                 final String insta = et_instagram.getText().toString().trim();
                 final String shopad = et_shopad.getText().toString().trim();
                 final String shopacc = et_shopacc.getText().toString().trim();
-                final RadioButton rb;
+                final RadioButton rb, rb2;
                 rb = findViewById(rg.getCheckedRadioButtonId());
+                rb2=findViewById(rg2.getCheckedRadioButtonId());
+
                 final String shopgood = rb.getText().toString();
+                final boolean orderedit;
+                if(rb2.getText().toString().equals("가능"))
+                    orderedit=true;
+                else
+                    orderedit=false;
 
                 if(!shopname.equals("")&&!shopnum.equals("")&&!insta.equals("")&&!shopad.equals("")&&!shopacc.equals("")) {
-                    showDialog(shopname,shopnum,insta,shopad,shopacc,shopgood);
+                    showDialog(shopname,shopnum,insta,shopad,shopacc,shopgood,orderedit);
                 }
                 else{
                     android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(Register_Shop.this);
@@ -134,7 +146,7 @@ public class Register_Shop extends AppCompatActivity {
 
     }
 
-    void showDialog(String shopname, String shopnum, String insta, String shopad, String shopacc, String shopgood){
+    void showDialog(String shopname, String shopnum, String insta, String shopad, String shopacc, String shopgood, Boolean orderedit){
         Join ja = (Join) Join.activity;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("\""+shopname+"\" 마켓을 등록 하시겠습니까?");
@@ -183,7 +195,6 @@ public class Register_Shop extends AppCompatActivity {
                 shophash.put("shopgoods",shopgood);
 
 
-
                 db.collection("markets").document(uid).set(shophash)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -199,6 +210,8 @@ public class Register_Shop extends AppCompatActivity {
                                 user.delete();
                             }
                         });
+
+                db.collection("markets").document(uid).update("orderedit",orderedit);
 
 // Create a storage reference from our app
                 StorageReference storageRef = storage.getReference();

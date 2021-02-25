@@ -4,24 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".orderlist.OrderlistActivity"
     android:orientation="vertical">
-
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:onClick="showDatePicker"
+            android:layout_marginLeft="16dp"
             android:text="Date"
             android:textAllCaps="true"
-            android:textColor="#777675"
+            android:textColor="@color/gray"
             android:textStyle="bold"
             app:backgroundTint="#F6EB8B"
             app:rippleColor="#FFFFFF"/>
@@ -36,6 +33,6 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </LinearLayout>

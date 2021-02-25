@@ -390,7 +390,7 @@ public class ProductOrderActivity extends AppCompatActivity {
         data.put("date", sdf.format(System.currentTimeMillis()));
         data.put("pickup", pickup);
         data.put("price", 0);
-        data.put("process", false);
+        data.put("process", 0);
         orderRef.document().set(data);
 
         Map<String, Object> customerData = new HashMap<>();

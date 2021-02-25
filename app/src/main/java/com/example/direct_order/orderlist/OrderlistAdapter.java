@@ -2,6 +2,8 @@ package com.example.direct_order.orderlist;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,29 +18,110 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.direct_order.R;
+import com.example.direct_order.ordersheet.OnItemClickListener;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+public class OrderListAdapter extends FirestoreRecyclerAdapter<Order, OrderListAdapter.ViewHolder> {
+    private OnItemClickListener listener;
+    private Context context;
+    private String[] btnTexts = {"가격/계좌 전송", "입금 확인", "승인된 주문"};
 
-public class OrderlistAdapter extends RecyclerView.Adapter<OrderlistAdapter.ViewHolder> {
+    public OrderListAdapter(@NonNull FirestoreRecyclerOptions<Order> options, Context context) {
+        super(options);
+        this.context = context;
+    }
 
-    private ArrayList<OrderlistActivity.item> mDataset;
-    int[] count;
+    @Override
+    protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Order model) {
+        holder.name.setText(model.getName());
+        holder.date.setText(model.getDate());
+        holder.pickup.setText(model.getPickup());
+        if (model.getPrice() != 0)
+            holder.price.setText(model.getPrice()+"");
+        holder.button_change.setText(btnTexts[model.getProcess()]);
+        if (model.getProcess() != 0) {
+            holder.price.setKeyListener(null);
+            if (model.getProcess() == 2) {
+                holder.button_change.setEnabled(false);
+                holder.button_change.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));    // color 수정
+            }
+        }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        // 사용될 항목들 선언
+        holder.message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, MessageActivity.class);
+                intent.putExtra("name", model.getName());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        });
+        holder.button_change.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (model.getProcess() == 0) {
+                    if (!holder.price.getText().toString().equals("")) {
+                        Toast.makeText(context, holder.price.getText(), Toast.LENGTH_SHORT).show(); //Toast 대신 값 전달 (주문자에게 메시지로 가격 전송)
+                        getSnapshots().getSnapshot(position).getReference()
+                                .update("price", Integer.parseInt(holder.price.getText().toString()), "process", model.getProcess() + 1)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("TAG", "DocumentSnapshot successfully updated!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w("TAG", "Error updating document", e);
+                                    }
+                                });
+                    }
+                    else {
+                        Toast.makeText(context, "가격을 입력해주세요", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else if (model.getProcess() == 1) {
+                    getSnapshots().getSnapshot(position).getReference()
+                            .update("process", model.getProcess() + 1)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d("TAG", "DocumentSnapshot successfully updated!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("TAG", "Error updating document", e);
+                                }
+                            });
+                }
+            }
+        });
+    }
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.orderlist_item, parent,false);
+        ViewHolder holder = new ViewHolder(v);
+        return holder;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
         public ImageButton message;
         public TextView name;
-        public TextView item_name;
         public TextView date;
         public TextView pickup;
-        public EditText won;
+        public EditText price;
         public Button button_change;
 
         public ViewHolder(View v) {
@@ -46,115 +129,20 @@ public class OrderlistAdapter extends RecyclerView.Adapter<OrderlistAdapter.View
 
             message = (ImageButton) v.findViewById(R.id.imageButton);
             name = (TextView) v.findViewById(R.id.textView);
-            item_name = (TextView) v.findViewById(R.id.textView2);
-            date = (TextView) v.findViewById(R.id.textView3);
-            pickup = (TextView) v.findViewById(R.id.textView4);
-            won = (EditText) v.findViewById(R.id.won);
-            button_change = (Button) v.findViewById(R.id.button2);
+            date = (TextView) v.findViewById(R.id.textView2);
+            pickup = (TextView) v.findViewById(R.id.textView3);
+            price = (EditText) v.findViewById(R.id.price);
+            button_change = (Button) v.findViewById(R.id.send_button);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION && listener != null) {
+                        listener.onItemClick(getSnapshots().getSnapshot(position), position);
+                    }
+                }
+            });
         }
     }
-
-    // 생성자 - 넘어 오는 데이터파입에 유의해야 한다.
-    public OrderlistAdapter(ArrayList<OrderlistActivity.item> myDataset) {
-        mDataset = myDataset;
-        count = new int[mDataset.size()];
-    }
-
-    @NonNull
-    @Override
-    public OrderlistAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.orderlist_item, parent,false);
-
-        ViewHolder holder = new ViewHolder(v);
-        return holder;
-    }
-
-
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.name.setText("Name : "+mDataset.get(position).getName());
-        holder.item_name.setText("Item : "+mDataset.get(position).getItemname());
-        holder.date.setText("Date : "+mDataset.get(position).getDate());
-        holder.pickup.setText("Pickup : "+mDataset.get(position).getPickup());
-
-        //onItemClick listener here
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = v.getContext();
-                //버튼 클릭 이벤트 처리 여기서//
-                Intent intent = new Intent(v.getContext(), OrderDetailActivity.class);
-                intent.putExtra("name", mDataset.get(position).getName());
-                intent.putExtra("item_name", mDataset.get(position).getItemname());
-                intent.putExtra("date", mDataset.get(position).getDate());
-                intent.putExtra("pickup", mDataset.get(position).getPickup());
-
-                context.startActivity(intent);
-
-            }
-        });
-        holder.message.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = v.getContext();
-                Intent intent = new Intent(v.getContext(), MessageActivity.class);
-                intent.putExtra("name", mDataset.get(position).getName());
-                context.startActivity(intent);
-            }
-        });
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String uid = user.getUid();
-        Map<String, Object> order = new HashMap<>();
-        holder.button_change.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = v.getContext();
-                ++count[position];
-                if(count[position]==1 && !holder.won.getText().toString().equals("")){ //edittext가 null이 아닐때
-                    holder.button_change.setText("입금 확인");
-                    Toast.makeText(context.getApplicationContext(), holder.won.getText(), Toast.LENGTH_SHORT).show(); //Toast 대신 값 전달 (주문자에게 메시지로 가격 전송)
-                    holder.won.setText(" "+holder.won.getText()+"원");
-                    holder.won.setKeyListener(null);
-
-                    order.put("price", holder.won.getText().toString());
-                    order.put("process", 1);
-                    db.collection("markets").document(uid).collection("OrderList").document(String.valueOf(position)).update(order).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("tag", "DocumentSnapshot successfully written!");
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w("OrderlistAdapter", "Error writing document",e);
-                        }
-                    });
-
-                }else if(count[position]==2){
-                    holder.button_change.setText("승인된 주문");
-
-                    order.put("process", 2);
-                    db.collection("markets").document(uid).collection("OrderList").document(String.valueOf(position)).update(order).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("tag", "DocumentSnapshot successfully written!");
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w("OrderlistAdapter", "Error writing document",e);
-                        }
-                    });
-                }
-            }
-        });
-    }
-
-    @Override
-    public int getItemCount() {
-        return mDataset.size();
-    }
-
 }

@@ -185,6 +185,28 @@ public class OptionForm extends LinearLayout {
                         displayTime(timeText);
                 }
             });
+
+            if (ProductOrderActivity.isCustomer) {
+                timeText.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                        if (dateText.getText().toString().substring(0, 1).equals("2") && !timeText.getText().toString().substring(0, 1).equals("T")) {
+                            ProductOrderActivity.pickup = dateText.getText().toString() + " " + timeText.getText().toString();
+                        }
+                    }
+                });
+            }
         }
     }
 

@@ -77,9 +77,11 @@ public class ProductOrderActivity extends AppCompatActivity {
     private DocumentReference myOrderSheet = orderSheetRef.document("sheet");
     private CollectionReference optionRef = myOrderSheet.collection("Options");
     private CollectionReference previewRef = myOrderSheet.collection("Previews");
-    private CollectionReference orderRef = market.collection("Order");
+
+    private CollectionReference orderRef = market.collection("OrderList");
 
     public static boolean isCustomer;
+    public static String pickup;
     public static StickerView[] stickerViews = new StickerView[20];
 
     //OptionType.IMAGE
@@ -101,6 +103,7 @@ public class ProductOrderActivity extends AppCompatActivity {
     private int number;
     private int newId;
     private boolean orderEdit;
+    private String customerName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -116,6 +119,7 @@ public class ProductOrderActivity extends AppCompatActivity {
         recyclerView = viewGroup.findViewById(R.id.recyclerView);
 
         orderEdit = getIntent().getBooleanExtra("orderEdit", false);
+        setCustomerName();
         checkNumOfOrder();
         setupImageView();
         setupPreviews();
@@ -147,45 +151,22 @@ public class ProductOrderActivity extends AppCompatActivity {
         });
     }
 
-    private void retrieveFunction() {
-        optionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    private void setCustomerName() {
+        customer.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-                    for (DocumentSnapshot document : task.getResult()) {
-                        long type = (Long) document.get("type");
-                        if (type != OptionType.RADIOBUTTON_TEXT)
-                            continue;
-
-                        String function = (String) document.get("func");
-                        if (function.charAt(4) == '1')   // 기능 없음이면 저장 안함
-                            continue;
-
-                        int index = ((Long) document.get("number")).intValue() - 1;
-                        int parentIndex = ((Long) document.get("parentNumber")).intValue() - 1;
-                        int pos = (index == parentIndex) ? index : parentIndex;
-
-                        if (function.equals("func3"))
-                            filled[pos] = true;
-                        if (filled[pos]) {
-                            String imgTag = (String) ((StickerImageView) stickerViews[pos]).getIv_main().getTag();
-                            if (imgTag.equals("circle"))
-                                ((StickerImageView) stickerViews[pos]).setImageResource(R.drawable.circle_filled);
-                            else if (imgTag.equals("square"))
-                                ((StickerImageView) stickerViews[pos]).setImageResource(R.drawable.square_filled);
-                        }
-
-                        int count = 0;
-                        StringTokenizer st = new StringTokenizer((String) document.get("content"), "&");
-
-                        while (st.hasMoreTokens()) {
-                            String s = st.nextToken();
-                            colors[pos][count++] = Color.parseColor(s.substring(s.indexOf("#"), s.length()));
-                        }
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists())
+                        customerName = (String) document.get("image");
+                    else {
+                        customerName = "";
+                        Log.d("CUSTOMER_INFO", "No such document");
                     }
                 }
-                else
-                    Log.d("TAG", "Error getting documents: ", task.getException());
+                else {
+                    Log.d("CUSTOMER_INFO", "get failed with ", task.getException());
+                }
             }
         });
     }
@@ -354,13 +335,62 @@ public class ProductOrderActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    private void retrieveFunction() {
+        optionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot document : task.getResult()) {
+                        long type = (Long) document.get("type");
+                        if (type != OptionType.RADIOBUTTON_TEXT)
+                            continue;
+
+                        String function = (String) document.get("func");
+                        if (function.charAt(4) == '1')   // 기능 없음이면 저장 안함
+                            continue;
+
+                        int index = ((Long) document.get("number")).intValue() - 1;
+                        int parentIndex = ((Long) document.get("parentNumber")).intValue() - 1;
+                        int pos = (index == parentIndex) ? index : parentIndex;
+
+                        if (function.equals("func3"))
+                            filled[pos] = true;
+                        if (filled[pos]) {
+                            String imgTag = (String) ((StickerImageView) stickerViews[pos]).getIv_main().getTag();
+                            if (imgTag.equals("circle"))
+                                ((StickerImageView) stickerViews[pos]).setImageResource(R.drawable.circle_filled);
+                            else if (imgTag.equals("square"))
+                                ((StickerImageView) stickerViews[pos]).setImageResource(R.drawable.square_filled);
+                        }
+
+                        int count = 0;
+                        StringTokenizer st = new StringTokenizer((String) document.get("content"), "&");
+
+                        while (st.hasMoreTokens()) {
+                            String s = st.nextToken();
+                            colors[pos][count++] = Color.parseColor(s.substring(s.indexOf("#"), s.length()));
+                        }
+                    }
+                }
+                else
+                    Log.d("TAG", "Error getting documents: ", task.getException());
+            }
+        });
+    }
+
     private void saveNote() {
         String filePath = captureView(scrollView, scrollView.getChildAt(0).getHeight(), scrollView.getChildAt(0).getWidth());
         //filePath를 판매자와 소비자 주문 내역에 필드 추가
         Toast.makeText(getApplicationContext(), "주문이 완료되었습니다", Toast.LENGTH_SHORT).show();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 
-        Map<String, String> data = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
         data.put("screenshot", filePath);
+        data.put("name", customerName);
+        data.put("date", sdf.format(System.currentTimeMillis()));
+        data.put("pickup", pickup);
+        data.put("price", 0);
+        data.put("process", false);
         orderRef.document().set(data);
 
         Map<String, Object> customerData = new HashMap<>();

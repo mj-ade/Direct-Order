@@ -3,6 +3,8 @@ package com.example.direct_order.ordersheet;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
@@ -43,6 +45,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class OrderSheetActivity extends ImageCropActivity implements AutoPermissionsListener {
     static RelativeLayout touchPanel;
@@ -230,7 +234,7 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
@@ -251,31 +255,43 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                         stickerPreviews[numberIndex] = null;
                     }
                     //db에 저장된 내용도 삭제
-                    previewRef.document("stickerID" + (numberIndex + 1)).delete();//.update("desc", desc);    // 나머지는 기존 것과 똑같고 desc만 변경
+                    previewRef.document("stickerID" + (numberIndex + 1)).delete();
                 }
+                else if (direction == ItemTouchHelper.RIGHT) {
+                    option = adapter.updateItem(viewHolder.getAdapterPosition());
+                    isUpdate = true;
+
+                    if (option.getType() == OptionType.TEXT)
+                        startActivity(new Intent(OrderSheetActivity.this, TextOptionActivity.class));
+                    else if (option.getType() == OptionType.IMAGE)
+                        startActivity(new Intent(OrderSheetActivity.this, ImageOptionActivity.class));
+                    else if (option.getType() >= OptionType.CHECKBOX_TEXT && option.getType() <= OptionType.RADIOBUTTON_IMAGE) {
+                        if (option.getType() % 2 == 0)
+                            startActivity(new Intent(OrderSheetActivity.this, CompoundTextOptionActivity.class));
+                        else
+                            startActivity(new Intent(OrderSheetActivity.this, CompoundImageOptionActivity.class));
+                    }
+                    else if (option.getType() == OptionType.CALENDAR)
+                        startActivity(new Intent(OrderSheetActivity.this, CalendarOptionActivity.class));
+                }
+            }
+
+            @Override
+            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                        .addSwipeLeftBackgroundColor(Color.parseColor("#F13A1F"))
+                        .addSwipeLeftActionIcon(R.drawable.ic_delete)
+                        .addSwipeLeftLabel("Delete")
+                        .setSwipeLeftLabelColor(Color.WHITE)
+                        .addSwipeRightBackgroundColor(Color.parseColor("#409E44"))
+                        .addSwipeRightActionIcon(R.drawable.ic_mode)
+                        .addSwipeRightLabel("Edit")
+                        .setSwipeRightLabelColor(Color.WHITE)
+                        .create()
+                        .decorate();
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
         }).attachToRecyclerView(recyclerView);
-
-        adapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
-                option = documentSnapshot.toObject(Option.class);
-                isUpdate = true;
-
-                if (option.getType() == OptionType.TEXT)
-                    startActivity(new Intent(OrderSheetActivity.this, TextOptionActivity.class));
-                else if (option.getType() == OptionType.IMAGE)
-                    startActivity(new Intent(OrderSheetActivity.this, ImageOptionActivity.class));
-                else if (option.getType() >= OptionType.CHECKBOX_TEXT && option.getType() <= OptionType.RADIOBUTTON_IMAGE) {
-                    if (option.getType() % 2 == 0)
-                        startActivity(new Intent(OrderSheetActivity.this, CompoundTextOptionActivity.class));
-                    else
-                        startActivity(new Intent(OrderSheetActivity.this, CompoundImageOptionActivity.class));
-                }
-                else if (option.getType() == OptionType.CALENDAR)
-                    startActivity(new Intent(OrderSheetActivity.this, CalendarOptionActivity.class));
-            }
-        });
     }
 
     private void setupMainImage(ImageView imageView) {

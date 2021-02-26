@@ -15,7 +15,6 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 public class OptionAdapter extends FirestoreRecyclerAdapter<Option, OptionAdapter.OptionHolder> {
-    private OnItemClickListener listener;
     private Context context;
 
     public OptionAdapter(@NonNull FirestoreRecyclerOptions<Option> options, Context context) {
@@ -51,8 +50,8 @@ public class OptionAdapter extends FirestoreRecyclerAdapter<Option, OptionAdapte
         //notify 부를 필요 없음
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
+    public Option updateItem(int position) {
+        return getSnapshots().getSnapshot(position).toObject(Option.class);
     }
 
     class OptionHolder extends RecyclerView.ViewHolder{
@@ -68,16 +67,6 @@ public class OptionAdapter extends FirestoreRecyclerAdapter<Option, OptionAdapte
             optionTitle = itemView.findViewById(R.id.option_title);
             optionDescription = itemView.findViewById(R.id.option_description);
             container = itemView.findViewById(R.id.container);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION && listener != null) {
-                        listener.onItemClick(getSnapshots().getSnapshot(position), position);
-                    }
-                }
-            });
         }
     }
 }

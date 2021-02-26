@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,14 +28,20 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder> {
@@ -65,30 +72,49 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
         String my = myList.get(position);
         holder.mText.setText(my);
 
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
+        String getTime = simpleDate.format(mDate);
 
-        //CollectionReference coRef = db.collection("customers").document(uid).collection("orders");
         DocumentReference doRef = db.collection("customers").document(uid).collection("orders").document(x);
+
         doRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (value != null && value.exists()) {
-                    if(value.get("deposit").toString().trim().equals("true"))
-                        holder.mImage.setImageResource(R.drawable.progress2);
-                    else
-                        holder.mImage.setImageResource(R.drawable.progress1);
 
-                    String screenshot = value.get("screenshot").toString().trim();
-                    String file = screenshot.substring(screenshot.lastIndexOf("/"));
+                    DocumentReference selldoc = db.collection("markets").document(value.get("shopuid").toString().trim()).collection("OrderList").document(value.get("docid").toString().trim());
 
-                    if(value.get("review").toString().trim().equals("true"))
-                        ;//리뷰보기 버튼 안눌리게
+                    selldoc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable DocumentSnapshot value1, @Nullable FirebaseFirestoreException error1) {
+                            if(value1!=null&&value1.exists()){
+                                int compare = getTime.compareTo(value.get("pickup").toString().trim());
+                                if(value.get("deposit").toString().trim().equals("true"))
+                                    holder.mImage.setImageResource(R.drawable.progress2);
+                                else
+                                    holder.mImage.setImageResource(R.drawable.progress1);
+
+                                if(value1.get("process").toString().trim().equals("1")){
+                                    if(compare>=0)
+                                        holder.mImage.setImageResource(R.drawable.progress4);
+                                    else
+                                        holder.mImage.setImageResource(R.drawable.progress3);
+                                }
 
 
+                            }
 
+                        }
+                    });
+
+                    //리뷰보기 버튼 안눌리게
+                     if(value.get("review").toString().trim().equals("true"))
+                        holder.mContent2.setBackgroundColor(holder.itemView.getResources().getColor(R.color.white));
                 }
             }
         });
-
 
         holder.mContent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +152,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
                     }
                 });
 
+
             }
 
         });
@@ -142,27 +169,21 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
                 ImageView iv = (ImageView) myScrollView.findViewById(R.id.orderdetail);
 
 
-              //  iv.setImageResource(R.drawable.white);
-                doRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+               doRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
                     public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                         if (value != null && value.exists()) {
                             //screenshot 가져오기
                             String screenshot = value.get("screenshot").toString().trim();
-                            String file = screenshot.substring(screenshot.lastIndexOf("/"));
+                            //String file = screenshot.substring(screenshot.lastIndexOf("/"));
 
-                            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-                            StorageReference rootRef = firebaseStorage.getReferenceFromUrl(screenshot.replace(file,"").trim());
-                            StorageReference childRef = rootRef.child(file.trim());
-                            childRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    Glide.with(v.getContext()).load(uri).placeholder(R.drawable.white).into(iv);                            //네트워크 이미지는 Glide로 해결한다.
-                                }                                                                                   //Glide를 쓰지 않으면 Thread + URL을 써야한다.
-                            });
+                            StorageReference rootRef = FirebaseStorage.getInstance().getReference(screenshot);
+                            Glide.with(v.getContext()).load(rootRef).placeholder(R.drawable.white).into(iv);
+
                         }
                     }
                 });
+
 
                 AlertDialog.Builder builder = new AlertDialog.Builder((AppCompatActivity) v.getContext()).setView(myScrollView).setTitle("<주문 상세 보기>").setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -178,17 +199,14 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
         });
 
-        holder.mContent4.setOnClickListener(new View.OnClickListener() {
+       holder.mContent4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //입금 완료 버튼
                 Context context = v.getContext();
 
-                doRef.update("deposit",true);
+               doRef.update("deposit",true);
 
-
-               // holder.mImage.setImageResource(R.drawable.progress2);
-                //Toast.makeText(context,position+": "+ my+" click!",Toast.LENGTH_LONG).show();
 
             }
 

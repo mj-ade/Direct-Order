@@ -53,7 +53,6 @@ public class Tab_Order_Form extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_tab__order__form, container, false);
-
         btn = root.findViewById(R.id.add_form);
         btn.setOnClickListener(new View.OnClickListener(){
             @Override

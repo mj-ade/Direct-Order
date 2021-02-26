@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -24,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -37,6 +39,7 @@ public class MainForCustomer extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private TextView t1,t2;
+    private long time= 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +72,6 @@ public class MainForCustomer extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home_buy)
-
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment2);
@@ -133,5 +135,21 @@ public class MainForCustomer extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment2);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+
+            if(System.currentTimeMillis()-time>=2000){
+                time=System.currentTimeMillis();
+                Toast.makeText(getApplicationContext(),"뒤로 버튼을 한번 더 누르면 종료합니다.",Toast.LENGTH_SHORT).show();
+            }else if(System.currentTimeMillis()-time<2000) {
+                finish();
+            }
+
+        }
     }
 }

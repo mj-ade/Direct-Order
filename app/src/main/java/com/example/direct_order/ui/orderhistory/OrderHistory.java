@@ -82,18 +82,18 @@ public class OrderHistory extends Fragment {
                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                    if (task.isSuccessful()) {
                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                                           s = "";
                                                            String shopuid = document.get("shopuid").toString().trim();
-
+                                                           s="";
                                                            db.collection("markets").document(shopuid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>(){
                                                                @Override
                                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                                   DocumentSnapshot document = task.getResult();
-                                                                   if (document.exists()) {
-                                                                       String shopname = document.get("shopname").toString().trim();
-                                                                       String shopgood = document.get("shopgoods").toString().trim();
-                                                                       String shopnum = document.get("shopnum").toString().trim();
-                                                                       s = "마켓명: "+ shopname +"\n"+"주문 상품: "+ shopgood +"\n"+"마켓 전화번호: "+ shopnum;
+                                                                   DocumentSnapshot document1 = task.getResult();
+                                                                   if (document1.exists()) {
+                                                                       String shopname = document1.get("shopname").toString().trim();
+                                                                       String shopgood = document1.get("shopgoods").toString().trim();
+                                                                       String shopnum = document1.get("shopnum").toString().trim();
+                                                                       String pickup = document.get("pickup").toString().trim();
+                                                                       s =  "마켓명: "+ shopname +"\n주문 상품: "+ shopgood +"\n마켓 전화번호: "+shopnum+"\n픽업일: "+pickup;
                                                                        myList.add(s);
                                                                        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                                                                        mAdapter = new MyListAdapter(myList);

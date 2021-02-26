@@ -14,41 +14,114 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 import com.example.direct_order.R;
+import com.example.direct_order.ordersheet.GlideApp;
+import com.example.direct_order.productorder.ProductOrderActivity;
+import com.example.direct_order.reviewlist.ReviewListActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class CustomerMainAdapter extends RecyclerView.Adapter<CustomerMainAdapter.ViewHolder> {
-
-    private ArrayList<CustomerMainData> mData = new ArrayList<>();
+public class MarketAdapter extends FirestoreRecyclerAdapter<Market, MarketAdapter.ViewHolder> {
     Context context;
 
-    public CustomerMainAdapter() {
-        this.mData = mData;
+    public MarketAdapter(@NonNull FirestoreRecyclerOptions<Market> options, Context context) {
+        super(options);
         this.context = context;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    protected void onBindViewHolder(@NonNull MarketAdapter.ViewHolder holder, int position, @NonNull Market model) {
+        holder.market_name.setText(model.getShopname());
+        if (model.getShopuid() != null) {
+            Log.d("hi", model.getShopname() + model.getShopuid());
+            StorageReference ref = FirebaseStorage.getInstance().getReference(model.getShopuid());//.child();
+
+            GlideApp.with(context)
+                    .load(ref)
+                    .override(Target.SIZE_ORIGINAL)
+                    .into(holder.market_img);
+        }
+        /**/
+        /*FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        storageRef.child(shopid).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                //이미지 로드 성공시
+                Glide.with(context)
+                        .load(uri)
+                        .into(holder.market_img);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                //이미지 로드 실패시
+                Toast.makeText(context, "실패", Toast.LENGTH_SHORT).show();
+            }
+        });*/
+        holder.market_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://instagram.com/" + model.getInstagram() + "/"));
+                context.startActivity(intent);
+            }
+        });
+
+        holder.orderBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ProductOrderActivity.class);
+                intent.putExtra("orderEdit", model.isOrderedit());
+                intent.putExtra("shopuid", model.getShopuid());
+                context.startActivity(intent);
+            }
+        });
+
+        holder.reviewBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ReviewListActivity.class);
+                if(model.getShopuid()==null)
+                    Log.d("ghkr", "null이에요");
+                intent.putExtra("shopuid", model.getShopuid());
+                context.startActivity(intent);
+            }
+        });
+
+        holder.messageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri smsUri = Uri.parse("sms:" + model.getShopnum());
+                Intent sendIntent = new Intent(Intent.ACTION_SENDTO, smsUri);
+                context.startActivity(sendIntent);
+            }
+        });
+    }
+
+    @NonNull
+    @Override
+    public MarketAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View itemView = inflater.inflate(R.layout.customermain_grid_item, parent, false);
+        return new ViewHolder(itemView);
+    }
+
+
+    class ViewHolder extends RecyclerView.ViewHolder {
         private TextView market_name;
         private ImageView market_img;
         private ImageButton likeBtn;
@@ -69,20 +142,14 @@ public class CustomerMainAdapter extends RecyclerView.Adapter<CustomerMainAdapte
     }
 
 
-    @NonNull
-    @Override
-    public CustomerMainAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.customermain_grid_item, parent, false);
-
-        return new ViewHolder(view);
-    }
+/*
 
     List<String> listShopid = new ArrayList<>();
     List<String> listMarketname = new ArrayList<>();
     String myinsta;
 
     @Override
-    public void onBindViewHolder(@NonNull CustomerMainAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MarketAdapter.ViewHolder holder, int position) {
         //holder.market_img.setImageResource(mData.get(position).getImgId());
         holder.market_name.setText(mData.get(position).getMarket_name());
         String shopid = mData.get(position).getShopid();
@@ -168,9 +235,9 @@ public class CustomerMainAdapter extends RecyclerView.Adapter<CustomerMainAdapte
         return mData.size();
     }
 
-    public void addData (CustomerMainData ndata){
+    public void addData (Market ndata){
         mData.add(ndata);
-    }
+    }*/
 
 
 }

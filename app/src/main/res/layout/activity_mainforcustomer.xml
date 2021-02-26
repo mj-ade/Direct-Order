@@ -7,16 +7,22 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
+
         <include
             layout="@layout/app_bar_main2"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/rv"
+            app:layoutManager="LinearLayoutManager"/>
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -26,7 +32,8 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main2"
-        app:menu="@menu/main_for_customer">
+        app:menu="@menu/nav_customer_menu">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -63,12 +70,5 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/message1" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </com.google.android.material.navigation.NavigationView>
-
-
-
-
-
-
 </androidx.drawerlayout.widget.DrawerLayout>

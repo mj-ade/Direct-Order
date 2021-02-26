@@ -31,14 +31,12 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
-public class MainForSeller extends AppCompatActivity
-        {
-
-
+public class MainForSeller extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private long time= 0;
     private TextView t1, t2;
     String myinsta;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,7 +141,7 @@ public class MainForSeller extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.main_seller_menu, menu);
         return true;
     }
 

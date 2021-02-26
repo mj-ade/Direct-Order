@@ -193,7 +193,7 @@ public class Register_Shop extends AppCompatActivity {
                 shophash.put("shopaddress",shopad);
                 shophash.put("shopaccount",shopacc);
                 shophash.put("shopgoods",shopgood);
-
+                shophash.put("shopuid", uid);
 
                 db.collection("markets").document(uid).set(shophash)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {

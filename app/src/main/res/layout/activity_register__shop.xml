@@ -63,7 +63,7 @@
                     android:id="@+id/radioButton_acc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="악세서리" />
+                    android:text="악세사리" />
 
                 <RadioButton
                     android:id="@+id/radioButton_etc"

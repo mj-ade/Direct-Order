@@ -45,7 +45,7 @@ public class OrderListAdapter extends FirestoreRecyclerAdapter<Order, OrderListA
             holder.price.setKeyListener(null);
             if (model.getProcess() == 2) {
                 holder.button_change.setEnabled(false);
-                holder.button_change.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));    // color 수정
+                holder.button_change.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
             }
         }
 

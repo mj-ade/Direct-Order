@@ -1,5 +1,8 @@
 package com.example.direct_order.orderlist;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,23 +10,34 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 import com.example.direct_order.R;
+import com.example.direct_order.ordersheet.GlideApp;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class OrderListFragment extends Fragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -95,6 +109,37 @@ public class OrderListFragment extends Fragment {
                 Order order = documentSnapshot.toObject(Order.class);
 
                 // 주문서 보여주기
+                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View myScrollView = inflater.inflate(R.layout.scroll_detail, null, false);
+
+                ImageView iv = (ImageView) myScrollView.findViewById(R.id.orderdetail);
+
+                documentSnapshot.getReference().addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (value != null && value.exists()) {
+                            //screenshot 가져오기
+                            String screenshot = value.get("screenshot").toString().trim();
+
+                            StorageReference ref = FirebaseStorage.getInstance().getReference(screenshot);
+                            GlideApp.with(getContext())
+                                    .load(ref)
+                                    .override(Target.SIZE_ORIGINAL)
+                                    .placeholder(R.drawable.white)
+                                    .into(iv);
+                        }
+                    }
+                });
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                        .setView(myScrollView)
+                        .setTitle("<주문 상세 보기>")
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                builder.create().show();
             }
         });
     }

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -55,23 +56,32 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import static com.example.direct_order.ordersheet.OrderSheetActivity.dpToPx;
 
 public class ProductOrderActivity extends AppCompatActivity {
+    private final String TAG = "PRODUCTORDER_ACTIVITY";
     private final int IMAGE_REQUEST_CODE = 101;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private DocumentReference market = db.collection("markets").document(uid);
+
+    private DocumentReference customer = db.collection("customers").document(uid);
+    private CollectionReference customerOrderRef = customer.collection("orders");
+
     private CollectionReference orderSheetRef = market.collection("OrderSheet");
     private DocumentReference myOrderSheet = orderSheetRef.document("sheet");
     private CollectionReference optionRef = myOrderSheet.collection("Options");
     private CollectionReference previewRef = myOrderSheet.collection("Previews");
-    private CollectionReference answerRef = db.collection("Answers");
+
+    private CollectionReference orderRef = market.collection("OrderList");
 
     public static boolean isCustomer;
+    public static String pickup;
     public static StickerView[] stickerViews = new StickerView[20];
 
     //OptionType.IMAGE
@@ -81,6 +91,7 @@ public class ProductOrderActivity extends AppCompatActivity {
     //OptionType.RADIOBUTTON_TEXT
     public static MyVariable myVar = new MyVariable();
 
+    private NestedScrollView scrollView;
     private ViewGroup viewGroup;
     private OptionAdapter adapter;
     private RelativeLayout touchPanel;
@@ -88,7 +99,11 @@ public class ProductOrderActivity extends AppCompatActivity {
     private boolean[] filled = new boolean[20];
     private int[][] colors = new int[20][10];
     private Uri resultUri;
+    private float move_orgX, move_orgY;
     private int number;
+    private int newId;
+    private boolean orderEdit;
+    private String customerName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,10 +113,14 @@ public class ProductOrderActivity extends AppCompatActivity {
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
 
+        scrollView = findViewById(R.id.nested_scrollview);
         viewGroup = findViewById(R.id.included_view);
         touchPanel = viewGroup.findViewById(R.id.imageDesc);
         recyclerView = viewGroup.findViewById(R.id.recyclerView);
 
+        orderEdit = getIntent().getBooleanExtra("orderEdit", false);
+        setCustomerName();
+        checkNumOfOrder();
         setupImageView();
         setupPreviews();
         setupRecyclerView();
@@ -110,52 +129,57 @@ public class ProductOrderActivity extends AppCompatActivity {
         myVar.setOnValueChangeListener(new MyVariable.OnValueChangeListener() {
             @Override
             public void onValueChange(int num, int newVal) {
-                if (stickerViews[num-1] instanceof StickerImageView)
-                    ((StickerImageView) stickerViews[num-1]).getIv_main().setColorFilter(colors[num-1][newVal], PorterDuff.Mode.SRC_IN);
-                else if (stickerViews[num-1] instanceof StickerTextView)
-                    ((StickerTextView) stickerViews[num-1]).getTv_main().setTextColor(colors[num-1][newVal]);
+                if (stickerViews[num - 1] instanceof StickerImageView)
+                    ((StickerImageView) stickerViews[num - 1]).getIv_main().setColorFilter(colors[num - 1][newVal], PorterDuff.Mode.SRC_IN);
+                else if (stickerViews[num - 1] instanceof StickerTextView)
+                    ((StickerTextView) stickerViews[num - 1]).getTv_main().setTextColor(colors[num - 1][newVal]);
+            }
+
+            @Override
+            public void onStrChange(int num, String newStr) {
+                String imgTag = (String) ((StickerImageView) stickerViews[num-1]).getIv_main().getTag();
+                if (imgTag.substring(0, 1).equals("o")) {
+                    if (stickerViews[num - 1] instanceof StickerImageView) {
+                        StorageReference ref = FirebaseStorage.getInstance().getReference(newStr);
+                        GlideApp.with(getApplicationContext())
+                                .load(ref)
+                                .override(Target.SIZE_ORIGINAL)
+                                .into(((StickerImageView) stickerViews[num - 1]).getIv_main());
+                    }
+                }
             }
         });
     }
 
-    private void retrieveFunction() {
-        optionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    private void setCustomerName() {
+        customer.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists())
+                        customerName = (String) document.get("image");
+                    else {
+                        customerName = "";
+                        Log.d("CUSTOMER_INFO", "No such document");
+                    }
+                }
+                else {
+                    Log.d("CUSTOMER_INFO", "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+
+    private void checkNumOfOrder() {
+        customerOrderRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    for (DocumentSnapshot document : task.getResult()) {
-                        long type = (Long) document.get("type");
-                        if (type != OptionType.RADIOBUTTON_TEXT)
-                            continue;
-
-                        String function = (String) document.get("func");
-                        if (function.charAt(4) == '1')   // 기능 없음이면 저장 안함
-                            continue;
-
-                        int index = ((Long) document.get("number")).intValue() - 1;
-                        int parentIndex = ((Long) document.get("parentNumber")).intValue() - 1;
-                        int pos = (index == parentIndex) ? index : parentIndex;
-
-                        if (function.equals("func3"))
-                            filled[pos] = true;
-                        if (filled[pos]) {
-                            if (((String) document.get("preview")).equals("circle"))
-                                ((StickerImageView) stickerViews[pos]).setImageResource(R.drawable.circle_filled);
-                            else if (((String) document.get("preview")).equals("square"))
-                                ((StickerImageView) stickerViews[pos]).setImageResource(R.drawable.square_filled);
-                        }
-
-                        int count = 0;
-                        StringTokenizer st = new StringTokenizer((String) document.get("content"), "&");
-
-                        while (st.hasMoreTokens()) {
-                            String s = st.nextToken();
-                            colors[pos][count++] = Color.parseColor(s.substring(s.indexOf("#"), s.length()));
-                        }
-                    }
+                    newId = task.getResult().size();
                 }
                 else
-                    Log.d("TAG", "Error getting documents: ", task.getException());
+                    Log.d(TAG, "Error getting documents: ", task.getException());
             }
         });
     }
@@ -209,6 +233,9 @@ public class ProductOrderActivity extends AppCompatActivity {
                                     dpToPx(getApplicationContext(), width),
                                     dpToPx(getApplicationContext(), height));
 
+                            if (stickerViews[finalI] != null)   // 중복 생성 방지
+                                touchPanel.removeView(stickerViews[finalI]);
+
                             if (shape.equals("text")) {
                                 stickerViews[finalI] = new StickerTextView(getApplicationContext());
                                 ((StickerTextView) stickerViews[finalI]).setText(desc);
@@ -222,7 +249,10 @@ public class ProductOrderActivity extends AppCompatActivity {
                                     ((StickerImageView) stickerViews[finalI]).setImageResource(R.drawable.circle);
                                 else {  // 사용자 지정 이미지이면
                                     StorageReference ref = FirebaseStorage.getInstance().getReference(desc);
-                                    GlideApp.with(getApplicationContext()).load(ref).into(((StickerImageView) stickerViews[finalI]).getIv_main());
+                                    GlideApp.with(getApplicationContext())
+                                            .load(ref)
+                                            .override(Target.SIZE_ORIGINAL)
+                                            .into(((StickerImageView) stickerViews[finalI]).getIv_main());
                                 }
                                 ((StickerImageView) stickerViews[finalI]).getIv_main().setTag(desc);
                             }
@@ -231,8 +261,35 @@ public class ProductOrderActivity extends AppCompatActivity {
                                 stickerViews[finalI].setLayoutParams(layoutParams);
                                 stickerViews[finalI].setX(dpToPx(getApplicationContext(), x));
                                 stickerViews[finalI].setY(dpToPx(getApplicationContext(), y));
-                                stickerViews[finalI].setOnTouchListener(null);
                                 stickerViews[finalI].setControlItemsHidden(true);
+                                if (orderEdit) {
+                                    stickerViews[finalI].setOnTouchListener(new View.OnTouchListener() {
+                                        @Override
+                                        public boolean onTouch(View view, MotionEvent event) {
+                                            switch (event.getAction()) {
+                                                case MotionEvent.ACTION_DOWN:
+                                                    move_orgX = event.getRawX();
+                                                    move_orgY = event.getRawY();
+                                                    scrollView.requestDisallowInterceptTouchEvent(true);
+                                                    break;
+                                                case MotionEvent.ACTION_MOVE:
+                                                    float offsetX = event.getRawX() - move_orgX;
+                                                    float offsetY = event.getRawY() - move_orgY;
+                                                    stickerViews[finalI].setX(stickerViews[finalI].getX() + offsetX);
+                                                    stickerViews[finalI].setY(stickerViews[finalI].getY() + offsetY);
+                                                    move_orgX = event.getRawX();
+                                                    move_orgY = event.getRawY();
+                                                    break;
+                                                case MotionEvent.ACTION_UP:
+                                                    scrollView.requestDisallowInterceptTouchEvent(false);
+                                                    break;
+                                            }
+                                            return true;
+                                        }
+                                    });
+                                }
+                                else
+                                    stickerViews[finalI].setOnTouchListener(null);
                             }
                         }
                         else {
@@ -264,7 +321,6 @@ public class ProductOrderActivity extends AppCompatActivity {
                 }
             });
         }
-        Toast.makeText(getApplicationContext(), "coco", Toast.LENGTH_SHORT).show();
     }
 
     private void setupRecyclerView() {
@@ -279,11 +335,71 @@ public class ProductOrderActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    private void retrieveFunction() {
+        optionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot document : task.getResult()) {
+                        long type = (Long) document.get("type");
+                        if (type != OptionType.RADIOBUTTON_TEXT)
+                            continue;
+
+                        String function = (String) document.get("func");
+                        if (function.charAt(4) == '1')   // 기능 없음이면 저장 안함
+                            continue;
+
+                        int index = ((Long) document.get("number")).intValue() - 1;
+                        int parentIndex = ((Long) document.get("parentNumber")).intValue() - 1;
+                        int pos = (index == parentIndex) ? index : parentIndex;
+
+                        if (function.equals("func3"))
+                            filled[pos] = true;
+                        if (filled[pos]) {
+                            String imgTag = (String) ((StickerImageView) stickerViews[pos]).getIv_main().getTag();
+                            if (imgTag.equals("circle"))
+                                ((StickerImageView) stickerViews[pos]).setImageResource(R.drawable.circle_filled);
+                            else if (imgTag.equals("square"))
+                                ((StickerImageView) stickerViews[pos]).setImageResource(R.drawable.square_filled);
+                        }
+
+                        int count = 0;
+                        StringTokenizer st = new StringTokenizer((String) document.get("content"), "&");
+
+                        while (st.hasMoreTokens()) {
+                            String s = st.nextToken();
+                            colors[pos][count++] = Color.parseColor(s.substring(s.indexOf("#"), s.length()));
+                        }
+                    }
+                }
+                else
+                    Log.d("TAG", "Error getting documents: ", task.getException());
+            }
+        });
+    }
+
     private void saveNote() {
-        NestedScrollView scrollView = findViewById(R.id.nested_scrollview);
-        captureView(scrollView, scrollView.getChildAt(0).getHeight(), scrollView.getChildAt(0).getWidth());
+        String filePath = captureView(scrollView, scrollView.getChildAt(0).getHeight(), scrollView.getChildAt(0).getWidth());
         //filePath를 판매자와 소비자 주문 내역에 필드 추가
         Toast.makeText(getApplicationContext(), "주문이 완료되었습니다", Toast.LENGTH_SHORT).show();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("screenshot", filePath);
+        data.put("name", customerName);
+        data.put("date", sdf.format(System.currentTimeMillis()));
+        data.put("pickup", pickup);
+        data.put("price", 0);
+        data.put("process", 0);
+        orderRef.document().set(data);
+
+        Map<String, Object> customerData = new HashMap<>();
+        customerData.put("deposit", false);
+        customerData.put("review", false);
+        customerData.put("screenshot", filePath);
+        //customerData.put("shopuid", );
+        customerOrderRef.document(String.valueOf(newId)).set(customerData);
+
         isCustomer = false;
         finish();
     }

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.direct_order.R;
+import com.example.direct_order.orderlist.OrderListFragment;
 import com.example.direct_order.reviewlist.ReviewListFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -54,13 +55,13 @@ public class Cake_shop extends Fragment {
             public Fragment createFragment(int position) {
                 switch (position) {
                     case 0:
-                        return new Fragment(R.layout.tab__orders_fragment);
+                        return new OrderListFragment();
                     case 1:
                         return new Tab_Order_Form(isExist);
                     case 2:
                         return new Fragment(R.layout.tab__sales_fragment);
                     default:
-                        return new ReviewListFragment();//Fragment(R.layout.tab__reviews_fragment);
+                        return new ReviewListFragment();
                 }
             }
 

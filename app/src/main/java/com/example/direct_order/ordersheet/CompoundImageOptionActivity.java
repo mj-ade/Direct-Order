@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.bumptech.glide.request.target.Target;
@@ -17,12 +16,15 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import static com.example.direct_order.ordersheet.OrderSheetActivity.dpToPx;
+
 public class CompoundImageOptionActivity extends NewOptionActivity {
     static Uri[] uris = new Uri[10];
     static int clickedPosition;
     private ArrayList<ImageView> contentsList = new ArrayList<>();
     private StickerView stickerView;
     private StringTokenizer st;
+    private String contents = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +35,25 @@ public class CompoundImageOptionActivity extends NewOptionActivity {
     protected void setOption() {
         super.setOption();
 
+        getRadio02().setTag("circle");
+        getRadio02().setText("원형");
+        getRadio03().setVisibility(View.VISIBLE);
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dpToPx(this, 24));
+        getPreviewContentLayout().setLayoutParams(layoutParams);
+        getPreviewContentLayout().setVisibility(View.INVISIBLE);
         getContentsLayout().setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void setPreviewRadioButton() {
+        if (getOptionType() == OptionType.RADIOBUTTON_IMAGE) {
+            getRadio02().setTag("cus_image");
+            getRadio02().setText("이미지");
+            getRadio03().setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -49,8 +69,8 @@ public class CompoundImageOptionActivity extends NewOptionActivity {
             imageView.setTag("optionImg"+"_"+i);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    OrderSheetActivity.dpToPx(getApplicationContext(), 160));
-            layoutParams.bottomMargin = OrderSheetActivity.dpToPx(getApplicationContext(), 20);
+                    dpToPx(getApplicationContext(), 160));
+            layoutParams.bottomMargin = dpToPx(getApplicationContext(), 20);
             imageView.setLayoutParams(layoutParams);
             imageView.setAdjustViewBounds(true);
             imageView.setScaleType(ImageView.ScaleType.FIT_START);
@@ -86,30 +106,10 @@ public class CompoundImageOptionActivity extends NewOptionActivity {
     }
 
     @Override
-    protected String setOptionFunction() {
-        String function = "";
-        if (getOptionType() >= OptionType.RADIOBUTTON_TEXT && !OrderSheetActivity.isUpdate) {
-            for (int i = 0; i < getFunctionRadioGroup().getChildCount(); i++) {
-                RadioButton r = (RadioButton) getFunctionRadioGroup().getChildAt(i);
-                if (r.isChecked()) {
-                    function = (String) r.getTag();
-                    break;
-                }
-            }
-            if (function.trim().isEmpty()) {
-                Toast.makeText(this, "옵션 기능을 선택하세요.", Toast.LENGTH_LONG).show();
-                return null;
-            }
-        }
-        return function;
-    }
-
-    @Override
     protected String setContents() {
         if (OrderSheetActivity.isUpdate)
             st = new StringTokenizer(OrderSheetActivity.option.getContent(), "&");
 
-        String contents = "";
         for (int i = 0; i < getNumOfOption(); i++) {
             String content = "";
             if (uris[i] == null)
@@ -127,8 +127,15 @@ public class CompoundImageOptionActivity extends NewOptionActivity {
     }
 
     @Override
+    protected String setPreviewDescription() {
+        if (getOptionType() == OptionType.RADIOBUTTON_IMAGE)
+            return new StringTokenizer(contents, "&").nextToken();
+        return super.setPreviewDescription();
+    }
+
+    @Override
     protected void addStickerView(int index, int parentIndex, String previewDesc) {
-        if (index == parentIndex) {
+        if (getOptionType() == OptionType.CHECKBOX_IMAGE) {
             if (getRadio02().isChecked()) {
                 stickerView = new StickerImageView(getApplicationContext());
                 ((StickerImageView) stickerView).setImageDrawable(getDrawable(R.drawable.circle));
@@ -139,8 +146,24 @@ public class CompoundImageOptionActivity extends NewOptionActivity {
                 ((StickerImageView) stickerView).setImageDrawable(getDrawable(R.drawable.square));
                 ((StickerImageView) stickerView).getIv_main().setTag("square");
             }
-            OrderSheetActivity.stickerPreviews[index] = stickerView;
-            OrderSheetActivity.touchPanel.addView(OrderSheetActivity.stickerPreviews[index]);
         }
+        else {
+            if (getRadio02().isChecked()) {
+                stickerView = new StickerImageView(getApplicationContext());
+                if (OrderSheetActivity.isUpdate) {
+                    StorageReference ref = FirebaseStorage.getInstance().getReference(previewDesc);
+                    GlideApp.with(getApplicationContext())
+                            .load(ref)
+                            .override(Target.SIZE_ORIGINAL)
+                            .into(((StickerImageView) stickerView).getIv_main());
+                }
+                else
+                    ((StickerImageView) stickerView).setImageUri(uris[0]);
+
+                ((StickerImageView) stickerView).getIv_main().setTag(previewDesc);
+            }
+        }
+        OrderSheetActivity.stickerPreviews[index] = stickerView;
+        OrderSheetActivity.touchPanel.addView(OrderSheetActivity.stickerPreviews[index]);
     }
 }

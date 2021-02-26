@@ -31,7 +31,6 @@ public class ReviewAdapter extends FirestoreRecyclerAdapter<ReviewData, ReviewAd
     @Override
     protected void onBindViewHolder(@NonNull ReviewDataHolder holder, int position, @NonNull ReviewData model) {
         holder.ratingBar.setRating(model.getStar());
-        Log.d("why", model.getContent());
         holder.textView.setText(model.getContent());
         StorageReference ref = FirebaseStorage.getInstance().getReference(model.getImage());
         GlideApp.with(context)

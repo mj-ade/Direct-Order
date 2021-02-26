@@ -26,7 +26,6 @@ public class CompoundTextOptionActivity extends NewOptionActivity {
     @Override
     protected void setOption() {
         super.setOption();
-
         getRadio02().setTag("circle");
         getRadio02().setText("원형");
         getRadio03().setVisibility(View.VISIBLE);
@@ -65,8 +64,9 @@ public class CompoundTextOptionActivity extends NewOptionActivity {
     }
 
     @Override
-    protected String setOptionFunction() {
+    protected String setOptionFunction(int number, int parentNumber) {
         String function = "";
+
         if (getOptionType() == OptionType.RADIOBUTTON_TEXT) {
             for (int i = 0; i < getFunctionRadioGroup().getChildCount(); i++) {
                 RadioButton r = (RadioButton) getFunctionRadioGroup().getChildAt(i);

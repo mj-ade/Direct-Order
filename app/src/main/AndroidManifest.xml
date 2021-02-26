@@ -77,7 +77,6 @@
             android:name=".ordersheet.OrderSheetActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-
         <activity android:name=".ordersheet.TextOptionActivity"
             android:parentActivityName=".ordersheet.OrderSheetActivity"/>
         <activity android:name=".ordersheet.ImageOptionActivity"
@@ -94,15 +93,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
-        <activity android:name=".orderlist.OrderDetailActivity"></activity>
         <activity android:name=".orderlist.MessageActivity" />
-        <activity android:name=".orderlist.OrderlistActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
         <activity android:name=".write_review.WriteReviewActivity">
             <intent-filter>

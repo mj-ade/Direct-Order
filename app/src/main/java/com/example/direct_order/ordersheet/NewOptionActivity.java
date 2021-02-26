@@ -102,7 +102,6 @@ public abstract class NewOptionActivity extends ImageCropActivity {
             editTextTitle.setText(OrderSheetActivity.option.getTitle());
             editTextDesc.setText(OrderSheetActivity.option.getDesc());
             functionLayout.setVisibility(View.GONE);
-            setStoredPreviews();
             String funcType = OrderSheetActivity.option.getFunc();
             for (int i = 0; i < functionRadioGroup.getChildCount(); i++) {
                 RadioButton rb = (RadioButton) functionRadioGroup.getChildAt(i);
@@ -123,6 +122,8 @@ public abstract class NewOptionActivity extends ImageCropActivity {
         else
             functionLayout.setVisibility(View.GONE);
 
+        setPreviewRadioButton();
+        setStoredPreviews();
         addContents();
     }
 
@@ -153,16 +154,22 @@ public abstract class NewOptionActivity extends ImageCropActivity {
 
     }
 
+    protected void setPreviewRadioButton() {
+
+    }
+
     protected void setStoredPreviews() {
-        String previewType = OrderSheetActivity.option.getPreview();
-        for (int i = 0; i < radioGroup.getChildCount(); i++) {
-            RadioButton rb = (RadioButton) radioGroup.getChildAt(i);
-            if (previewType.equals((String) rb.getTag())) {
-                rb.setChecked(true);
-                break;
+        if (OrderSheetActivity.isUpdate) {
+            String previewType = OrderSheetActivity.option.getPreview();
+            for (int i = 0; i < radioGroup.getChildCount(); i++) {
+                RadioButton rb = (RadioButton) radioGroup.getChildAt(i);
+                if (previewType.equals((String) rb.getTag())) {
+                    rb.setChecked(true);
+                    break;
+                }
             }
+            retrievePreviewDesc();
         }
-        retrievePreviewDesc();
     }
 
     protected void retrievePreviewDesc() {
@@ -203,25 +210,25 @@ public abstract class NewOptionActivity extends ImageCropActivity {
 
         String description = editTextDesc.getText().toString();
 
-        String function = setOptionFunction();
+        String function = setOptionFunction(number, parentNumber);
         if (function == null)
             return;
 
-        String preview = setPreview();
+        String preview = setPreview(number);
         if (preview == null)
             return;
 
         if (isNumberDuplicate(number))
             return;
 
-        String previewDesc = setPreviewDescription();
-        if (previewDesc == null) {
+        String contents = setContents();
+        if (contents == null) {
             resetNumber(number);
             return;
         }
 
-        String contents = setContents();
-        if (contents == null) {
+        String previewDesc = setPreviewDescription();
+        if (previewDesc == null) {
             resetNumber(number);
             return;
         }
@@ -267,12 +274,16 @@ public abstract class NewOptionActivity extends ImageCropActivity {
         }
     }
 
-    protected String setOptionFunction() {
+    protected String setOptionFunction(int number, int parentNumber) {
         return "";
     }
 
-    protected String setPreview() {
+    protected String setPreview(int number) {
         String preview = "";
+
+        if (number != parentNumber)
+            return "none";
+
         for (int i = 0; i < radioGroup.getChildCount(); i++) {
             RadioButton rb = (RadioButton) radioGroup.getChildAt(i);
             if (rb.isChecked()) {

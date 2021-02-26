@@ -7,16 +7,10 @@ import android.widget.DatePicker;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
 import java.util.Calendar;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class DatePickerFragment extends DialogFragment
-        implements DatePickerDialog.OnDateSetListener {
-
+public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -25,12 +19,19 @@ public class DatePickerFragment extends DialogFragment
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
 
-        return new DatePickerDialog(getActivity(),this,year,month,day);
+        return new DatePickerDialog(getActivity(),this, year, month,day);
     }
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-        OrderlistActivity activity = (OrderlistActivity)getActivity();
-        activity.processDatePickerResult(year,month,day);
+        processDatePickerResult(year, month, day);
+    }
+
+    public void processDatePickerResult(int year, int month, int day) {
+        String month_string = Integer.toString(month+1);
+        String day_string = Integer.toString(day);
+        String year_string = Integer.toString(year);
+
+        //year, month, day에 해당하는 주문data 보여주기
     }
 }

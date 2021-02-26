@@ -120,13 +120,10 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
             @Override
             public void onClick(View v) {
                 //메세지 보내기
+                //인스타연결?
+
                 Context context = v.getContext();
-                //Toast.makeText(context,position+": "+ my+" click!",Toast.LENGTH_LONG).show();
-                if(position==0) {
-                    /*((AppCompatActivity) context).getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.nav_host_fragment, new Cake_shop())
-                            .commit();*/
-                }
+
             }
 
         });

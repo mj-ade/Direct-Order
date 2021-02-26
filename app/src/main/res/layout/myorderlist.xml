@@ -31,8 +31,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
+            android:layout_marginLeft="5dp"
             android:gravity="center"
-            android:text="메세지"
+            android:text="DM"
             android:textColor="@color/yellow"
             android:textSize="15dp"
              />
@@ -44,6 +45,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="리뷰 쓰기"
+            android:layout_marginLeft="5dp"
+
             android:layout_gravity="center"
             android:textColor="@color/yellow"
             android:textSize="15dp" />
@@ -55,6 +58,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="상세보기"
+            android:layout_marginLeft="5dp"
+
             android:layout_gravity="center"
             android:textColor="@color/yellow"
             android:textSize="15dp" />
@@ -67,6 +72,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="입금 완료"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:textColor="@color/yellow"
             android:textSize="15dp" />
 

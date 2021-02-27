@@ -18,22 +18,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageButton
-                android:id="@+id/imageButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="40dp"
-                app:srcCompat="@android:drawable/ic_menu_send" />
-
             <LinearLayout
                 android:id="@+id/contents"
                 android:layout_width="wrap_content"
                 android:layout_height="88dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginStart="72dp"
+                android:layout_marginStart="20dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -125,7 +116,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:text="2021/02/02"
+                    android:text="2021/02/02 24:00"
                     android:textColor="@color/black" />
             </LinearLayout>
 
@@ -146,7 +137,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignBaseline="@id/price"
-                android:layout_marginEnd="4dp"
+                android:layout_marginEnd="20dp"
                 android:text="원"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
@@ -157,6 +148,7 @@
                 android:layout_height="48dp"
                 android:layout_below="@+id/price"
                 android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"
                 android:backgroundTint="#F6EB8B"
                 android:text="가격/계좌 전송"
                 android:textColor="@color/gray"

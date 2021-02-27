@@ -97,8 +97,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
-        <activity android:name=".orderlist.MessageActivity" />
-
         <activity android:name=".write_review.WriteReviewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

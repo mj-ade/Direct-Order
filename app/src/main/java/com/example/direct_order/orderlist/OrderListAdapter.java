@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.direct_order.R;
+import com.example.direct_order.ordersheet.Option;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -26,7 +27,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 public class OrderListAdapter extends FirestoreRecyclerAdapter<Order, OrderListAdapter.ViewHolder> {
     private OnItemClickListener listener;
     private Context context;
-    private String[] btnTexts = {"가격/계좌 전송", "입금 확인", "승인된 주문"};
+    private String[] btnTexts = {"가격/계좌 전송", "입금 확인", "입금 완료"};
 
     public OrderListAdapter(@NonNull FirestoreRecyclerOptions<Order> options, Context context) {
         super(options);
@@ -36,10 +37,13 @@ public class OrderListAdapter extends FirestoreRecyclerAdapter<Order, OrderListA
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Order model) {
         holder.name.setText(model.getName());
-        holder.date.setText(model.getDate());
-        holder.pickup.setText(model.getPickup());
+        holder.date.setText(model.getDate() + " " + model.getTime());
+        holder.pickup.setText(model.getPickup() + " " + model.getPickupTime());
         if (model.getPrice() != 0)
-            holder.price.setText(model.getPrice()+"");
+            holder.price.setText(model.getPrice() + "");
+        else
+            holder.price.setText("");
+
         holder.button_change.setText(btnTexts[model.getProcess()]);
         if (model.getProcess() != 0) {
             holder.price.setKeyListener(null);
@@ -49,21 +53,11 @@ public class OrderListAdapter extends FirestoreRecyclerAdapter<Order, OrderListA
             }
         }
 
-        holder.message.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, MessageActivity.class);
-                intent.putExtra("name", model.getName());
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-            }
-        });
         holder.button_change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (model.getProcess() == 0) {
                     if (!holder.price.getText().toString().equals("")) {
-                        Toast.makeText(context, holder.price.getText(), Toast.LENGTH_SHORT).show(); //Toast 대신 값 전달 (주문자에게 메시지로 가격 전송)
                         getSnapshots().getSnapshot(position).getReference()
                                 .update("price", Integer.parseInt(holder.price.getText().toString()), "process", model.getProcess() + 1)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -116,7 +110,6 @@ public class OrderListAdapter extends FirestoreRecyclerAdapter<Order, OrderListA
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageButton message;
         public TextView name;
         public TextView date;
         public TextView pickup;
@@ -126,7 +119,6 @@ public class OrderListAdapter extends FirestoreRecyclerAdapter<Order, OrderListA
         public ViewHolder(View v) {
             super(v);
 
-            message = (ImageButton) v.findViewById(R.id.imageButton);
             name = (TextView) v.findViewById(R.id.textView);
             date = (TextView) v.findViewById(R.id.textView2);
             pickup = (TextView) v.findViewById(R.id.textView3);

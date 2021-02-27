@@ -201,9 +201,9 @@ public class OptionForm extends LinearLayout {
 
                     @Override
                     public void afterTextChanged(Editable editable) {
-
                         if (dateText.getText().toString().substring(0, 1).equals("2") && !timeText.getText().toString().substring(0, 1).equals("T")) {
-                            ProductOrderActivity.pickup = dateText.getText().toString() + " " + timeText.getText().toString();
+                            ProductOrderActivity.pickupDate = dateText.getText().toString();
+                            ProductOrderActivity.pickupTime = timeText.getText().toString();
                         }
                     }
                 });

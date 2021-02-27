@@ -1,5 +1,6 @@
 package com.example.direct_order.orderlist;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -9,13 +10,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,28 +36,28 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class OrderListFragment extends Fragment {
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final Calendar mCalendar = Calendar.getInstance();
+    private String today = new SimpleDateFormat("yyyy/MM/dd").format(System.currentTimeMillis());
+    private String selectedDate = today;
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private DocumentReference market = db.collection("markets").document(uid);
     private CollectionReference orderListRef = market.collection("OrderList");
 
     private OrderListAdapter mAdapter;
     private RecyclerView recyclerView;
+    private Button button;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_order_list, container, false);
-
         recyclerView = viewGroup.findViewById(R.id.recyclerView);
-        Button button = viewGroup.findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePicker();
-            }
-        });
         Spinner spinner = viewGroup.findViewById(R.id.array_spinner);
         ArrayAdapter adapter = ArrayAdapter.createFromResource(getContext(), R.array.sort, android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -64,15 +65,13 @@ public class OrderListFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-                    //주문날짜순으로 정렬
                     mAdapter.updateOptions(new FirestoreRecyclerOptions.Builder<Order>()
-                            .setQuery(orderListRef.orderBy("date", Query.Direction.ASCENDING), Order.class)
+                            .setQuery(orderListRef.whereEqualTo("date", selectedDate).orderBy("time", Query.Direction.ASCENDING), Order.class)
                             .build());
                 }
                 else if (position == 1) {
-                    //픽업날짜순으로 정렬
                     mAdapter.updateOptions(new FirestoreRecyclerOptions.Builder<Order>()
-                            .setQuery(orderListRef.orderBy("pickup", Query.Direction.ASCENDING), Order.class)
+                            .setQuery(orderListRef.whereEqualTo("pickup", selectedDate).orderBy("pickupTime", Query.Direction.ASCENDING), Order.class)
                             .build());
                 }
             }
@@ -82,12 +81,23 @@ public class OrderListFragment extends Fragment {
 
             }
         });
+
+        button = viewGroup.findViewById(R.id.button);
+        button.setText(today);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePicker();
+                spinner.setSelection(0);
+            }
+        });
+
         setupRecyclerView();
         return viewGroup;
     }
 
     private void setupRecyclerView() {
-        Query query = orderListRef.orderBy("date", Query.Direction.ASCENDING);
+        Query query = orderListRef.whereEqualTo("date", today).orderBy("time", Query.Direction.ASCENDING);
 
         FirestoreRecyclerOptions<Order> orders = new FirestoreRecyclerOptions.Builder<Order>()
                 .setQuery(query, Order.class)
@@ -102,8 +112,6 @@ public class OrderListFragment extends Fragment {
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
-                Order order = documentSnapshot.toObject(Order.class);
-
                 // 주문서 보여주기
                 LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View myScrollView = inflater.inflate(R.layout.scroll_detail, null, false);
@@ -140,10 +148,27 @@ public class OrderListFragment extends Fragment {
         });
     }
 
-    //캘린더에서 날짜 고르기
-    public void showDatePicker() {
-        DialogFragment newFragment = new DatePickerFragment();
-        newFragment.show(getFragmentManager(),"DatePicker");
+    private void showDatePicker() {
+        int todayYear = mCalendar.get(Calendar.YEAR);
+        int todayMonth = mCalendar.get(Calendar.MONTH);
+        int todayDate = mCalendar.get(Calendar.DATE);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                getContext(),
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        selectedDate = String.format("%02d/%02d/%02d", year, month+1, dayOfMonth);
+                        button.setText(selectedDate);
+                        mAdapter.updateOptions(new FirestoreRecyclerOptions.Builder<Order>()
+                                .setQuery(orderListRef.whereEqualTo("date", selectedDate).orderBy("time", Query.Direction.ASCENDING), Order.class)
+                                .build());
+                    }
+                },
+                todayYear, todayMonth, todayDate);
+
+        datePickerDialog.setMessage("날짜 선택");
+        datePickerDialog.show();
     }
 
     @Override

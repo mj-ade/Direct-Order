@@ -3,7 +3,9 @@ package com.example.direct_order.orderlist;
 public class Order {
     private String name;
     private String date;
+    private String time;
     private String pickup;
+    private String pickupTime;
     private int price;
     private int process;
     private String screenshot;
@@ -12,10 +14,12 @@ public class Order {
 
     }
 
-    public Order(String name, String date, String pickup, int price, int process, String screenshot) {
+    public Order(String name, String date, String time, String pickup, String pickupTime, int price, int process, String screenshot) {
         this.name = name;
         this.date = date;
+        this.time = time;
         this.pickup = pickup;
+        this.pickupTime = pickupTime;
         this.price = price;
         this.process = process;
         this.screenshot = screenshot;
@@ -37,12 +41,28 @@ public class Order {
         this.date = date;
     }
 
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
     public String getPickup() {
         return pickup;
     }
 
     public void setPickup(String pickup) {
         this.pickup = pickup;
+    }
+
+    public String getPickupTime() {
+        return pickupTime;
+    }
+
+    public void setPickupTime(String pickupTime) {
+        this.pickupTime = pickupTime;
     }
 
     public int getPrice() {

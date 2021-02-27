@@ -398,7 +398,6 @@ public class ProductOrderActivity extends AppCompatActivity {
         documentRef.set(data);
 
         Map<String, Object> customerData = new HashMap<>();
-        customerData.put("deposit", false);
         customerData.put("review", false);
         customerData.put("screenshot", filePath);
         customerData.put("date", new SimpleDateFormat("yyyy/MM/dd").format(currentTime));

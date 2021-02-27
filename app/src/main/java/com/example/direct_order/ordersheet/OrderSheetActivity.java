@@ -25,6 +25,8 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.request.target.Target;
+import com.example.direct_order.GlideApp;
 import com.example.direct_order.R;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -309,7 +311,10 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                         }
                         else {
                             StorageReference ref = FirebaseStorage.getInstance().getReference(imageName);
-                            GlideApp.with(getApplicationContext()).load(ref).into(imageView);
+                            GlideApp.with(getApplicationContext())
+                                    .load(ref)
+                                    .override(Target.SIZE_ORIGINAL)
+                                    .into(imageView);
                         }
                     }
                     else {

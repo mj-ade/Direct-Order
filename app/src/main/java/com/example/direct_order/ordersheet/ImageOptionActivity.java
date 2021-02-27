@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.bumptech.glide.request.target.Target;
+import com.example.direct_order.GlideApp;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 

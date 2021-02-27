@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:weightSum="4"
+        android:weightSum="3"
         android:layout_marginTop="5dp">
 
         <Button
@@ -33,7 +33,7 @@
             android:layout_weight="1"
             android:layout_marginLeft="5dp"
             android:gravity="center"
-            android:text="DM"
+            android:text="카카오톡"
             android:textColor="@color/yellow"
             android:textSize="15dp"
              />
@@ -59,21 +59,8 @@
             android:gravity="center"
             android:text="상세보기"
             android:layout_marginLeft="5dp"
-
-            android:layout_gravity="center"
-            android:textColor="@color/yellow"
-            android:textSize="15dp" />
-
-        <Button
-            android:id="@+id/complete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="입금 완료"
-            android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
+            android:layout_gravity="center"
             android:textColor="@color/yellow"
             android:textSize="15dp" />
 

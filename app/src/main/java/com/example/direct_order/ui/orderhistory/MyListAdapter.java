@@ -91,18 +91,19 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
                         public void onEvent(@Nullable DocumentSnapshot value1, @Nullable FirebaseFirestoreException error1) {
                             if(value1!=null&&value1.exists()){
                                 int compare = getTime.compareTo(value.get("pickup").toString().trim());
-                                if(value.get("deposit").toString().trim().equals("true"))
+                                if(value1.get("process").toString().trim().equals("1"))
                                     holder.mImage.setImageResource(R.drawable.progress2);
-                                else
-                                    holder.mImage.setImageResource(R.drawable.progress1);
 
-                                if(value1.get("process").toString().trim().equals("1")){
+
+                                else if(value1.get("process").toString().trim().equals("2")){
                                     if(compare>=0)
                                         holder.mImage.setImageResource(R.drawable.progress4);
                                     else
                                         holder.mImage.setImageResource(R.drawable.progress3);
                                 }
 
+                                else
+                                    holder.mImage.setImageResource(R.drawable.progress1);
 
                             }
 
@@ -196,18 +197,6 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
         });
 
-       holder.mContent4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //입금 완료 버튼
-                Context context = v.getContext();
-
-               doRef.update("deposit",true);
-
-
-            }
-
-        });
     }
 
     @Override
@@ -219,7 +208,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
         public final View mView;
         public final TextView mText;
-        public final Button mContent, mContent2, mContent3, mContent4;
+        public final Button mContent, mContent2, mContent3;
         public final ImageView mImage;
         public ViewHolder(View view) {
 
@@ -230,7 +219,6 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
             mContent = view.findViewById(R.id.send);
             mContent2 = view.findViewById(R.id.write);
             mContent3 = view.findViewById(R.id.detail);
-            mContent4 = view.findViewById(R.id.complete);
             mImage=view.findViewById(R.id.progress);
         }
 

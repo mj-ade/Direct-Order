@@ -68,20 +68,13 @@ public class ProductOrderActivity extends AppCompatActivity {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-    private DocumentReference market = db.collection("markets").document(uid);
+    private DocumentReference customerRef = db.collection("customers").document(uid);
+    private CollectionReference customerOrderRef = customerRef.collection("orders");
 
-    private DocumentReference customer = db.collection("customers").document(uid);
-    private CollectionReference customerOrderRef = customer.collection("orders");
-
-    private CollectionReference orderSheetRef = market.collection("OrderSheet");
-    private DocumentReference myOrderSheet = orderSheetRef.document("sheet");
-    private CollectionReference optionRef = myOrderSheet.collection("Options");
-    private CollectionReference previewRef = myOrderSheet.collection("Previews");
-
-    private CollectionReference orderRef = market.collection("OrderList");
+    private DocumentReference marketRef;
 
     public static boolean isCustomer;
-    public static String pickup;
+    public static String pickupDate, pickupTime;
     public static StickerView[] stickerViews = new StickerView[20];
 
     //OptionType.IMAGE
@@ -104,6 +97,7 @@ public class ProductOrderActivity extends AppCompatActivity {
     private int newId;
     private boolean orderEdit;
     private String customerName;
+    private String shopuid;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -111,20 +105,26 @@ public class ProductOrderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_productorder);
         isCustomer = true;
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
+
+        orderEdit = getIntent().getBooleanExtra("orderEdit", false);
+        shopuid = getIntent().getStringExtra("shopuid");
+        marketRef = db.collection("markets").document(shopuid);
+        DocumentReference marketOrderSheet = marketRef.collection("OrderSheet").document("sheet");
+        CollectionReference optionRef = marketOrderSheet.collection("Options");
 
         scrollView = findViewById(R.id.nested_scrollview);
         viewGroup = findViewById(R.id.included_view);
         touchPanel = viewGroup.findViewById(R.id.imageDesc);
         recyclerView = viewGroup.findViewById(R.id.recyclerView);
 
-        orderEdit = getIntent().getBooleanExtra("orderEdit", false);
         setCustomerName();
         checkNumOfOrder();
-        setupImageView();
-        setupPreviews();
-        setupRecyclerView();
-        retrieveFunction();
+        setupImageView(marketOrderSheet);
+        setupPreviews(marketOrderSheet);
+        setupRecyclerView(optionRef);
+        retrieveFunction(optionRef);
 
         myVar.setOnValueChangeListener(new MyVariable.OnValueChangeListener() {
             @Override
@@ -152,7 +152,7 @@ public class ProductOrderActivity extends AppCompatActivity {
     }
 
     private void setCustomerName() {
-        customer.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        customerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -184,9 +184,9 @@ public class ProductOrderActivity extends AppCompatActivity {
         });
     }
 
-    private void setupImageView() {
+    private void setupImageView(DocumentReference marketOrderSheet) {
         ImageView imageView = viewGroup.findViewById(R.id.imageView);
-        myOrderSheet.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        marketOrderSheet.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -211,10 +211,10 @@ public class ProductOrderActivity extends AppCompatActivity {
         });
     }
 
-    private void setupPreviews() {
+    private void setupPreviews(DocumentReference marketOrderSheet) {
+        CollectionReference previewRef = marketOrderSheet.collection("Previews");
         for (int i = 0; i < 20; i++) {
             int finalI = i;
-
             previewRef.document("stickerID"+(i+1)).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -323,7 +323,7 @@ public class ProductOrderActivity extends AppCompatActivity {
         }
     }
 
-    private void setupRecyclerView() {
+    private void setupRecyclerView(CollectionReference optionRef) {
         Query query = optionRef.orderBy("number", Query.Direction.ASCENDING);
         FirestoreRecyclerOptions<Option> options = new FirestoreRecyclerOptions.Builder<Option>()
                 .setQuery(query, Option.class)
@@ -335,7 +335,7 @@ public class ProductOrderActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    private void retrieveFunction() {
+    private void retrieveFunction(CollectionReference optionRef) {
         optionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -379,25 +379,33 @@ public class ProductOrderActivity extends AppCompatActivity {
     }
 
     private void saveNote() {
+        long currentTime =  System.currentTimeMillis();
+        CollectionReference orderRef = marketRef.collection("OrderList");
+        DocumentReference documentRef = orderRef.document();
         String filePath = captureView(scrollView, scrollView.getChildAt(0).getHeight(), scrollView.getChildAt(0).getWidth());
-        //filePath를 판매자와 소비자 주문 내역에 필드 추가
+
         Toast.makeText(getApplicationContext(), "주문이 완료되었습니다", Toast.LENGTH_SHORT).show();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 
         Map<String, Object> data = new HashMap<>();
         data.put("screenshot", filePath);
         data.put("name", customerName);
-        data.put("date", sdf.format(System.currentTimeMillis()));
-        data.put("pickup", pickup);
+        data.put("date", new SimpleDateFormat("yyyy/MM/dd").format(currentTime));
+        data.put("time", new SimpleDateFormat("HH:mm").format(currentTime));
+        data.put("pickup", pickupDate);
+        data.put("pickupTime", pickupTime);
         data.put("price", 0);
         data.put("process", 0);
-        orderRef.document().set(data);
+        documentRef.set(data);
 
         Map<String, Object> customerData = new HashMap<>();
         customerData.put("deposit", false);
         customerData.put("review", false);
         customerData.put("screenshot", filePath);
-        //customerData.put("shopuid", );
+        customerData.put("date", new SimpleDateFormat("yyyy/MM/dd").format(currentTime));
+        customerData.put("pickup", pickupDate);
+        customerData.put("pickupTime", pickupTime);
+        customerData.put("shopuid", shopuid);
+        customerData.put("docid", documentRef.getId());
         customerOrderRef.document(String.valueOf(newId)).set(customerData);
 
         isCustomer = false;
@@ -510,5 +518,11 @@ public class ProductOrderActivity extends AppCompatActivity {
         });
         builder.setNegativeButton("아니오", null);
         builder.show();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

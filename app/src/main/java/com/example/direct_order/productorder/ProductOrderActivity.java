@@ -30,7 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.request.target.Target;
 import com.example.direct_order.R;
-import com.example.direct_order.ordersheet.GlideApp;
+import com.example.direct_order.GlideApp;
 import com.example.direct_order.ordersheet.OnPreviewSetupListener;
 import com.example.direct_order.ordersheet.Option;
 import com.example.direct_order.ordersheet.OptionAdapter;

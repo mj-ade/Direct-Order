@@ -74,7 +74,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
         long now = System.currentTimeMillis();
         Date mDate = new Date(now);
-        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy/MM/dd");
         String getTime = simpleDate.format(mDate);
 
         DocumentReference doRef = db.collection("customers").document(uid).collection("orders").document(x);

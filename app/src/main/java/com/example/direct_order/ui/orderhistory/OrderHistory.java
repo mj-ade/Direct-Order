@@ -93,8 +93,13 @@ public class OrderHistory extends Fragment {
                                                                        String shopgood = document1.get("shopgoods").toString().trim();
                                                                        String shopnum = document1.get("shopnum").toString().trim();
                                                                        String pickup = document.get("pickup").toString().trim();
+                                                                       pickup = pickup+" " + document.get("pickupTime").toString().trim();
+
+                                                                       if(pickup==null)
+                                                                           pickup=document.get("date").toString().trim();
+
                                                                        s =  "마켓명: "+ shopname +"\n주문 상품: "+ shopgood +"\n마켓 전화번호: "+shopnum+"\n픽업일: "+pickup;
-                                                                       myList.add(s);
+
                                                                        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                                                                        mAdapter = new MyListAdapter(myList);
 

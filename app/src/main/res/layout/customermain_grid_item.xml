@@ -42,13 +42,14 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:id="@+id/likeBtn"
+                    android:id="@+id/like_btn"
+                    android:tag="false"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
                     android:backgroundTint="@color/illuminating"
                     android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/ic_empty_heart" />
+                    app:srcCompat="@drawable/ic_like1" />
 
                 <Button
                     android:id="@+id/orderBtn"

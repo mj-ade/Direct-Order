@@ -3,6 +3,7 @@ package com.example.direct_order.customermain;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,14 +21,33 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.direct_order.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomerMainFragment extends Fragment {
     private final String TAG = "CUSTOMER_MAIN_FRAGMENT";
-    TabLayout tabLayout;
-    ViewPager2 viewPager;
-    String[] tabItems = {"CAKE", "CASE", "ACCESSORY", "ETC"};
+
+    static List<String> favoriteMarket = new ArrayList<>();
+    private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private DocumentReference customerRef = FirebaseFirestore.getInstance().collection("customers").document(uid);
+    private CollectionReference customerFavorRef = customerRef.collection("favorites");
+    private Query query = customerFavorRef.whereEqualTo("like", true);
+
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager;
+    private String[] tabItems = {"CAKE", "CASE", "ACCESSORY", "ETC"};
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 
@@ -41,7 +61,7 @@ public class CustomerMainFragment extends Fragment {
             @NonNull
             @Override
             public Fragment createFragment(int position) {
-                return new MarketFragment(position);
+                return new MarketFragment(position, customerFavorRef);
             }
 
             @Override
@@ -57,8 +77,25 @@ public class CustomerMainFragment extends Fragment {
             }
         }).attach();
 
+        retrieveFavoriteMarket();
         setHasOptionsMenu(true);
         return root;
+    }
+
+    private void retrieveFavoriteMarket() {
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        favoriteMarket.add(document.getId());
+                    }
+                }
+                else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
     }
 
     @Override

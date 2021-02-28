@@ -244,9 +244,9 @@ public class ProductOrderActivity extends AppCompatActivity {
                                 stickerViews[finalI] = new StickerImageView(getApplicationContext());
                                 ((StickerImageView) stickerViews[finalI]).getIv_main().setScaleType(ImageView.ScaleType.FIT_XY);
                                 if (desc.equals("square"))
-                                    ((StickerImageView) stickerViews[finalI]).setImageResource(R.drawable.square);
+                                    ((StickerImageView) stickerViews[finalI]).setImageResource(R.drawable.sticker_preview_square);
                                 else if (desc.equals("circle"))
-                                    ((StickerImageView) stickerViews[finalI]).setImageResource(R.drawable.circle);
+                                    ((StickerImageView) stickerViews[finalI]).setImageResource(R.drawable.sticker_preview_circle);
                                 else {  // 사용자 지정 이미지이면
                                     StorageReference ref = FirebaseStorage.getInstance().getReference(desc);
                                     GlideApp.with(getApplicationContext())
@@ -358,9 +358,9 @@ public class ProductOrderActivity extends AppCompatActivity {
                         if (filled[pos]) {
                             String imgTag = (String) ((StickerImageView) stickerViews[pos]).getIv_main().getTag();
                             if (imgTag.equals("circle"))
-                                ((StickerImageView) stickerViews[pos]).setImageResource(R.drawable.circle_filled);
+                                ((StickerImageView) stickerViews[pos]).setImageResource(R.drawable.sticker_preview_circle_filled);
                             else if (imgTag.equals("square"))
-                                ((StickerImageView) stickerViews[pos]).setImageResource(R.drawable.square_filled);
+                                ((StickerImageView) stickerViews[pos]).setImageResource(R.drawable.sticker_preview_square_filled);
                         }
 
                         int count = 0;

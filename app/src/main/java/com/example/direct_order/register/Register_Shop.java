@@ -15,6 +15,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -29,6 +31,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.direct_order.R;
+import com.example.direct_order.customermain.AdrData;
 import com.example.direct_order.ui.login.Login_sell;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,9 +48,11 @@ import com.gun0912.tedpermission.TedPermission;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class Register_Shop extends AppCompatActivity {
@@ -127,6 +132,7 @@ public class Register_Shop extends AppCompatActivity {
                     orderedit=false;
 
                 if(!shopname.equals("")&&!shopnum.equals("")&&!insta.equals("")&&!shopad.equals("")&&!shopacc.equals("")) {
+                    findAdrdata(shopad);
                     showDialog(shopname,shopnum,insta,shopad,shopacc,shopgood,orderedit);
                 }
                 else{
@@ -185,12 +191,14 @@ public class Register_Shop extends AppCompatActivity {
                         });
 
 
-                HashMap<Object,String> shophash = new HashMap<>();
+                HashMap<Object, Object> shophash = new HashMap<>();
 
                 shophash.put("shopname",shopname);
                 shophash.put("shopnum",shopnum);
                 shophash.put("instagram",insta);
                 shophash.put("shopaddress",shopad);
+                shophash.put("shoplatitude", adrdata.getLatitude());
+                shophash.put("shoplongitude", adrdata.getLongitude());
                 shophash.put("shopaccount",shopacc);
                 shophash.put("shopgoods",shopgood);
                 shophash.put("shopuid", uid);
@@ -305,6 +313,33 @@ public class Register_Shop extends AppCompatActivity {
             }
         } else if (requestCode == 101 && resultCode == RESULT_CANCELED) {
             Toast.makeText(this, "취소", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    List<Address> list = new ArrayList<>();
+    AdrData adrdata = new AdrData();
+
+    private void findAdrdata(String shopad){
+        final Geocoder geocoder = new Geocoder(this);
+
+        try {
+            list = geocoder.getFromLocationName(
+                    shopad, // 지역 이름
+                    10); // 읽을 개수
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("test","입출력 오류 - 서버에서 주소변환시 에러발생");
+        }
+
+
+        if (list != null) {
+            if (list.size() == 0) {
+                Log.d("geocoder","해당되는 주소 정보는 없습니다");
+            }
+            else {
+                adrdata.setLatitude(list.get(0).getLatitude());
+                adrdata.setLongitude(list.get(0).getLongitude());
+            }
         }
     }
 

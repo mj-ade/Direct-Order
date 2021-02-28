@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +26,7 @@ public class MarketFragment extends Fragment {
     private int position;
     private MarketAdapter adapter;
     private RecyclerView recyclerView;
+    private double latitude, longitude;
 
     CollectionReference customerFavorRef;
 
@@ -32,10 +34,11 @@ public class MarketFragment extends Fragment {
 
     }
 
-    public MarketFragment(int position, CollectionReference customerFavorRef) {
+    public MarketFragment(int position, CollectionReference customerFavorRef, double latitude, double longitude) {
         this.position = position;
         this.customerFavorRef = customerFavorRef;
-
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     @Nullable
@@ -44,7 +47,22 @@ public class MarketFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_market, container, false);
 
         recyclerView = root.findViewById(R.id.recyclerView);
+
+
+
         setupRecyclerView();
+        CustomerMainFragment.customVariable.setOnValueChangeListener(new CustomVariable.OnValueChangeListener() {
+            @Override
+            public void onValueChange(double latitude, double longitude) {
+                Toast.makeText(getContext(), "update"+latitude+" "+longitude, Toast.LENGTH_SHORT).show();
+                Query query = market//.whereEqualTo("shopgoods", goods[position])
+                        .whereEqualTo("latitude", latitude);
+                       // .whereEqualTo("longitude", longitude);
+                adapter.updateOptions(new FirestoreRecyclerOptions.Builder<Market>()
+                        .setQuery(query, Market.class)
+                        .build());
+            }
+        });
         return root;
     }
 

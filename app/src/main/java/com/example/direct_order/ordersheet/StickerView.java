@@ -62,10 +62,10 @@ public abstract class StickerView extends FrameLayout {
         iv_width = new ImageView(context);
         iv_height = new ImageView(context);
 
-        iv_scale.setImageResource(R.drawable.zoominout);
-        iv_delete.setImageResource(R.drawable.delete);
-        iv_width.setImageResource(R.drawable.width_scale);
-        iv_height.setImageResource(R.drawable.height_scale);
+        iv_scale.setImageResource(R.drawable.sticker_scale_zoominout);
+        iv_delete.setImageResource(R.drawable.sticker_delete);
+        iv_width.setImageResource(R.drawable.sticker_scale_width);
+        iv_height.setImageResource(R.drawable.sticker_scale_height);
 
         this.setTag("DraggableViewGroup");
         iv_border.setTag("sticker_border");

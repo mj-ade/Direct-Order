@@ -102,12 +102,12 @@ public class CompoundTextOptionActivity extends NewOptionActivity {
         if (index == parentIndex) {
             if (getRadio02().isChecked()) {
                 stickerView = new StickerImageView(getApplicationContext());
-                ((StickerImageView) stickerView).setImageDrawable(getDrawable(R.drawable.circle));
+                ((StickerImageView) stickerView).setImageDrawable(getDrawable(R.drawable.sticker_preview_circle));
                 ((StickerImageView) stickerView).getIv_main().setTag("circle");
             }
             else if (getRadio03().isChecked()) {
                 stickerView = new StickerImageView(getApplicationContext());
-                ((StickerImageView) stickerView).setImageDrawable(getDrawable(R.drawable.square));
+                ((StickerImageView) stickerView).setImageDrawable(getDrawable(R.drawable.sticker_preview_square));
                 ((StickerImageView) stickerView).getIv_main().setTag("square");
             }
             OrderSheetActivity.stickerPreviews[index] = stickerView;

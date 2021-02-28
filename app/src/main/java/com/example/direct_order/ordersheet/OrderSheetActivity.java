@@ -359,9 +359,9 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                                 stickerPreviews[finalI] = new StickerImageView(getApplicationContext());
                                 ((StickerImageView) stickerPreviews[finalI]).getIv_main().setScaleType(ImageView.ScaleType.FIT_XY);
                                 if (desc.equals("square"))
-                                    ((StickerImageView) stickerPreviews[finalI]).setImageResource(R.drawable.square);
+                                    ((StickerImageView) stickerPreviews[finalI]).setImageResource(R.drawable.sticker_preview_square);
                                 else if (desc.equals("circle"))
-                                    ((StickerImageView) stickerPreviews[finalI]).setImageResource(R.drawable.circle);
+                                    ((StickerImageView) stickerPreviews[finalI]).setImageResource(R.drawable.sticker_preview_circle);
                                 else {  // 사용자 지정 이미지
                                     StorageReference ref = FirebaseStorage.getInstance().getReference(desc);
                                     GlideApp.with(getApplicationContext()).load(ref).into(((StickerImageView) stickerPreviews[finalI]).getIv_main());

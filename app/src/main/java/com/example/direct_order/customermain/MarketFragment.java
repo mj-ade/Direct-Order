@@ -26,12 +26,16 @@ public class MarketFragment extends Fragment {
     private MarketAdapter adapter;
     private RecyclerView recyclerView;
 
+    CollectionReference customerFavorRef;
+
     public MarketFragment() {
 
     }
 
-    public MarketFragment(int position) {
+    public MarketFragment(int position, CollectionReference customerFavorRef) {
         this.position = position;
+        this.customerFavorRef = customerFavorRef;
+
     }
 
     @Nullable
@@ -50,7 +54,7 @@ public class MarketFragment extends Fragment {
                 .setQuery(query, Market.class)
                 .build();
 
-        adapter = new MarketAdapter(datas, getContext());
+        adapter = new MarketAdapter(datas, customerFavorRef, getContext());
 
         recyclerView.setHasFixedSize(true);
         GridLayoutManager myLayoutManager = new GridLayoutManager(getContext(), 2);

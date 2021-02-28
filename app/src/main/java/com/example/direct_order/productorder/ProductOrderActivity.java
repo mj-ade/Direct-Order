@@ -158,7 +158,7 @@ public class ProductOrderActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists())
-                        customerName = (String) document.get("image");
+                        customerName = (String) document.get("name");
                     else {
                         customerName = "";
                         Log.d("CUSTOMER_INFO", "No such document");

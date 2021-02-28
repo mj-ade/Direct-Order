@@ -96,7 +96,7 @@ public class ProductOrderActivity extends AppCompatActivity {
     private int number;
     private int newId;
     private boolean orderEdit;
-    private String customerName;
+    private String customerName, phoneNum;
     private String shopuid;
 
     @Override
@@ -119,7 +119,7 @@ public class ProductOrderActivity extends AppCompatActivity {
         touchPanel = viewGroup.findViewById(R.id.imageDesc);
         recyclerView = viewGroup.findViewById(R.id.recyclerView);
 
-        setCustomerName();
+        setCustomerInfo();
         checkNumOfOrder();
         setupImageView(marketOrderSheet);
         setupPreviews(marketOrderSheet);
@@ -151,16 +151,19 @@ public class ProductOrderActivity extends AppCompatActivity {
         });
     }
 
-    private void setCustomerName() {
+    private void setCustomerInfo() {
         customerRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    if (document.exists())
+                    if (document.exists()) {
                         customerName = (String) document.get("name");
+                        phoneNum = (String) document.get("phone");
+                    }
                     else {
                         customerName = "";
+                        phoneNum = "";
                         Log.d("CUSTOMER_INFO", "No such document");
                     }
                 }
@@ -389,6 +392,7 @@ public class ProductOrderActivity extends AppCompatActivity {
         Map<String, Object> data = new HashMap<>();
         data.put("screenshot", filePath);
         data.put("name", customerName);
+        data.put("phone", phoneNum);
         data.put("date", new SimpleDateFormat("yyyy/MM/dd").format(currentTime));
         data.put("time", new SimpleDateFormat("HH:mm").format(currentTime));
         data.put("pickup", pickupDate);

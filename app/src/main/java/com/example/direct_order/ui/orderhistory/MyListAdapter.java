@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -48,7 +49,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
 
     private List<String> myList;
-
+    String s;
     public MyListAdapter(List<String> myList) {
         this.myList = myList;
     }
@@ -69,6 +70,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
         String uid = user.getUid();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String x = String.valueOf(position);
+
         String my = myList.get(position);
         holder.mText.setText(my);
 
@@ -113,9 +115,12 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
                     //리뷰보기 버튼 안눌리게
                      if(value.get("review").toString().trim().equals("true"))
                         holder.mContent2.setBackgroundColor(holder.itemView.getResources().getColor(R.color.white));
+
+
                 }
             }
         });
+
 
         holder.mContent.setOnClickListener(new View.OnClickListener() {
             @Override

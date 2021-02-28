@@ -74,7 +74,7 @@ public class ProductOrderActivity extends AppCompatActivity {
     private DocumentReference marketRef;
 
     public static boolean isCustomer;
-    public static String pickupDate, pickupTime;
+    public static String pickupDate = "", pickupTime = "";
     public static StickerView[] stickerViews = new StickerView[20];
 
     //OptionType.IMAGE

@@ -43,7 +43,7 @@ public class Cake_shop extends Fragment {
     private CakeShopViewModel mViewModel;
     TabLayout tabLayout;
     ViewPager2 viewPager;
-    String[] tabItems = {"주문 보기", "주문서 보기", "매출 보기", "리뷰 보기"};
+    String[] tabItems = {"주문 보기", "주문서 보기", "리뷰 보기"};
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mViewModel = new ViewModelProvider(this).get(CakeShopViewModel.class);
@@ -67,8 +67,6 @@ public class Cake_shop extends Fragment {
                         return new OrderListFragment();
                     case 1:
                         return new Tab_Order_Form(isExist);
-                    case 2:
-                        return new Fragment(R.layout.tab__sales_fragment);
                     default:
                         return new ReviewListFragment();
                 }

@@ -9,7 +9,7 @@ public class CalendarOptionActivity extends NewOptionActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getEditTextTitle().setBackground(null);
-        getEditTextTitle().setText("픽업일");
+        getEditTextTitle().setText("픽업일 선택");
         getEditTextTitle().setTextSize(20);
         getEditTextTitle().setKeyListener(null);
     }

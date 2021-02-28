@@ -16,7 +16,7 @@ public class IntervalTimePickerDialog extends TimePickerDialog {
     private TimePicker timePicker;
 
     public IntervalTimePickerDialog(Context context, OnTimeSetListener listener, int hourOfDay, int minute, boolean is24HourView) {
-        super(context, listener, hourOfDay, minute/TIME_PICKER_INTERVAL, is24HourView);
+        super(context, android.R.style.Theme_Holo_Light_Dialog_NoActionBar, listener, hourOfDay, minute/TIME_PICKER_INTERVAL, is24HourView);
         timeSetListener = listener;
     }
 

@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     android:padding="4dp"
-    android:background="#D33232"
     android:orientation="vertical">
 
     <LinearLayout
@@ -44,6 +43,5 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFEB3B"
         android:orientation="vertical"/>
 </LinearLayout>

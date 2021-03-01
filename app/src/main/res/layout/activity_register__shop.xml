@@ -9,13 +9,15 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="-101dp"
+        tools:layout_editor_absoluteY="-30dp">
 
         <LinearLayout
+            android:id="@+id/fragment_test"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/fragment_test">
+            android:orientation="vertical">
 
             <EditText
                 android:id="@+id/txt_shopname"
@@ -28,9 +30,8 @@
                 android:layout_marginEnd="101dp"
                 android:layout_marginRight="101dp"
                 android:ems="10"
-                android:inputType="textPersonName"
                 android:hint="마켓명"
-                />
+                android:inputType="textPersonName" />
 
             <RadioGroup
                 android:id="@+id/radio_product"
@@ -72,6 +73,7 @@
                     android:text="ETC" />
 
             </RadioGroup>
+
             <RadioGroup
                 android:id="@+id/editable"
                 android:layout_width="215dp"
@@ -79,18 +81,19 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp">
 
-            <TextView
-                android:id="@+id/txt_edit"
-                android:layout_width="wrap_content"
-                android:layout_height="31dp"
-                android:layout_gravity="center"
-                android:text="고객 상품 직접 지정 가능 여부" />
+                <TextView
+                    android:id="@+id/txt_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="31dp"
+                    android:layout_gravity="center"
+                    android:text="고객 상품 직접 지정 가능 여부" />
 
-            <RadioButton
-                android:id="@+id/possible"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="가능" />
+                <RadioButton
+                    android:id="@+id/possible"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="가능" />
+
                 <RadioButton
                     android:id="@+id/impossib"
                     android:layout_width="match_parent"
@@ -113,8 +116,7 @@
                 android:layout_width="243dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-              >
+                android:layout_marginTop="20dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txt_instagram"
@@ -128,9 +130,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="마켓 대표 이미지"
-                android:gravity="center"
                 android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="마켓 대표 이미지"
                 android:textColor="@color/black" />
 
             <ImageView
@@ -138,8 +140,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="129dp"
                 android:layout_gravity="center"
-                app:srcCompat="@drawable/photo"
-                android:layout_margin="20dp"/>
+                android:layout_margin="20dp"
+                app:srcCompat="@drawable/photo" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout2"
@@ -160,7 +162,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout3"
-                android:layout_width="243dp"
+                android:layout_width="327dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp">
@@ -169,9 +171,9 @@
                     android:id="@+id/txt_shop_acc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="계좌번호"
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
+                    android:hint="은행명 계좌번호 계좌주 순으로 작성해주세요."
                     android:textColor="#230E0E" />
             </com.google.android.material.textfield.TextInputLayout>
 

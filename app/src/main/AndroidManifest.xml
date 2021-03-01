@@ -97,13 +97,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
-        <activity android:name=".write_review.WriteReviewActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".write_review.WriteReviewActivity" />
 
         <!-- 라이브러리 사용 설정 -->
         <uses-library android:name="com.google.android.maps" />
@@ -120,13 +114,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity android:name=".customermain.MapActivity"></activity>
-        <activity android:name=".reviewlist.ReviewListActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".reviewlist.ReviewListActivity" />
 
     </application>
 

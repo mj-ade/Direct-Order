@@ -5,7 +5,6 @@ import android.util.Log;
 public class Market {
     private String shopuid;
     private String shopname;
-    //private boolean like;
     private String shopnum;
     private String shopaddress;
     private String instagram;

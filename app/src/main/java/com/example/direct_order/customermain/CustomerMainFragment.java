@@ -36,14 +36,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.app.Activity.RESULT_OK;
-
 public class CustomerMainFragment extends Fragment {
     private final String TAG = "CUSTOMER_MAIN_FRAGMENT";
     TabLayout tabLayout;
     ViewPager2 viewPager;
     String[] tabItems = {"CAKE", "CASE", "ACCESSORY", "ETC"};
-    double latitude, longitude;
     static CustomVariable customVariable = new CustomVariable();
 
     static List<String> favoriteMarket = new ArrayList<>();
@@ -64,7 +61,7 @@ public class CustomerMainFragment extends Fragment {
             @NonNull
             @Override
             public Fragment createFragment(int position) {
-                return new MarketFragment(position, customerFavorRef, latitude, longitude);
+                return new MarketFragment(position, customerFavorRef);
             }
 
             @Override
@@ -133,16 +130,6 @@ public class CustomerMainFragment extends Fragment {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            latitude = data.getDoubleExtra("latitude", 37.4937);
-            longitude = data.getDoubleExtra("longitude", 127.0643);
         }
     }
 }

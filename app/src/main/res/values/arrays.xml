@@ -4,4 +4,9 @@
         <item>주문순</item>
         <item>픽업순</item>
     </string-array>
+
+    <string-array name="market_sort">
+        <item>전체 가게</item>
+        <item>가까운 가게</item>
+    </string-array>
 </resources>

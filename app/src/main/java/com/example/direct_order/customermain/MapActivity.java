@@ -156,10 +156,6 @@ public class MapActivity extends AppCompatActivity {
         showMyMarker(targetLocation);
 
         CustomerMainFragment.customVariable.setValue(Math.round(curPoint.latitude*100)/100.0,  Math.round(curPoint.longitude*100)/100.0);
-        Intent intent = new Intent();
-        intent.putExtra("latitude", curPoint.latitude);
-        intent.putExtra("longitude", curPoint.longitude);
-        setResult(RESULT_OK, intent);
         finish();
     }
 

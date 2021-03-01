@@ -2,8 +2,6 @@ package com.example.direct_order.customermain;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +10,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,13 +25,10 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.HashMap;
-import java.util.Map;
-
-
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class MarketAdapter extends FirestoreRecyclerAdapter<Market, MarketAdapter.ViewHolder> {
@@ -62,9 +56,6 @@ public class MarketAdapter extends FirestoreRecyclerAdapter<Market, MarketAdapte
         }
 
         holder.market_name.setText(model.getShopname());
-
-
-
 
         if (model.getShopuid() != null) {
             StorageReference ref = FirebaseStorage.getInstance().getReference(model.getShopuid());
@@ -136,7 +127,6 @@ public class MarketAdapter extends FirestoreRecyclerAdapter<Market, MarketAdapte
     @Override
     public MarketAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        final Geocoder geocoder = new Geocoder(context);
         View itemView = inflater.inflate(R.layout.customermain_grid_item, parent, false);
         return new ViewHolder(itemView);
     }

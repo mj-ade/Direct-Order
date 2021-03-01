@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,19 +28,16 @@ public class MarketFragment extends Fragment {
     private int position;
     private MarketAdapter adapter;
     private RecyclerView recyclerView;
-    private double latitude, longitude;
-
+    Spinner spinner;
     CollectionReference customerFavorRef;
 
     public MarketFragment() {
 
     }
 
-    public MarketFragment(int position, CollectionReference customerFavorRef, double latitude, double longitude) {
+    public MarketFragment(int position, CollectionReference customerFavorRef) {
         this.position = position;
         this.customerFavorRef = customerFavorRef;
-        this.latitude = latitude;
-        this.longitude = longitude;
     }
 
     @Nullable
@@ -47,22 +46,34 @@ public class MarketFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_market, container, false);
 
         recyclerView = root.findViewById(R.id.recyclerView);
-
-
-
-        setupRecyclerView();
-        CustomerMainFragment.customVariable.setOnValueChangeListener(new CustomVariable.OnValueChangeListener() {
+        spinner = root.findViewById(R.id.spinner);
+        ArrayAdapter arrayAdapter = ArrayAdapter.createFromResource(getContext(), R.array.market_sort, android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+        spinner.setSelection(0);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onValueChange(double latitude, double longitude) {
-                Toast.makeText(getContext(), "update"+latitude+" "+longitude, Toast.LENGTH_SHORT).show();
-                Query query = market//.whereEqualTo("shopgoods", goods[position])
-                        .whereEqualTo("latitude", latitude);
-                       // .whereEqualTo("longitude", longitude);
-                adapter.updateOptions(new FirestoreRecyclerOptions.Builder<Market>()
-                        .setQuery(query, Market.class)
-                        .build());
+            public void onItemSelected(AdapterView<?> parent, View view, int p, long id) {
+                if (p == 0) {
+                    adapter.updateOptions(new FirestoreRecyclerOptions.Builder<Market>()
+                            .setQuery(market.whereEqualTo("shopgoods", goods[position]), Market.class)
+                            .build());
+                }
+                else if (p == 1) {
+                    adapter.updateOptions(new FirestoreRecyclerOptions.Builder<Market>()
+                            .setQuery(market.whereEqualTo("shopgoods", goods[position])
+                                    .whereEqualTo("latitude", CustomerMainFragment.customVariable.getLatitude())
+                                    .whereEqualTo("longitude", CustomerMainFragment.customVariable.getLongitude()), Market.class)
+                            .build());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
+
+        setupRecyclerView();
         return root;
     }
 
@@ -84,6 +95,7 @@ public class MarketFragment extends Fragment {
     public void onStart() {
         super.onStart();
         adapter.startListening();
+        spinner.setSelection(0);
     }
 
     @Override

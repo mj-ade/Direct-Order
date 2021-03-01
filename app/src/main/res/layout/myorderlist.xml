@@ -33,7 +33,7 @@
             android:layout_weight="1"
             android:layout_marginLeft="5dp"
             android:gravity="center"
-            android:text="카카오톡"
+            android:text="문의"
             android:textColor="@color/yellow"
             android:textSize="15dp"
              />

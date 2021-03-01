@@ -49,7 +49,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
 
 
     private List<String> myList;
-    String s;
+
     public MyListAdapter(List<String> myList) {
         this.myList = myList;
     }
@@ -107,6 +107,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
                                 else
                                     holder.mImage.setImageResource(R.drawable.progress1);
 
+
                             }
 
                         }
@@ -122,13 +123,32 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
         });
 
 
+
         holder.mContent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //메세지 보내기
                 //인스타연결?
-
-                Context context = v.getContext();
+                doRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if(value!=null&&value.exists()){
+                            String shopuid = value.get("shopuid").toString().trim();
+                            DocumentReference seller = db.collection("markets").document(shopuid);
+                            seller.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                                    if(value!=null&&value.exists()){
+                                        String shopnum = value.get("shopnum").toString().trim();
+                                        Uri smsUri = Uri.parse("sms:" + shopnum);
+                                        Intent sendIntent = new Intent(Intent.ACTION_SENDTO, smsUri);
+                                        v.getContext().startActivity(sendIntent);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
 
             }
 

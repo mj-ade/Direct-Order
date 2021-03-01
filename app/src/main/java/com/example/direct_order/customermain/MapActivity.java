@@ -1,7 +1,7 @@
 package com.example.direct_order.customermain;
 
-import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -13,16 +13,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.direct_order.R;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
@@ -30,10 +27,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.pedro.library.AutoPermissions;
-import com.pedro.library.AutoPermissionsListener;
 
 import java.util.List;
 
@@ -155,11 +149,18 @@ public class MapActivity extends AppCompatActivity {
         //화면 확대, 숫자가 클수록 확대
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(curPoint, 15));
 
-        //마커 찍기
+        //마커 찍기숙명여자대학교
         Location targetLocation = new Location("");
         targetLocation.setLatitude(37.4937);
         targetLocation.setLongitude(127.0643);
         showMyMarker(targetLocation);
+
+        CustomerMainFragment.customVariable.setValue(Math.round(curPoint.latitude*100)/100.0,  Math.round(curPoint.longitude*100)/100.0);
+        Intent intent = new Intent();
+        intent.putExtra("latitude", curPoint.latitude);
+        intent.putExtra("longitude", curPoint.longitude);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     //------------------권한 설정 시작------------------------

@@ -8,13 +8,14 @@ public class Order {
     private String pickupTime;
     private int price;
     private int process;
+    private String phone;
     private String screenshot;
 
     public Order() {
 
     }
 
-    public Order(String name, String date, String time, String pickup, String pickupTime, int price, int process, String screenshot) {
+    public Order(String name, String date, String time, String pickup, String pickupTime, int price, int process, String phone, String screenshot) {
         this.name = name;
         this.date = date;
         this.time = time;
@@ -22,6 +23,7 @@ public class Order {
         this.pickupTime = pickupTime;
         this.price = price;
         this.process = process;
+        this.phone = phone;
         this.screenshot = screenshot;
     }
 
@@ -79,6 +81,14 @@ public class Order {
 
     public void setProcess(int process) {
         this.process = process;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getScreenshot() {

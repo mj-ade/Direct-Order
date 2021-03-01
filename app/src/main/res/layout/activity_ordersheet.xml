@@ -15,7 +15,7 @@
             android:id="@+id/button_layout"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="@color/gray"
+            android:background="#A0A0A0"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -30,16 +30,18 @@
                 <Button
                     android:layout_width="44dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/ic_text"
-                    android:backgroundTint="@color/yellow"
-                    android:clickable="false" />
+                    android:background="@android:color/transparent"
+                    android:clickable="false"
+                    android:foreground="@drawable/ic_text"
+                    android:foregroundTint="@color/illuminating" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="텍스트"
-                    android:textColor="@color/yellow"
-                    android:textSize="12sp" />
+                    android:textColor="@color/illuminating"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -54,16 +56,18 @@
                 <Button
                     android:layout_width="44dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/ic_image"
-                    android:backgroundTint="@color/yellow"
-                    android:clickable="false" />
+                    android:background="@android:color/transparent"
+                    android:clickable="false"
+                    android:foreground="@drawable/ic_image"
+                    android:foregroundTint="@color/illuminating" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="이미지"
-                    android:textColor="@color/yellow"
-                    android:textSize="12sp" />
+                    android:textColor="@color/illuminating"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -78,16 +82,18 @@
                 <Button
                     android:layout_width="44dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/ic_check_box"
-                    android:backgroundTint="@color/yellow"
-                    android:clickable="false" />
+                    android:background="@android:color/transparent"
+                    android:clickable="false"
+                    android:foreground="@drawable/ic_check_box"
+                    android:foregroundTint="@color/illuminating" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="체크박스"
-                    android:textColor="@color/yellow"
-                    android:textSize="12sp" />
+                    android:textColor="@color/illuminating"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -102,16 +108,18 @@
                 <Button
                     android:layout_width="44dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/ic_radio_button"
-                    android:backgroundTint="@color/yellow"
-                    android:clickable="false" />
+                    android:background="@android:color/transparent"
+                    android:clickable="false"
+                    android:foreground="@drawable/ic_radio_button"
+                    android:foregroundTint="@color/illuminating" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="라디오버튼"
-                    android:textColor="@color/yellow"
-                    android:textSize="12sp" />
+                    android:textColor="@color/illuminating"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -126,16 +134,18 @@
                 <Button
                     android:layout_width="44dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/ic_calendar"
-                    android:backgroundTint="@color/yellow"
-                    android:clickable="false" />
+                    android:background="@android:color/transparent"
+                    android:clickable="false"
+                    android:foreground="@drawable/ic_calendar"
+                    android:foregroundTint="@color/illuminating" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="캘린더"
-                    android:textColor="@color/yellow"
-                    android:textSize="12sp" />
+                    android:textColor="@color/illuminating"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
 
@@ -146,31 +156,39 @@
             android:layout_weight="1"
             layout="@layout/order_sheet" />
 
-        <Button
-            android:id="@+id/save_button"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_gravity="center_horizontal"
-            android:text="save"
-            android:textColor="@color/yellow"
-            android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#075A594C"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/save_button"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:text="save"
+                android:textColor="@color/yellow"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/button_type_layout"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/gray"
+        android:background="#A0A0A0"
         android:clickable="true"
         android:orientation="horizontal"
         android:visibility="gone">
 
         <ImageButton
             android:id="@+id/back"
-            android:layout_width="36dp"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:tint="@color/yellow"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            android:tint="@color/illuminating"
             app:srcCompat="@drawable/ic_left" />
 
         <LinearLayout
@@ -184,16 +202,18 @@
             <Button
                 android:layout_width="44dp"
                 android:layout_height="40dp"
-                android:background="@drawable/ic_text"
-                android:backgroundTint="@color/yellow"
+                android:background="@android:color/transparent"
+                android:foreground="@drawable/ic_text"
+                android:foregroundTint="@color/illuminating"
                 android:clickable="false" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="텍스트 옵션"
-                android:textColor="@color/yellow"
-                android:textSize="12sp" />
+                android:textColor="@color/illuminating"
+                android:textSize="12sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
@@ -207,16 +227,18 @@
             <Button
                 android:layout_width="44dp"
                 android:layout_height="40dp"
-                android:background="@drawable/ic_add_photo"
-                android:backgroundTint="@color/yellow"
+                android:background="@android:color/transparent"
+                android:foreground="@drawable/ic_add_photo"
+                android:foregroundTint="@color/illuminating"
                 android:clickable="false" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="이미지 옵션"
-                android:textColor="@color/yellow"
-                android:textSize="12sp" />
+                android:textColor="@color/illuminating"
+                android:textSize="12sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 

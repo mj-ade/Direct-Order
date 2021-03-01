@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -61,7 +60,7 @@ public class OptionForm extends LinearLayout {
         inflater= (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = null;
         if (optionType == OptionType.TEXT) {
-            view = (View) inflater.inflate(R.layout.text_container, this, true);
+            view = (View) inflater.inflate(R.layout.option_text_container, this, true);
             EditText editText = view.findViewById(R.id.editText);
             editText.setText("");
             if (isCustomer && stickerViews[number-1] != null) {
@@ -84,7 +83,7 @@ public class OptionForm extends LinearLayout {
             }
         }
         else if (optionType == OptionType.IMAGE) {
-            view = (View) inflater.inflate(R.layout.image_container, this, true);
+            view = (View) inflater.inflate(R.layout.option_image_container, this, true);
             ImageView imageView = view.findViewById(R.id.imageView);
             StorageReference ref = FirebaseStorage.getInstance().getReference(previewDesc);
 
@@ -109,7 +108,7 @@ public class OptionForm extends LinearLayout {
             }
         }
         else if (optionType == OptionType.CHECKBOX_TEXT || optionType == OptionType.CHECKBOX_IMAGE) {
-            view = (View) inflater.inflate(R.layout.compoundbutton_container, this, true);
+            view = (View) inflater.inflate(R.layout.option_compoundbutton_container, this, true);
             RadioGroup radioGroup = view.findViewById(R.id.radio_group);
 
             StringTokenizer st = new StringTokenizer(content, "&");
@@ -126,7 +125,7 @@ public class OptionForm extends LinearLayout {
             }
         }
         else if (optionType == OptionType.RADIOBUTTON_TEXT || optionType == OptionType.RADIOBUTTON_IMAGE) {
-            view = (View) inflater.inflate(R.layout.compoundbutton_container, this, true);
+            view = (View) inflater.inflate(R.layout.option_compoundbutton_container, this, true);
             RadioGroup radioGroup = view.findViewById(R.id.radio_group);
 
             StringTokenizer st = new StringTokenizer(content, "&");
@@ -163,32 +162,30 @@ public class OptionForm extends LinearLayout {
             }
         }
         else if (optionType == OptionType.CALENDAR) {
-            view = (View) inflater.inflate(R.layout.calendar_container, this, true);
+            view = (View) inflater.inflate(R.layout.option_calendar_container, this, true);
             Button dateButton = view.findViewById(R.id.date);
-            TextView dateText = findViewById(R.id.date_textView);
             Button timeButton = view.findViewById(R.id.time);
-            TextView timeText = findViewById(R.id.time_textView);
 
             dateButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    displayDate(dateText);
-                    timeText.setText("Time");
+                    displayDate(dateButton);
+                    timeButton.setText("시간 선택");
                 }
             });
 
             timeButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!dateText.getText().toString().substring(0, 1).equals("2"))
+                    if (!dateButton.getText().toString().substring(0, 1).equals("2"))
                         Toast.makeText(context, "날짜를 먼저 선택해주세요", Toast.LENGTH_SHORT).show();
                     else
-                        displayTime(timeText);
+                        displayTime(timeButton);
                 }
             });
 
             if (ProductOrderActivity.isCustomer) {
-                timeText.addTextChangedListener(new TextWatcher() {
+                timeButton.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -201,9 +198,9 @@ public class OptionForm extends LinearLayout {
 
                     @Override
                     public void afterTextChanged(Editable editable) {
-                        if (dateText.getText().toString().substring(0, 1).equals("2") && !timeText.getText().toString().substring(0, 1).equals("T")) {
-                            ProductOrderActivity.pickupDate = dateText.getText().toString();
-                            ProductOrderActivity.pickupTime = timeText.getText().toString();
+                        if (dateButton.getText().toString().substring(0, 1).equals("2") && !timeButton.getText().toString().substring(0, 1).equals("시")) {
+                            ProductOrderActivity.pickupDate = dateButton.getText().toString();
+                            ProductOrderActivity.pickupTime = timeButton.getText().toString();
                         }
                     }
                 });
@@ -229,7 +226,7 @@ public class OptionForm extends LinearLayout {
         radioGroup.addView(imageView);
     }
 
-    private void displayDate(TextView dateText) {
+    private void displayDate(Button dateButton) {
         int todayYear = mCalendar.get(Calendar.YEAR);
         int todayMonth = mCalendar.get(Calendar.MONTH);
         int todayDate = mCalendar.get(Calendar.DATE);
@@ -239,10 +236,11 @@ public class OptionForm extends LinearLayout {
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 getContext(),
+                R.style.DialogTheme,
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        dateText.setText(String.format("%02d/%02d/%02d", year, month+1, dayOfMonth));
+                        dateButton.setText(String.format("%02d/%02d/%02d", year, month+1, dayOfMonth));
                     }
                 },
                 todayYear, todayMonth, todayDate);
@@ -252,23 +250,21 @@ public class OptionForm extends LinearLayout {
 
         maxDate.set(todayYear, todayMonth + 1,todayDate);
         datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
-
-        datePickerDialog.setMessage("날짜 선택");
         datePickerDialog.show();
     }
 
-    private void displayTime(TextView timeText) {
+    private void displayTime(Button timeButton) {
         int myHour = mCalendar.get(Calendar.HOUR_OF_DAY);
         int myMinute = mCalendar.get(Calendar.MINUTE);
 
         TimePickerDialog timePickerDialog = new IntervalTimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                timeText.setText(String.format("%02d:%02d", hourOfDay, minute));
+                timeButton.setText(String.format("%02d:%02d", hourOfDay, minute));
             }
         }, myHour, myMinute, true);
+        timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         timePickerDialog.setMessage("시간 선택");
         timePickerDialog.show();
     }
 }
-

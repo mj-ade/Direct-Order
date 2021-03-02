@@ -88,12 +88,10 @@ public class WriteReviewActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                //Log.d("tag","masg");
                 String filepath = imageUpload();
                 review.put("star", ratingBar.getRating());
                 review.put("content", editText.getText().toString().trim());
                 review.put("image", filepath);
-                //해당마켓 document
                 db.collection("markets").document(shopid).collection("ReviewList").document().set(review);
 
                 coRef.document(docId).update("review", true);
@@ -122,7 +120,7 @@ public class WriteReviewActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(getApplicationContext(), "실패", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getApplicationContext(), "실패", Toast.LENGTH_SHORT).show();
             }
         });
         return filepath;

@@ -58,7 +58,6 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
     static boolean[] numberDup = new boolean[20];
     static Option option;
 
-    // 판매자마다 ordersheet가 있음
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private DocumentReference market = db.collection("markets").document(uid);
@@ -304,7 +303,6 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         imageName = (String) document.get("image");
-                        Log.d("MAIN_IMG", "DocumentSnapshot data: " + document.getData());
                         if (imageName == null || imageName.trim().isEmpty()) {
                             imageView.setImageResource(R.drawable.c10);  //개발자 기본 제공 이미지
                             imageName = "";
@@ -339,8 +337,6 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            Log.d("PREVIEW_TAG", "DocumentSnapshot data: " + document.getData());
-
                             String shape = (String) document.get("shape");
                             int x = ((Long) document.get("x")).intValue();
                             int y = ((Long) document.get("y")).intValue();
@@ -434,7 +430,7 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                     shape = "text";
                     desc = ((StickerTextView) stickerPreviews[i]).getText();
                 }
-                else if (stickerPreviews[i] instanceof StickerImageView) {    //모양에 따라 if 나누기(image, circle, square)
+                else if (stickerPreviews[i] instanceof StickerImageView) {
                     shape = "image";
                     desc = (String) ((StickerImageView) stickerPreviews[i]).getIv_main().getTag();
                 }

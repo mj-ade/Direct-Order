@@ -5,15 +5,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class CakeShopViewModel extends ViewModel {
-    // TODO: Implement the ViewModel
-
     private MutableLiveData<String> mText;
-    String name;
 
-        public CakeShopViewModel() {
-
+    public CakeShopViewModel() {
         mText = new MutableLiveData<>();
-
     }
 
     public LiveData<String> getText() {

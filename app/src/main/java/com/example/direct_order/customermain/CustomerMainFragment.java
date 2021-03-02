@@ -102,23 +102,6 @@ public class CustomerMainFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.customer_home_menu, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-        searchView.setQueryHint("가게명 검색"); //검색버튼 클릭시, searchview에 힌트 추가
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            //검색버튼 눌렀을 경우
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(getContext(), "검색 시작", Toast.LENGTH_LONG).show();
-                return true;
-            }
-            //텍스트가 바뀔때마다 호출
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                Toast.makeText(getContext(), "검색 변경", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
     }
 
     @Override

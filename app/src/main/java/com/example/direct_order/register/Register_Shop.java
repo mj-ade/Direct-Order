@@ -1,26 +1,14 @@
 package com.example.direct_order.register;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -29,6 +17,11 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.direct_order.R;
 import com.example.direct_order.customermain.AdrData;
@@ -43,20 +36,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
 public class Register_Shop extends AppCompatActivity {
-
     EditText et_shopname, et_shopnum, et_instagram, et_shopad, et_shopacc;
     RadioGroup rg, rg2;
     RadioButton r1, r2;
@@ -64,17 +52,16 @@ public class Register_Shop extends AppCompatActivity {
     FirebaseStorage storage = FirebaseStorage.getInstance();
     private FirebaseAuth firebaseAuth;
 
+    private List<Address> list = new ArrayList<>();
+    private AdrData adrdata = new AdrData();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register__shop);
 
-
         Button btn_reg = findViewById(R.id.btn_add);
 
-        //shop image 등록 위한 gallery 접근
-        //checkSelfPermission();
         setmain = findViewById(R.id.image_shop);
         setmain.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,8 +73,6 @@ public class Register_Shop extends AppCompatActivity {
                 startActivityForResult(intent,101);
             }
         });
-
-        //listDataGroup.add(getString(R.string.show_shop));
 
         et_shopname=findViewById(R.id.txt_shopname);
         et_shopnum=findViewById(R.id.txt_shopnum);
@@ -104,17 +89,9 @@ public class Register_Shop extends AppCompatActivity {
         r2=findViewById(R.id.possible);
         r2.setChecked(true);
 
-        /*r2=findViewById(R.id.radioButton_macaron);
-        r3=findViewById(R.id.radioButton_case);
-        r4=findViewById(R.id.radioButton_acc);
-        r5=findViewById(R.id.radioButton_etc);*/
-
         btn_reg.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
-                //Toast.makeText(getApplicationContext(),(MainForSeller.listDataChild).get(0).toString(),Toast.LENGTH_LONG).show();
-                //Toast.makeText(getApplicationContext(),MainForSeller.shopList.toString(),Toast.LENGTH_LONG).show();
                 final String shopname = et_shopname.getText().toString().trim();
                 final String shopnum = et_shopnum.getText().toString().trim();
                 final String insta = et_instagram.getText().toString().trim();
@@ -122,47 +99,43 @@ public class Register_Shop extends AppCompatActivity {
                 final String shopacc = et_shopacc.getText().toString().trim();
                 final RadioButton rb, rb2;
                 rb = findViewById(rg.getCheckedRadioButtonId());
-                rb2=findViewById(rg2.getCheckedRadioButtonId());
+                rb2 = findViewById(rg2.getCheckedRadioButtonId());
 
                 final String shopgood = rb.getText().toString();
                 final boolean orderedit;
-                if(rb2.getText().toString().equals("가능"))
+                if (rb2.getText().toString().equals("가능"))
                     orderedit=true;
                 else
                     orderedit=false;
 
-                if(!shopname.equals("")&&!shopnum.equals("")&&!insta.equals("")&&!shopad.equals("")&&!shopacc.equals("")) {
+                if (!shopname.equals("") && !shopnum.equals("") && !insta.equals("") && !shopad.equals("") && !shopacc.equals("")) {
                     findAdrdata(shopad);
                     showDialog(shopname,shopnum,insta,shopad,shopacc,shopgood,orderedit);
                 }
-                else{
+                else {
                     android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(Register_Shop.this);
-                    builder.setTitle("").setMessage("빠짐없이 작성하였는지 다시 확인해주세요:)").setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
+                    builder.setTitle("").setMessage("빠짐없이 작성하였는지 다시 확인해주세요:)")
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
 
-                        }
-                    });
+                                }
+                            });
                     android.app.AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 }
-
             }
         });
-
     }
 
-    void showDialog(String shopname, String shopnum, String insta, String shopad, String shopacc, String shopgood, Boolean orderedit){
+    void showDialog(String shopname, String shopnum, String insta, String shopad, String shopacc, String shopgood, Boolean orderedit) {
         Join ja = (Join) Join.activity;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("\""+shopname+"\" 마켓을 등록 하시겠습니까?");
         builder.setNegativeButton("예", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
                 ja.finish();
-                //Toast.makeText(getApplicationContext(),list.toString(),Toast.LENGTH_LONG).show();
-                //MainForSeller.listDataChild.put(listDataGroup.get(0), shopList);
 
                 // 회원가입정보 join.class에서 받아와서 저장
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -178,18 +151,16 @@ public class Register_Shop extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                //Log.d(TAG, "DocumentSnapshot successfully written!");
+
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                //Log.w(TAG, "Error writing document", e);
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
                                 user.delete();
                             }
                         });
-
 
                 HashMap<Object, Object> shophash = new HashMap<>();
 
@@ -207,13 +178,12 @@ public class Register_Shop extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                //Log.d(TAG, "DocumentSnapshot successfully written!");
+
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                //Log.w(TAG, "Error writing document", e);
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
                                 user.delete();
                             }
@@ -221,12 +191,8 @@ public class Register_Shop extends AppCompatActivity {
 
                 db.collection("markets").document(uid).update("orderedit",orderedit);
 
-// Create a storage reference from our app
                 StorageReference storageRef = storage.getReference();
-
-// Create a reference to "mountains.jpg"
                 StorageReference mountainsRef = storageRef.child(uid);
-
 
                 setmain.setDrawingCacheEnabled(true);
                 setmain.buildDrawingCache();
@@ -253,18 +219,6 @@ public class Register_Shop extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), Login_sell.class);
                 intent.putExtra("마켓명",shopname);
 
-                /*HomeFragment fragment = new HomeFragment();
-                   Bundle bundle = new Bundle();
-                   bundle.putString("마켓",str);
-                   fragment.setArguments(bundle);
-
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.add(R.id.fragment_test,fragment);
-                ft.commit();
-                */
-
-
                 finish();
                 startActivity(intent);
             }
@@ -274,31 +228,6 @@ public class Register_Shop extends AppCompatActivity {
         builder.show();
     }
 
-    /*    //권한에 대한 응답이 있을때 작동하는 함수
-        @Override
-        public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-            //권한을 허용 했을 경우
-            if(requestCode == 1){
-                int length = permissions.length;
-                for (int i = 0; i < length; i++) {
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        //동의
-                        Log.d("Register_Shop","권한 허용 : + permissions[i]); } } } }
-
-
-        /*public void checkSelfPermission() {
-            String temp = ""; //파일 읽기 권한 확인
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                temp += Manifest.permission.READ_EXTERNAL_STORAGE + " "; }
-            //파일 쓰기 권한 확인
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                temp += Manifest.permission.WRITE_EXTERNAL_STORAGE + " "; }
-            if (TextUtils.isEmpty(temp) == false) { // 권한 요청
-                ActivityCompat.requestPermissions(this, temp.trim().split(" "),1); }
-            else { // 모두 허용 상태
-                Toast.makeText(this, "권한을 모두 허용", Toast.LENGTH_SHORT).show(); }
-        }
-    */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -316,9 +245,6 @@ public class Register_Shop extends AppCompatActivity {
         }
     }
 
-    List<Address> list = new ArrayList<>();
-    AdrData adrdata = new AdrData();
-
     private void findAdrdata(String shopad){
         final Geocoder geocoder = new Geocoder(this);
 
@@ -328,9 +254,8 @@ public class Register_Shop extends AppCompatActivity {
                     10); // 읽을 개수
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("test","입출력 오류 - 서버에서 주소변환시 에러발생");
+            Log.e("geocoder","입출력 오류 - 서버에서 주소 변환 시 에러발생");
         }
-
 
         if (list != null) {
             if (list.size() == 0) {
@@ -342,5 +267,4 @@ public class Register_Shop extends AppCompatActivity {
             }
         }
     }
-
 }

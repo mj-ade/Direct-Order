@@ -1,7 +1,6 @@
 package com.example.direct_order.customermain;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -25,25 +24,16 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
 public class MapActivity extends AppCompatActivity {
-
-    //지도
-    //로그캣 사용 설정
-    private static final String TAG = "MainActivity";
-
-    //객체 선언
-    SupportMapFragment mapFragment;
-    GoogleMap map;
-    Button btnLocation, btnKor2Loc;
-    EditText editText;
-
-    MarkerOptions myMarker;
+    private static final String TAG = "MapActivity";
+    private SupportMapFragment mapFragment;
+    private GoogleMap map;
+    private Button btnLocation, btnKor2Loc;
+    private EditText editText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +43,6 @@ public class MapActivity extends AppCompatActivity {
         //지도 - 권한설정
         checkDangerousPermissions();
 
-        //객체 초기화
         editText = findViewById(R.id.editText);
         btnLocation = findViewById(R.id.button1);
         btnKor2Loc = findViewById(R.id.button2);
@@ -140,6 +129,7 @@ public class MapActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private void showCurrentLocation(Location location) {
         LatLng curPoint = new LatLng(location.getLatitude(), location.getLongitude());
         String msg = "Latitutde : " + curPoint.latitude
@@ -149,13 +139,9 @@ public class MapActivity extends AppCompatActivity {
         //화면 확대, 숫자가 클수록 확대
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(curPoint, 15));
 
-        //마커 찍기숙명여자대학교
-        Location targetLocation = new Location("");
-        targetLocation.setLatitude(37.4937);
-        targetLocation.setLongitude(127.0643);
-        showMyMarker(targetLocation);
-
-        CustomerMainFragment.customVariable.setValue(Math.round(curPoint.latitude*100)/100.0,  Math.round(curPoint.longitude*100)/100.0);
+        CustomerMainFragment.customVariable.setValue(
+                Math.round(curPoint.latitude*100) / 100.0,
+                Math.round(curPoint.longitude*100) / 100.0);
         finish();
     }
 
@@ -177,12 +163,14 @@ public class MapActivity extends AppCompatActivity {
 
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "권한 있음", Toast.LENGTH_LONG).show();
-        } else {
+        }
+        else {
             Toast.makeText(this, "권한 없음", Toast.LENGTH_LONG).show();
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[0])) {
                 Toast.makeText(this, "권한 설명 필요함.", Toast.LENGTH_LONG).show();
-            } else {
+            }
+            else {
                 ActivityCompat.requestPermissions(this, permissions, 1);
             }
         }
@@ -194,22 +182,11 @@ public class MapActivity extends AppCompatActivity {
             for (int i = 0; i < permissions.length; i++) {
                 if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, permissions[i] + " 권한이 승인됨.", Toast.LENGTH_LONG).show();
-                } else {
+                }
+                else {
                     Toast.makeText(this, permissions[i] + " 권한이 승인되지 않음.", Toast.LENGTH_LONG).show();
                 }
             }
-        }
-    }
-    //------------------권한 설정 끝------------------------
-
-    private void showMyMarker(Location location) {
-        if(myMarker == null) {
-            myMarker = new MarkerOptions();
-            myMarker.position(new LatLng(location.getLatitude(), location.getLongitude()));
-            myMarker.title("◎ 내위치\n");
-            myMarker.snippet("여기가 어디지?");
-            myMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.c10));
-            map.addMarker(myMarker);
         }
     }
 }

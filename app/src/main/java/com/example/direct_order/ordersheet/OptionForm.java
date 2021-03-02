@@ -3,6 +3,7 @@ package com.example.direct_order.ordersheet;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -127,19 +128,27 @@ public class OptionForm extends LinearLayout {
         else if (optionType == OptionType.RADIOBUTTON_TEXT || optionType == OptionType.RADIOBUTTON_IMAGE) {
             view = (View) inflater.inflate(R.layout.option_compoundbutton_container, this, true);
             RadioGroup radioGroup = view.findViewById(R.id.radio_group);
+            LinearLayout colorGroup = view.findViewById(R.id.color_group);
 
             StringTokenizer st = new StringTokenizer(content, "&");
 
             for (int i = 0; i < numOfOption; i++) {
                 RadioButton radioButton = new RadioButton(context);
-
+                ImageView imageView = new ImageView(context);
+                imageView.setImageResource(R.drawable.sticker_preview_circle_filled);
+                LayoutParams layoutParams = new LayoutParams(dpToPx(context, 20), dpToPx(context, 20));
+                layoutParams.setMargins(0, dpToPx(context, 2), 0, 0);
+                imageView.setLayoutParams(layoutParams);
                 if (optionType % 2 == 0) {
                     String s = st.nextToken();
-                    if (!function.equals("") && !function.equals("func1"))  // 기능 추가 시
+                    if (!function.equals("") && !function.equals("func1")) { // 기능 추가 시
                         radioButton.setText(s.substring(0, s.indexOf(':')));
+                        imageView.setColorFilter(Color.parseColor(s.substring(s.indexOf("#"), s.length())));
+                    }
                     else
                         radioButton.setText(s);
                     radioGroup.addView(radioButton);
+                    colorGroup.addView(imageView);
                 }
                 else {
                     setCompoundButtonImage(context, st, radioGroup, radioButton);

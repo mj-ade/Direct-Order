@@ -371,7 +371,11 @@ public class ProductOrderActivity extends AppCompatActivity {
 
                         while (st.hasMoreTokens()) {
                             String s = st.nextToken();
-                            colors[pos][count++] = Color.parseColor(s.substring(s.indexOf("#"), s.length()));
+                            if (filled[pos])
+                                s = "#88"+s.substring(s.indexOf("#")+1, s.length());
+                            else
+                                s = s.substring(s.indexOf("#"), s.length());
+                            colors[pos][count++] = Color.parseColor(s);
                         }
                     }
                 }

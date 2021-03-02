@@ -11,4 +11,11 @@
         android:id="@+id/radio_group"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"/>
+
+    <LinearLayout
+        android:id="@+id/color_group"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_margin="4dp"
+        android:orientation="vertical"/>
 </LinearLayout>

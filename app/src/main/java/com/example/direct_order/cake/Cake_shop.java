@@ -55,7 +55,7 @@ public class Cake_shop extends Fragment {
                     case 0:
                         return new OrderListFragment();
                     case 1:
-                        return new Tab_Order_Form(isExist);
+                        return new OrderSheetFragment(isExist);
                     case 2:
                         return new ReviewListFragment();
                     default:

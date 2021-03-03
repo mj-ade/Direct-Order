@@ -133,7 +133,7 @@ public abstract class NewOptionActivity extends ImageCropActivity {
         editTextTitle.setText("");
         editTextDesc.setText("");
         editTextPreview.setText("");
-        imageView.setImageDrawable(getDrawable(R.drawable.c10));
+        imageView.setImageDrawable(getDrawable(R.drawable.ic_add_photo));
 
         for (int i = 0; i < functionRadioGroup.getChildCount(); i++) {
             RadioButton rb = (RadioButton) functionRadioGroup.getChildAt(i);

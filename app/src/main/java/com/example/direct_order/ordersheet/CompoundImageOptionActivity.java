@@ -85,7 +85,7 @@ public class CompoundImageOptionActivity extends NewOptionActivity {
                         .into(imageView);
             }
             else
-                imageView.setImageDrawable(getDrawable(R.drawable.c10));  // 개발자 기본 제공 이미지
+                imageView.setImageDrawable(getDrawable(R.drawable.ic_add_photo));  // 개발자 기본 제공 이미지
 
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override

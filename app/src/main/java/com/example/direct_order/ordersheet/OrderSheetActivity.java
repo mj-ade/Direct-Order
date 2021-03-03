@@ -304,7 +304,7 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                     if (document.exists()) {
                         imageName = (String) document.get("image");
                         if (imageName == null || imageName.trim().isEmpty()) {
-                            imageView.setImageResource(R.drawable.c10);  //개발자 기본 제공 이미지
+                            imageView.setImageResource(R.drawable.ic_add_photo);  //개발자 기본 제공 이미지
                             imageName = "";
                         }
                         else {

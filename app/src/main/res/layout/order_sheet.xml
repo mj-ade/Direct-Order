@@ -16,7 +16,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:layout_margin="8dp"
-            app:srcCompat="@drawable/ic_image" />
+            app:srcCompat="@drawable/ic_add_photo" />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView

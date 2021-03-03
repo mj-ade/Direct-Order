@@ -34,7 +34,7 @@
                 android:layout_marginVertical="4dp"
                 android:background="#2A5A594C"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/c10" />
+                app:srcCompat="@drawable/ic_add_photo" />
 
             <TextView
                 android:id="@+id/textView"

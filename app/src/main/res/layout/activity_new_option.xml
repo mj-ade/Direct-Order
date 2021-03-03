@@ -243,7 +243,7 @@
                     android:layout_weight="3"
                     android:scaleType="fitStart"
                     android:adjustViewBounds="true"
-                    app:srcCompat="@drawable/c10"/>
+                    app:srcCompat="@drawable/ic_add_photo"/>
             </LinearLayout>
 
             <LinearLayout

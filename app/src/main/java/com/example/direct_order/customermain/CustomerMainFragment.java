@@ -38,7 +38,7 @@ public class CustomerMainFragment extends Fragment {
     private final String TAG = "CUSTOMER_MAIN_FRAGMENT";
     TabLayout tabLayout;
     ViewPager2 viewPager;
-    String[] tabItems = {"CAKE", "CASE", "ACCESSORY", "ETC"};
+    String[] tabItems = {"CAKE", "CASE", "ACC", "ETC"};
     static CustomVariable customVariable = new CustomVariable();
 
     static List<String> favoriteMarket = new ArrayList<>();

@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Register_Shop extends AppCompatActivity {
+public class RegisterShopActivity extends AppCompatActivity {
     EditText et_shopname, et_shopnum, et_instagram, et_shopad, et_shopacc;
     RadioGroup rg, rg2;
     RadioButton r1, r2;
@@ -58,7 +58,7 @@ public class Register_Shop extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register__shop);
+        setContentView(R.layout.activity_register_shop);
 
         Button btn_reg = findViewById(R.id.btn_add);
 
@@ -113,7 +113,7 @@ public class Register_Shop extends AppCompatActivity {
                     showDialog(shopname,shopnum,insta,shopad,shopacc,shopgood,orderedit);
                 }
                 else {
-                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(Register_Shop.this);
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(RegisterShopActivity.this);
                     builder.setTitle("").setMessage("빠짐없이 작성하였는지 다시 확인해주세요:)")
                             .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                 @Override
@@ -215,7 +215,7 @@ public class Register_Shop extends AppCompatActivity {
                     }
                 });
 
-                Toast.makeText(Register_Shop.this, "가입 완료", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterShopActivity.this, "가입 완료", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), Login_sell.class);
                 intent.putExtra("마켓명",shopname);
 

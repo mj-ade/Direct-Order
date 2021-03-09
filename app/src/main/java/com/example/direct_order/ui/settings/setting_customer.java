@@ -52,7 +52,7 @@ public class setting_customer extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.setting_customer_fragment, container, false);
+        View root = inflater.inflate(R.layout.fragment_setting_customer, container, false);
 
         tv1=root.findViewById(R.id.cus_name);
         tv2=root.findViewById(R.id.cus_email);

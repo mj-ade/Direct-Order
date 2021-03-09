@@ -103,7 +103,7 @@ public class Join extends AppCompatActivity {
                                     hashMap.put("name",name);
                                     hashMap.put("phone",phone);
 
-                                    Intent intent = new Intent(getApplicationContext(), Register_Shop.class);
+                                    Intent intent = new Intent(getApplicationContext(), RegisterShopActivity.class);
                                     intent.putExtra("회원가입",hashMap);
 
 

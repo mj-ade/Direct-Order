@@ -45,7 +45,7 @@ public class setting_seller extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.setting_seller_fragment, container, false);
+        View root = inflater.inflate(R.layout.fragment_setting_seller, container, false);
 
         tv1=root.findViewById(R.id.user_name);
         tv2=root.findViewById(R.id.user_email);

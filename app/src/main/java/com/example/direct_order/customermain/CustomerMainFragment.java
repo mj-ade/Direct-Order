@@ -10,8 +10,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -54,7 +52,7 @@ public class CustomerMainFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.cake_shop_fragment, container, false);
+        View root = inflater.inflate(R.layout.fragment_user_main, container, false);
         tabLayout = root.findViewById(R.id.tab1);
         viewPager = root.findViewById(R.id.pager);
         viewPager.setAdapter(new FragmentStateAdapter(this) {

@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.settings.setting_seller"
-   
->
+    tools:context=".ui.settings.setting_seller">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,8 +55,7 @@
                 android:layout_gravity="start"
                 android:layout_marginTop="60dp"
                 android:textStyle="bold"
-                android:inputType="text"
-                />
+                android:inputType="text" />
 
             <TextView
                 android:id="@+id/user_email"
@@ -76,16 +73,14 @@
                 android:layout_gravity="start"
                 android:layout_marginTop="60dp"
                 android:inputType="phone"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginTop="60dp"
-                />
+                android:layout_marginTop="60dp" />
 
             <Button
                 android:id="@+id/secession"
@@ -93,10 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginTop="60dp"
-                android:text="탈퇴하기"
-                />
+                android:text="탈퇴하기" />
         </LinearLayout>
-
     </LinearLayout>
-
 </ScrollView>

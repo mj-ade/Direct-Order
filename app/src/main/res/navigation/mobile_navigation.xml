@@ -9,7 +9,7 @@
         android:id="@+id/nav_home"
         android:name="com.example.direct_order.ui.settings.setting_seller"
         android:label="계정 관리"
-        tools:layout="@layout/setting_seller_fragment" >
+        tools:layout="@layout/fragment_setting_seller" >
     </fragment>
 
     <fragment
@@ -21,8 +21,8 @@
 
     <fragment
         android:id="@+id/nav_cake"
-        android:name="com.example.direct_order.cake.Cake_shop"
-        tools:layout="@layout/cake_shop_fragment"
+        android:name="com.example.direct_order.sellermain.SellerMainFragment"
+        tools:layout="@layout/fragment_user_main"
         android:label="My Shop">
 
     </fragment>

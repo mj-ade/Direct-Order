@@ -129,7 +129,7 @@ public class OrderListAdapter extends FirestoreRecyclerAdapter<Order, OrderListA
         String message = "[Direct Order 알림 메시지]\n안녕하세요 " + name + " 고객님.\n"
                 + "[" + shopName + "] 입니다.\n\n"
                 + "고객님께서 " + date + " " + time + " 에 주문하신 상품의 가격은 " + price + "원 입니다.\n"
-                + shopAccount + "로 입금 부탁드립니다:)\n\n"
+                + shopAccount + "(으)로 입금 부탁드립니다:)\n\n"
                 + "추가 문의사항이 있으시면 연락주세요.";
         try{
             Uri smsUri = Uri.parse("sms:" + number);

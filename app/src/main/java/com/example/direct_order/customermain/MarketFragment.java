@@ -61,8 +61,8 @@ public class MarketFragment extends Fragment {
                 else if (p == 1) {
                     adapter.updateOptions(new FirestoreRecyclerOptions.Builder<Market>()
                             .setQuery(market.whereEqualTo("shopgoods", goods[position])
-                                    .whereEqualTo("latitude", CustomerMainFragment.customVariable.getLatitude())
-                                    .whereEqualTo("longitude", CustomerMainFragment.customVariable.getLongitude()), Market.class)
+                                    .whereEqualTo("shoplatitude", CustomerMainFragment.customVariable.getLatitude())
+                                    .whereEqualTo("shoplongitude", CustomerMainFragment.customVariable.getLongitude()), Market.class)
                             .build());
                 }
             }

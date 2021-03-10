@@ -132,10 +132,6 @@ public class MapActivity extends AppCompatActivity {
 
     private void showCurrentLocation(Location location) {
         LatLng curPoint = new LatLng(location.getLatitude(), location.getLongitude());
-        String msg = "Latitutde : " + curPoint.latitude
-                + "\nLongitude : " + curPoint.longitude;
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-
         //화면 확대, 숫자가 클수록 확대
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(curPoint, 15));
 
@@ -158,20 +154,6 @@ public class MapActivity extends AppCompatActivity {
             permissionCheck = ContextCompat.checkSelfPermission(this, permissions[i]);
             if (permissionCheck == PackageManager.PERMISSION_DENIED) {
                 break;
-            }
-        }
-
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "권한 있음", Toast.LENGTH_LONG).show();
-        }
-        else {
-            Toast.makeText(this, "권한 없음", Toast.LENGTH_LONG).show();
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[0])) {
-                Toast.makeText(this, "권한 설명 필요함.", Toast.LENGTH_LONG).show();
-            }
-            else {
-                ActivityCompat.requestPermissions(this, permissions, 1);
             }
         }
     }

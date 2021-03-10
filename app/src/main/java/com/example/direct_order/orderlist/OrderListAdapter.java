@@ -45,7 +45,7 @@ public class OrderListAdapter extends FirestoreRecyclerAdapter<Order, OrderListA
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Order model) {
         holder.name.setText(model.getName());
         holder.date.setText(model.getDate() + " " + model.getTime());
-        if (model.getPickup() == null)
+        if (model.getPickup().equals(""))
             holder.pickup.setText(model.getDate());
         else
             holder.pickup.setText(model.getPickup() + " " + model.getPickupTime());

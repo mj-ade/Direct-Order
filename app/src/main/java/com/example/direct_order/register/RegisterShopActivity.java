@@ -168,8 +168,8 @@ public class RegisterShopActivity extends AppCompatActivity {
                 shophash.put("shopnum",shopnum);
                 shophash.put("instagram",insta);
                 shophash.put("shopaddress",shopad);
-                shophash.put("shoplatitude", adrdata.getLatitude());
-                shophash.put("shoplongitude", adrdata.getLongitude());
+                shophash.put("shoplatitude", Math.round(adrdata.getLatitude()*100) / 100.0);
+                shophash.put("shoplongitude", Math.round(adrdata.getLongitude()*100) / 100.0);
                 shophash.put("shopaccount",shopacc);
                 shophash.put("shopgoods",shopgood);
                 shophash.put("shopuid", uid);

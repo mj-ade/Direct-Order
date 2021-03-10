@@ -23,8 +23,4 @@
     <style name="Theme.DirectOrder.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.DirectOrder.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorAccent">@color/gray</item>
-    </style>
 </resources>

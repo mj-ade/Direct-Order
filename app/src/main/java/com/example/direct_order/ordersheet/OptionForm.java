@@ -245,7 +245,6 @@ public class OptionForm extends LinearLayout {
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 getContext(),
-                R.style.DialogTheme,
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {

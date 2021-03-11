@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 import com.example.direct_order.R;
 import com.example.direct_order.write_review.WriteReviewActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -201,7 +202,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
                             //String file = screenshot.substring(screenshot.lastIndexOf("/"));
 
                             StorageReference rootRef = FirebaseStorage.getInstance().getReference(screenshot);
-                            Glide.with(v.getContext()).load(rootRef).placeholder(R.drawable.white).into(iv);
+                            Glide.with(v.getContext()).load(rootRef).override(Target.SIZE_ORIGINAL).placeholder(R.drawable.white).into(iv);
 
                         }
                     }

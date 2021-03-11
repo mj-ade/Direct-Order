@@ -137,7 +137,7 @@ public class OptionForm extends LinearLayout {
                 ImageView imageView = new ImageView(context);
                 imageView.setImageResource(R.drawable.sticker_preview_circle_filled);
                 LayoutParams layoutParams = new LayoutParams(dpToPx(context, 20), dpToPx(context, 20));
-                layoutParams.setMargins(0, dpToPx(context, 2), 0, 0);
+                layoutParams.setMargins(0, dpToPx(context, 4), 0, dpToPx(context, 8));
                 imageView.setLayoutParams(layoutParams);
                 if (optionType % 2 == 0) {
                     String s = st.nextToken();

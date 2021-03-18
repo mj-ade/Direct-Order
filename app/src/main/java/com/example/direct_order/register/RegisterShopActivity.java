@@ -24,14 +24,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.direct_order.R;
-import com.example.direct_order.customermain.AdrData;
-import com.example.direct_order.ui.login.Login_sell;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -45,13 +41,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class RegisterShopActivity extends AppCompatActivity {
-    EditText et_shopname, et_shopnum, et_instagram, et_shopad, et_shopacc;
-    RadioGroup rg, rg2;
-    RadioButton r1, r2;
-    ImageView setmain;
-    FirebaseStorage storage = FirebaseStorage.getInstance();
+    private EditText et_shopname, et_shopnum, et_instagram, et_shopad, et_shopacc;
+    private RadioGroup rg, rg2;
+    private RadioButton r1, r2;
+    private ImageView marketImage;
     private FirebaseAuth firebaseAuth;
-
     private List<Address> list = new ArrayList<>();
     private AdrData adrdata = new AdrData();
 
@@ -62,12 +56,12 @@ public class RegisterShopActivity extends AppCompatActivity {
 
         Button btn_reg = findViewById(R.id.btn_add);
 
-        setmain = findViewById(R.id.image_shop);
-        setmain.setOnClickListener(new View.OnClickListener() {
+        marketImage = findViewById(R.id.image_shop);
+        marketImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(); //기기 기본 갤러리 접근
-                intent.setType(MediaStore.Images.Media.CONTENT_TYPE); //구글 갤러리 접근
+                Intent intent = new Intent();
+                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intent,101);
@@ -109,19 +103,13 @@ public class RegisterShopActivity extends AppCompatActivity {
                     orderedit=false;
 
                 if (!shopname.equals("") && !shopnum.equals("") && !insta.equals("") && !shopad.equals("") && !shopacc.equals("")) {
-                    findAdrdata(shopad);
+                    findAdrData(shopad);
                     showDialog(shopname,shopnum,insta,shopad,shopacc,shopgood,orderedit);
                 }
                 else {
-                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(RegisterShopActivity.this);
-                    builder.setTitle("").setMessage("빠짐없이 작성하였는지 다시 확인해주세요:)")
-                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-
-                                }
-                            });
-                    android.app.AlertDialog alertDialog = builder.create();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterShopActivity.this);
+                    builder.setMessage("빠짐없이 작성하였는지 다시 확인해주세요:)").setPositiveButton("확인", null);
+                    AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 }
             }
@@ -129,24 +117,15 @@ public class RegisterShopActivity extends AppCompatActivity {
     }
 
     void showDialog(String shopname, String shopnum, String insta, String shopad, String shopacc, String shopgood, Boolean orderedit) {
-        Join ja = (Join) Join.activity;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("\""+shopname+"\" 마켓을 등록 하시겠습니까?");
         builder.setNegativeButton("예", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ja.finish();
-
-                // 회원가입정보 join.class에서 받아와서 저장
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference reference = database.getReference("sellers");
                 HashMap<Object, String> hashMap = (HashMap<Object, String>) getIntent().getSerializableExtra("회원가입");
                 String uid = hashMap.get("uid");
 
-                reference.child(uid).setValue(hashMap);
-
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-
                 db.collection("sellers").document(uid).set(hashMap)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -191,12 +170,12 @@ public class RegisterShopActivity extends AppCompatActivity {
 
                 db.collection("markets").document(uid).update("orderedit",orderedit);
 
-                StorageReference storageRef = storage.getReference();
+                StorageReference storageRef = FirebaseStorage.getInstance().getReference();
                 StorageReference mountainsRef = storageRef.child(uid);
 
-                setmain.setDrawingCacheEnabled(true);
-                setmain.buildDrawingCache();
-                Bitmap bitmap = ((BitmapDrawable) setmain.getDrawable()).getBitmap();
+                marketImage.setDrawingCacheEnabled(true);
+                marketImage.buildDrawingCache();
+                Bitmap bitmap = ((BitmapDrawable) marketImage.getDrawable()).getBitmap();
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data = baos.toByteArray();
@@ -205,22 +184,17 @@ public class RegisterShopActivity extends AppCompatActivity {
                 uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        // Handle unsuccessful uploads
+
                     }
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                        // ...
+
                     }
                 });
 
-                Toast.makeText(RegisterShopActivity.this, "가입 완료", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), Login_sell.class);
-                intent.putExtra("마켓명",shopname);
-
+                Toast.makeText(getApplicationContext(), "가입 완료", Toast.LENGTH_SHORT).show();
                 finish();
-                startActivity(intent);
             }
         });
 
@@ -235,31 +209,30 @@ public class RegisterShopActivity extends AppCompatActivity {
             try {
                 InputStream is = getContentResolver().openInputStream(data.getData());
                 Bitmap bm = BitmapFactory.decodeStream(is);
+                marketImage.setImageBitmap(bm);
                 is.close();
-                setmain.setImageBitmap(bm);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else if (requestCode == 101 && resultCode == RESULT_CANCELED) {
+        }
+        else if (requestCode == 101 && resultCode == RESULT_CANCELED) {
             Toast.makeText(this, "취소", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void findAdrdata(String shopad){
+    private void findAdrData(String shopAddress) {
         final Geocoder geocoder = new Geocoder(this);
 
         try {
-            list = geocoder.getFromLocationName(
-                    shopad, // 지역 이름
-                    10); // 읽을 개수
+            list = geocoder.getFromLocationName(shopAddress, 10);
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("geocoder","입출력 오류 - 서버에서 주소 변환 시 에러발생");
+            Log.e("Geocoder", "입출력 오류 - 서버에서 주소 변환 시 에러 발생");
         }
 
         if (list != null) {
             if (list.size() == 0) {
-                Log.d("geocoder","해당되는 주소 정보는 없습니다");
+                Log.d("Geocoder", "해당되는 주소 정보 없음");
             }
             else {
                 adrdata.setLatitude(list.get(0).getLatitude());

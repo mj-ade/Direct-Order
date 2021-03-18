@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/nav_orders"
-        android:name="com.example.direct_order.ui.orderhistory.OrderHistory"
+        android:name="com.example.direct_order.orderhistory.OrderHistoryFragment"
         android:label="주문 내역"
         tools:layout="@layout/fragment_order_history" />
 
     <fragment
         android:id="@+id/nav_buy_setting"
-        android:name="com.example.direct_order.ui.settings.setting_customer"
+        android:name="com.example.direct_order.setting.SettingCustomerFragment"
         android:label="계정 관리"
         tools:layout="@layout/fragment_setting_customer" />
 

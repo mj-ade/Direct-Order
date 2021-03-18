@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
-import com.example.direct_order.Main_who;
+import com.example.direct_order.MainActivity;
 import com.example.direct_order.R;
 
 public class IntroActivity extends AppCompatActivity {
@@ -25,9 +25,9 @@ public class IntroActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
-                finish();
-                Intent intent = new Intent(IntroActivity.this, Main_who.class);
+                Intent intent = new Intent(IntroActivity.this, MainActivity.class);
                 startActivity(intent);
+                finish();
             }
         }
     };

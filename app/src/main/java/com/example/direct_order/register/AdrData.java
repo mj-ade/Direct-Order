@@ -1,16 +1,16 @@
-package com.example.direct_order.customermain;
+package com.example.direct_order.register;
 
 public class AdrData {
     private double latitude;
     private double longitude;
 
+    public AdrData() {
+
+    }
+
     public AdrData(double latitude, double longitude){
         this.latitude = latitude;
         this.longitude = longitude;
-    }
-
-    public AdrData() {
-
     }
 
     public double getLatitude() {

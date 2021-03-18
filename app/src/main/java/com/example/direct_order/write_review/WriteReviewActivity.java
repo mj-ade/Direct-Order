@@ -49,8 +49,8 @@ public class WriteReviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_review);
 
-        editText = (EditText)findViewById(R.id.editText);
-        button = (Button)findViewById(R.id.button);
+        editText = findViewById(R.id.editText);
+        button = findViewById(R.id.button);
         ratingBar = findViewById(R.id.ratingBar);
         imageView = findViewById(R.id.imageView);
 
@@ -59,7 +59,6 @@ public class WriteReviewActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
         CollectionReference coRef = db.collection("customers").document(uid).collection("orders");
-        //documnet로 가져온다
         coRef.document(docId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -115,12 +114,12 @@ public class WriteReviewActivity extends AppCompatActivity {
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                // Toast.makeText(getApplicationContext(), "실패", Toast.LENGTH_SHORT).show();
+
             }
         });
         return filepath;

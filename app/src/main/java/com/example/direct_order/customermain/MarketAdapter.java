@@ -25,11 +25,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
 
 public class MarketAdapter extends FirestoreRecyclerAdapter<Market, MarketAdapter.ViewHolder> {
     Context context;
@@ -40,10 +37,6 @@ public class MarketAdapter extends FirestoreRecyclerAdapter<Market, MarketAdapte
         this.context = context;
         this.customerFavorRef = customerFavorRef;
     }
-
-
-    List<AdrData> adrlist = new ArrayList<>();
-
 
     @Override
     protected void onBindViewHolder(@NonNull MarketAdapter.ViewHolder holder, int position, @NonNull Market model) {

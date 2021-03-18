@@ -40,17 +40,13 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.pedro.library.AutoPermissions;
-import com.pedro.library.AutoPermissionsListener;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
-public class OrderSheetActivity extends ImageCropActivity implements AutoPermissionsListener {
+public class OrderSheetActivity extends ImageCropActivity {
     static RelativeLayout touchPanel;
     static boolean isFocus, isUpdate;
     static int type, numOfOption;
@@ -78,8 +74,6 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ordersheet);
 
-        AutoPermissions.Companion.loadAllPermissions(this, 101);
-
         viewGroup = findViewById(R.id.included_view);
         touchPanel = viewGroup.findViewById(R.id.imageDesc);
         buttonTypeLayout = findViewById(R.id.button_type_layout);
@@ -92,8 +86,8 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
         });
 
         ImageView iv_main = viewGroup.findViewById(R.id.imageView);
-        setupMainImage(iv_main); // DB에서 image 가져오기
-        setupPreviews();    //DB에서 preview 가져와서 touchPanel에 배치
+        setupMainImage(iv_main);
+        setupPreviews();
         iv_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -246,16 +240,14 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                 if (direction == ItemTouchHelper.LEFT) {
                     adapter.deleteItem(viewHolder.getAdapterPosition());
 
-                    // 아이템 삭제에 따른 num array 갱신
                     int numberIndex = adapter.getItem(viewHolder.getAdapterPosition()).getNumber() - 1;
                     numberDup[numberIndex] = false;
 
-                    // 아이템 삭제하면 preview도 삭제
                     if (stickerPreviews[numberIndex] != null) {
                         touchPanel.removeView(stickerPreviews[numberIndex]);
                         stickerPreviews[numberIndex] = null;
                     }
-                    //db에 저장된 내용도 삭제
+
                     previewRef.document("stickerID" + (numberIndex + 1)).delete();
                 }
                 else if (direction == ItemTouchHelper.RIGHT) {
@@ -304,7 +296,7 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                     if (document.exists()) {
                         imageName = (String) document.get("image");
                         if (imageName == null || imageName.trim().isEmpty()) {
-                            imageView.setImageResource(R.drawable.ic_add_photo);  //개발자 기본 제공 이미지
+                            imageView.setImageResource(R.drawable.ic_add_photo);
                             imageName = "";
                         }
                         else {
@@ -327,7 +319,7 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
         });
     }
 
-    private void setupPreviews() {  //preview 가져오기
+    private void setupPreviews() {
         for (int i = 0; i < 20; i++) {
             int finalI = i;
 
@@ -358,7 +350,7 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                                     ((StickerImageView) stickerPreviews[finalI]).setImageResource(R.drawable.sticker_preview_square);
                                 else if (desc.equals("circle"))
                                     ((StickerImageView) stickerPreviews[finalI]).setImageResource(R.drawable.sticker_preview_circle);
-                                else {  // 사용자 지정 이미지
+                                else {
                                     StorageReference ref = FirebaseStorage.getInstance().getReference(desc);
                                     GlideApp.with(getApplicationContext()).load(ref).into(((StickerImageView) stickerPreviews[finalI]).getIv_main());
                                 }
@@ -506,7 +498,6 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
                     else {
                         numOfOption = inputValue;
                         alertDialog.dismiss();
-                        //텍스트인지 이미지인지에 따라 갈 곳이 달라짐
                         if (type % 2 == 0)
                             startActivity(new Intent(OrderSheetActivity.this, CompoundTextOptionActivity.class));
                         else
@@ -530,33 +521,17 @@ public class OrderSheetActivity extends ImageCropActivity implements AutoPermiss
     }
 
     public static int dpToPx(Context context, int dp) {
-        float density = context.getResources().getDisplayMetrics().density; // density = densityDpi / DisplayMetrics.DENSITY_DEFAULT
+        float density = context.getResources().getDisplayMetrics().density;
         return (int) (dp * density);
     }
 
     public static int pxToDp(Context context, int px) {
-        float density = context.getResources().getDisplayMetrics().density; // density = densityDpi / DisplayMetrics.DENSITY_DEFAULT
+        float density = context.getResources().getDisplayMetrics().density;
         return (int) (px / density);
     }
 
     public static int pxToSp(Context context, int px) {
-        float density = context.getResources().getDisplayMetrics().scaledDensity; // density = densityDpi / DisplayMetrics.DENSITY_DEFAULT
+        float density = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (px / density);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        AutoPermissions.Companion.parsePermissions(this, requestCode, permissions, this);
-    }
-
-    @Override
-    public void onGranted(int i, @NotNull String[] strings) {
-        //Toast.makeText(this, "permissions granted", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onDenied(int i, @NotNull String[] strings) {
-        //Toast.makeText(this, "permissions denied", Toast.LENGTH_SHORT).show();
     }
 }

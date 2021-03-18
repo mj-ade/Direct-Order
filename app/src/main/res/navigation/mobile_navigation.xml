@@ -7,16 +7,16 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.direct_order.ui.settings.setting_seller"
+        android:name="com.example.direct_order.setting.SettingSellerFragment"
         android:label="계정 관리"
         tools:layout="@layout/fragment_setting_seller" >
     </fragment>
 
     <fragment
         android:id="@+id/nav_market_setting"
-        android:name="com.example.direct_order.ui.settings.MarketSettingFragment"
+        android:name="com.example.direct_order.setting.SettingMarketFragment"
         android:label="마켓 관리"
-        tools:layout="@layout/fragment_market_setting" >
+        tools:layout="@layout/fragment_setting_market" >
     </fragment>
 
     <fragment

@@ -1,118 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.settings.setting_customer">
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="128dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="60dp"
+                android:gravity="center"
+                android:text="이름: "
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="60dp"
+                android:gravity="center"
+                android:text="이메일: "
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="60dp"
+                android:gravity="center"
+                android:text="휴대폰 번호: "
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="60dp"
+                android:gravity="center"
+                android:text="주소: "
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/cus_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="60dp"
+                android:textStyle="bold"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/cus_email"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_gravity="start"
+                android:layout_marginTop="60dp"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <EditText
+                android:id="@+id/cus_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="60dp"
+                android:inputType="phone"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/cus_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="60dp"
+                android:inputType="text"
+                android:textStyle="bold" />
 
             <LinearLayout
-                android:layout_width="156dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="44dp"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="60dp"
-                    android:gravity="center"
-                    android:text="이름: "
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="45dp"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="60dp"
-                    android:gravity="center"
-                    android:text="이메일: "
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="44dp"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="60dp"
-                    android:gravity="center"
-                    android:text="휴대폰 번호: "
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="44dp"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="60dp"
-                    android:gravity="center"
-                    android:text="주소: "
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <EditText
-                    android:id="@+id/cus_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_marginTop="60dp"
-                    android:textStyle="bold"
-                    android:inputType="text"
-                    />
-
-                <TextView
-                    android:id="@+id/cus_email"
-                    android:layout_width="wrap_content"
-                    android:layout_height="45dp"
-                    android:layout_gravity="start"
-                    android:layout_marginTop="60dp"
-                    android:textStyle="bold"
-                    android:gravity="center"/>
-
-                <EditText
-                    android:id="@+id/cus_phone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_marginTop="60dp"
-                    android:inputType="phone"
-                    android:textStyle="bold"
-                    />
-                <EditText
-                    android:id="@+id/cus_add"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_marginTop="60dp"
-                    android:inputType="text"
-                    android:textStyle="bold"
-                    />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="60dp"
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/edit2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_marginTop="60dp"
-                    />
+                    android:layout_marginEnd="8dp"/>
 
                 <Button
                     android:id="@+id/secession2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="60dp"
-                    android:text="탈퇴하기"
-                    />
+                    android:text="탈퇴하기" />
             </LinearLayout>
-
         </LinearLayout>
-
+    </LinearLayout>
 </ScrollView>

@@ -53,10 +53,10 @@ public class LoginActivity extends AppCompatActivity {
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
-        EditText usernameEditText = findViewById(R.id.username);
+        EditText usernameEditText = findViewById(R.id.user_id);
         EditText passwordEditText = findViewById(R.id.password);
-        Button loginButton = findViewById(R.id.btn_login_sell);
-        Button joinButton = findViewById(R.id.btn_join_sell);
+        Button loginButton = findViewById(R.id.btn_login);
+        Button joinButton = findViewById(R.id.btn_join);
 
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override

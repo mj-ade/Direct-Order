@@ -71,30 +71,30 @@
             android:theme="@style/Theme.DirectOrder.NoActionBar" />
 
         <activity
-            android:name=".productorder.ProductOrderActivity" />
+            android:name=".product_order.ProductOrderActivity" />
 
         <activity
-            android:name=".ordersheet.OrderSheetActivity"
+            android:name=".order_sheet.OrderSheetActivity"
             android:theme="@style/Theme.DirectOrder.NoActionBar" />
-        <activity android:name=".ordersheet.TextOptionActivity"
-            android:parentActivityName=".ordersheet.OrderSheetActivity"/>
-        <activity android:name=".ordersheet.ImageOptionActivity"
-            android:parentActivityName=".ordersheet.OrderSheetActivity"/>
-        <activity android:name=".ordersheet.CompoundTextOptionActivity"
-            android:parentActivityName=".ordersheet.OrderSheetActivity"/>
-        <activity android:name=".ordersheet.CompoundImageOptionActivity"
-            android:parentActivityName=".ordersheet.OrderSheetActivity"/>
-        <activity android:name=".ordersheet.CalendarOptionActivity"
-            android:parentActivityName=".ordersheet.OrderSheetActivity"/>
+        <activity android:name=".order_sheet.TextOptionActivity"
+            android:parentActivityName=".order_sheet.OrderSheetActivity"/>
+        <activity android:name=".order_sheet.ImageOptionActivity"
+            android:parentActivityName=".order_sheet.OrderSheetActivity"/>
+        <activity android:name=".order_sheet.CompoundTextOptionActivity"
+            android:parentActivityName=".order_sheet.OrderSheetActivity"/>
+        <activity android:name=".order_sheet.CompoundImageOptionActivity"
+            android:parentActivityName=".order_sheet.OrderSheetActivity"/>
+        <activity android:name=".order_sheet.CalendarOptionActivity"
+            android:parentActivityName=".order_sheet.OrderSheetActivity"/>
 
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
-        <activity android:name=".customermain.MapActivity" />
+        <activity android:name=".customer_main.MapActivity" />
 
-        <activity android:name=".reviewlist.ReviewListActivity" />
+        <activity android:name=".review_list.ReviewListActivity" />
 
         <activity android:name=".write_review.WriteReviewActivity" />
 

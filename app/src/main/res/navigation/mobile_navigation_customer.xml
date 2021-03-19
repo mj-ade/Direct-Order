@@ -6,13 +6,13 @@
 
     <fragment
         android:id="@+id/nav_home_customer"
-        android:name="com.example.direct_order.customermain.CustomerMainFragment"
+        android:name="com.example.direct_order.customer_main.CustomerMainFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_user_main" />
 
     <fragment
         android:id="@+id/nav_order_history"
-        android:name="com.example.direct_order.orderhistory.OrderHistoryFragment"
+        android:name="com.example.direct_order.order_history.OrderHistoryFragment"
         android:label="주문 내역"
         tools:layout="@layout/fragment_order_history" />
 

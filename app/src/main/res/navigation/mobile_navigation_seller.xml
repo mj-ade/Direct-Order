@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/nav_home_seller"
-        android:name="com.example.direct_order.sellermain.SellerMainFragment"
+        android:name="com.example.direct_order.seller_main.SellerMainFragment"
         tools:layout="@layout/fragment_user_main"
         android:label="My Shop">
     </fragment>

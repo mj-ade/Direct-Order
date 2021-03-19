@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@+id/nav_home_seller">
+
+    <fragment
+        android:id="@+id/nav_home_seller"
+        android:name="com.example.direct_order.sellermain.SellerMainFragment"
+        tools:layout="@layout/fragment_user_main"
+        android:label="My Shop">
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_seller_setting"
+        android:name="com.example.direct_order.setting.SettingSellerFragment"
+        android:label="계정 관리"
+        tools:layout="@layout/fragment_setting_seller" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_market_setting"
+        android:name="com.example.direct_order.setting.SettingMarketFragment"
+        android:label="마켓 관리"
+        tools:layout="@layout/fragment_setting_market" >
+    </fragment>
+</navigation>

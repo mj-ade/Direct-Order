@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@+id/nav_home_customer">
+
+    <fragment
+        android:id="@+id/nav_home_customer"
+        android:name="com.example.direct_order.customermain.CustomerMainFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_user_main" />
+
+    <fragment
+        android:id="@+id/nav_order_history"
+        android:name="com.example.direct_order.orderhistory.OrderHistoryFragment"
+        android:label="주문 내역"
+        tools:layout="@layout/fragment_order_history" />
+
+    <fragment
+        android:id="@+id/nav_customer_setting"
+        android:name="com.example.direct_order.setting.SettingCustomerFragment"
+        android:label="계정 관리"
+        tools:layout="@layout/fragment_setting_customer" />
+</navigation>

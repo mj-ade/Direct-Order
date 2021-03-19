@@ -9,7 +9,6 @@
     tools:context=".intro.IntroActivity">
 
     <ImageView
-        android:id="@+id/imageView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:srcCompat="@drawable/start_page" />

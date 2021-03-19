@@ -4,14 +4,14 @@
     tools:showIn="navigation_view">
 
     <item
-        android:id="@+id/nav_cake"
+        android:id="@+id/nav_home_seller"
         android:icon="@drawable/shop"
         android:title="My Shop" />
 
     <item android:title = "Settings">
         <menu>
             <item
-                android:id="@+id/nav_home"
+                android:id="@+id/nav_seller_setting"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="계정 관리" />
             <item
@@ -20,5 +20,4 @@
                 android:title="마켓 관리" />
         </menu>
     </item>
-
 </menu>

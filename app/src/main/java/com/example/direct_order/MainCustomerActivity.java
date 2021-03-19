@@ -4,11 +4,20 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Menu;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,17 +27,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.view.GravityCompat;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 public class MainCustomerActivity extends AppCompatActivity {
     private long time;
@@ -47,13 +45,13 @@ public class MainCustomerActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                show();
+                showLogoutDialog();
             }
         });
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout2);
         NavigationView navigationView = findViewById(R.id.nav_view2);
-        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home_buy)
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home_customer)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment2);
@@ -79,9 +77,9 @@ public class MainCustomerActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
-    void show() {
+
+    private void showLogoutDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Logout");
         builder.setMessage("로그아웃하시겠습니까?");
@@ -94,19 +92,8 @@ public class MainCustomerActivity extends AppCompatActivity {
                 finish();
             }
         });
-        builder.setPositiveButton("아니오(No)",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
+        builder.setPositiveButton("아니오(No)", null);
         builder.show();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_customer_menu, menu);
-        return true;
     }
 
     @Override
@@ -126,7 +113,7 @@ public class MainCustomerActivity extends AppCompatActivity {
                 time = System.currentTimeMillis();
                 Toast.makeText(this, "뒤로 버튼을 한번 더 누르면 종료합니다.", Toast.LENGTH_SHORT).show();
             }
-            else if (System.currentTimeMillis() - time < 2000) {
+            else {
                 finish();
             }
         }

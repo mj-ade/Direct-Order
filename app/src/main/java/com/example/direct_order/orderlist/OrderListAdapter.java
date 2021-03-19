@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.direct_order.R;
@@ -58,12 +59,12 @@ public class OrderListAdapter extends FirestoreRecyclerAdapter<Order, OrderListA
         if (model.getProcess() == 0) {
             holder.price.setKeyListener((new EditText(context)).getKeyListener());
             holder.button_change.setEnabled(true);
-            holder.button_change.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F6EB8B")));
+            holder.button_change.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.illuminating));
         }
         else if (model.getProcess() == 1) {
             holder.price.setKeyListener(null);
             holder.button_change.setEnabled(true);
-            holder.button_change.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F6EB8B")));
+            holder.button_change.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.illuminating));
         }
         else if (model.getProcess() == 2) {
             holder.price.setKeyListener(null);
@@ -120,7 +121,7 @@ public class OrderListAdapter extends FirestoreRecyclerAdapter<Order, OrderListA
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.orderlist_item, parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_item, parent,false);
         ViewHolder holder = new ViewHolder(v);
         return holder;
     }

@@ -20,7 +20,7 @@
             android:textAllCaps="true"
             android:textColor="@color/gray"
             android:textStyle="bold"
-            app:backgroundTint="#F6EB8B"
+            app:backgroundTint="@color/illuminating"
             app:rippleColor="#FFFFFF"/>
 
         <Spinner

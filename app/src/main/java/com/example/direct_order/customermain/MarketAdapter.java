@@ -120,7 +120,7 @@ public class MarketAdapter extends FirestoreRecyclerAdapter<Market, MarketAdapte
     @Override
     public MarketAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View itemView = inflater.inflate(R.layout.customermain_grid_item, parent, false);
+        View itemView = inflater.inflate(R.layout.market_item, parent, false);
         return new ViewHolder(itemView);
     }
 

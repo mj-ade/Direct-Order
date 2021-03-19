@@ -3,27 +3,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-
     <item
-        android:id="@+id/nav_home_buy"
+        android:id="@+id/nav_home_customer"
         android:icon="@drawable/shop"
         android:title="@string/menu_home" />
 
-
-    <item android:title = "@string/OrderList">
+    <item android:title = "Order List">
         <menu>
             <item
-                android:id="@+id/nav_orders"
+                android:id="@+id/nav_order_history"
                 android:icon="@drawable/ic_menu_copy_holo_light"
-                android:title="@string/orderlist" />
+                android:title="주문 내역" />
         </menu>
-
     </item>
+
     <item android:title = "Settings">
         <menu>
             <item
                 android:icon="@drawable/ic_menu_manage"
-                android:id="@+id/nav_buy_setting"
+                android:id="@+id/nav_customer_setting"
                 android:title="계정 관리"/>
         </menu>
     </item>

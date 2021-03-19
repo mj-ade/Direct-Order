@@ -166,8 +166,6 @@ public class OrderListFragment extends Fragment {
                     }
                 },
                 todayYear, todayMonth, todayDate);
-
-        datePickerDialog.setMessage("날짜 선택");
         datePickerDialog.show();
     }
 

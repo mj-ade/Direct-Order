@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Direct-Order</string>
-    <string name="OrderList">Order List</string>
-    <string name="orderlist">주문 내역</string>
 
     <string name="action_sign_in_short">Sign in</string>
 

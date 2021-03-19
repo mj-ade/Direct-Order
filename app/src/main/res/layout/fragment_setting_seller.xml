@@ -20,6 +20,7 @@
                 android:layout_marginTop="60dp"
                 android:gravity="center"
                 android:text="이름: "
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -29,6 +30,7 @@
                 android:layout_marginTop="60dp"
                 android:gravity="center"
                 android:text="이메일: "
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -37,7 +39,8 @@
                 android:layout_gravity="end"
                 android:layout_marginTop="60dp"
                 android:gravity="center"
-                android:text="휴대폰 번호: "
+                android:text="전화번호: "
+                android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -61,6 +64,7 @@
                 android:layout_height="45dp"
                 android:layout_gravity="start"
                 android:layout_marginTop="60dp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:gravity="center"/>
 

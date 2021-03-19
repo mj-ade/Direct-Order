@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
         app:cardCornerRadius="4dp"
         tools:ignore="ExtraText">
 
@@ -134,9 +137,9 @@
                 android:id="@+id/won"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/price"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_alignBaseline="@id/price"
                 android:layout_marginEnd="12dp"
                 android:text="원"
                 android:textColor="@color/black"
@@ -149,11 +152,10 @@
                 android:layout_below="@+id/price"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="12dp"
-                android:backgroundTint="#F6EB8B"
+                android:backgroundTint="@color/illuminating"
                 android:text="가격/계좌 전송"
                 android:textColor="@color/gray"
                 android:textStyle="bold" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
-
 </RelativeLayout>

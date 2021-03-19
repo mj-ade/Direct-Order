@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -50,7 +49,7 @@ public class MainSellerActivity extends AppCompatActivity {
         t1 = (TextView) headerView.findViewById(R.id.nav_name);
         t2 = (TextView) headerView.findViewById(R.id.nav_email);
 
-        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_cake)
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home_seller)
                 .setDrawerLayout(drawer)
                 .build();
 
@@ -89,7 +88,7 @@ public class MainSellerActivity extends AppCompatActivity {
         btn_logout.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                showDialog();
+                showLogoutDialog();
             }
         });
 
@@ -104,7 +103,7 @@ public class MainSellerActivity extends AppCompatActivity {
         });
     }
 
-    void showDialog(){
+    private void showLogoutDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Logout");
         builder.setMessage("로그아웃 하시겠습니까?");
@@ -119,12 +118,6 @@ public class MainSellerActivity extends AppCompatActivity {
         });
         builder.setPositiveButton("아니오(No)", null);
         builder.show();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_seller_menu, menu);
-        return true;
     }
 
     @Override
@@ -144,7 +137,7 @@ public class MainSellerActivity extends AppCompatActivity {
                 time = System.currentTimeMillis();
                 Toast.makeText(getApplicationContext(), "뒤로 버튼을 한 번 더 누르면 종료합니다.", Toast.LENGTH_SHORT).show();
             }
-            else if (System.currentTimeMillis() - time < 2000) {
+            else {
                 finish();
             }
         }

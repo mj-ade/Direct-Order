@@ -27,7 +27,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-
 public abstract class NewOptionActivity extends ImageCropActivity {
     private Spinner spinner;
     private Spinner spinner2;

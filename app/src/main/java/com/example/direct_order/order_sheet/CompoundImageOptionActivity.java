@@ -36,24 +36,24 @@ public class CompoundImageOptionActivity extends NewOptionActivity {
     protected void setOption() {
         super.setOption();
 
-        getRadio02().setTag("circle");
-        getRadio02().setText("원형");
-        getRadio03().setVisibility(View.VISIBLE);
+        radio02.setTag("circle");
+        radio02.setText("원형");
+        radio03.setVisibility(View.VISIBLE);
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 dpToPx(this, 24));
-        getPreviewContentLayout().setLayoutParams(layoutParams);
-        getPreviewContentLayout().setVisibility(View.INVISIBLE);
-        getContentsLayout().setVisibility(View.VISIBLE);
+        previewContentLayout.setLayoutParams(layoutParams);
+        previewContentLayout.setVisibility(View.INVISIBLE);
+        contentsLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     protected void setPreviewRadioButton() {
-        if (getOptionType() == OptionType.RADIOBUTTON_IMAGE) {
-            getRadio02().setTag("cus_image");
-            getRadio02().setText("이미지");
-            getRadio03().setVisibility(View.GONE);
+        if (optionType == OptionType.RADIOBUTTON_IMAGE) {
+            radio02.setTag("cus_image");
+            radio02.setText("이미지");
+            radio03.setVisibility(View.GONE);
         }
     }
 
@@ -65,7 +65,7 @@ public class CompoundImageOptionActivity extends NewOptionActivity {
 
     @Override
     protected void addContents() {
-        for (int i = 0; i < getNumOfOption(); i++) {
+        for (int i = 0; i < numOfOption; i++) {
             ImageView imageView = new ImageView(this);
             imageView.setTag("optionImg"+"_"+i);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -101,7 +101,7 @@ public class CompoundImageOptionActivity extends NewOptionActivity {
                     });
                 }
             });
-            getContentsContainer().addView(imageView);
+            contentsContainer.addView(imageView);
             contentsList.add(imageView);
         }
     }
@@ -111,7 +111,7 @@ public class CompoundImageOptionActivity extends NewOptionActivity {
         if (OrderSheetActivity.isUpdate)
             st = new StringTokenizer(OrderSheetActivity.option.getContent(), "&");
 
-        for (int i = 0; i < getNumOfOption(); i++) {
+        for (int i = 0; i < numOfOption; i++) {
             String content = "";
             if (uris[i] == null)
                 content = (OrderSheetActivity.isUpdate) ? st.nextToken() : "";
@@ -129,27 +129,27 @@ public class CompoundImageOptionActivity extends NewOptionActivity {
 
     @Override
     protected String setPreviewDescription() {
-        if (getOptionType() == OptionType.RADIOBUTTON_IMAGE)
+        if (optionType == OptionType.RADIOBUTTON_IMAGE)
             return new StringTokenizer(contents, "&").nextToken();
         return super.setPreviewDescription();
     }
 
     @Override
     protected void addStickerView(int index, int parentIndex, String previewDesc) {
-        if (getOptionType() == OptionType.CHECKBOX_IMAGE) {
-            if (getRadio02().isChecked()) {
+        if (optionType == OptionType.CHECKBOX_IMAGE) {
+            if (radio02.isChecked()) {
                 stickerView = new StickerImageView(getApplicationContext());
                 ((StickerImageView) stickerView).setImageDrawable(getDrawable(R.drawable.sticker_preview_circle));
                 ((StickerImageView) stickerView).getIv_main().setTag("circle");
             }
-            else if (getRadio03().isChecked()) {
+            else if (radio03.isChecked()) {
                 stickerView = new StickerImageView(getApplicationContext());
                 ((StickerImageView) stickerView).setImageDrawable(getDrawable(R.drawable.sticker_preview_square));
                 ((StickerImageView) stickerView).getIv_main().setTag("square");
             }
         }
         else {
-            if (getRadio02().isChecked()) {
+            if (radio02.isChecked()) {
                 stickerView = new StickerImageView(getApplicationContext());
                 if (OrderSheetActivity.isUpdate) {
                     StorageReference ref = FirebaseStorage.getInstance().getReference(previewDesc);

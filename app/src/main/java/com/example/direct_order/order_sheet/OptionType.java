@@ -11,6 +11,4 @@ public class OptionType {
 
     public static final int CHECKBOX = -1;
     public static final int RADIOBUTTON = -2;
-
-    //사각형 비율별 영역 추가
 }

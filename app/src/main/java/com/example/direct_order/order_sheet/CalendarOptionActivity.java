@@ -4,22 +4,21 @@ import android.os.Bundle;
 import android.view.View;
 
 public class CalendarOptionActivity extends NewOptionActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getEditTextTitle().setBackground(null);
-        getEditTextTitle().setText("픽업일 선택");
-        getEditTextTitle().setTextSize(20);
-        getEditTextTitle().setKeyListener(null);
+        editTextTitle.setBackground(null);
+        editTextTitle.setText("픽업일 선택");
+        editTextTitle.setTextSize(20);
+        editTextTitle.setKeyListener(null);
     }
 
     @Override
     protected void setOption() {
         super.setOption();
-        getPreviewLayout().setVisibility(View.GONE);
-        getPreviewContentLayout().setVisibility(View.GONE);
-        getContentsLayout().setVisibility(View.GONE);
+        previewLayout.setVisibility(View.GONE);
+        previewContentLayout.setVisibility(View.GONE);
+        contentsLayout.setVisibility(View.GONE);
     }
 
     @Override

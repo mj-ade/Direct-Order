@@ -102,7 +102,7 @@ public class ProductOrderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_productorder);
+        setContentView(R.layout.activity_product_order);
         isCustomer = true;
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

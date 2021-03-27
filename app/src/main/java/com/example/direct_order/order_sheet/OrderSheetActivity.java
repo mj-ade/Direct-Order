@@ -72,7 +72,7 @@ public class OrderSheetActivity extends ImageCropActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ordersheet);
+        setContentView(R.layout.activity_order_sheet);
 
         viewGroup = findViewById(R.id.included_view);
         touchPanel = viewGroup.findViewById(R.id.imageDesc);

@@ -24,18 +24,18 @@ public class ImageOptionActivity extends NewOptionActivity {
     protected void setOption() {
         super.setOption();
 
-        getRadio02().setTag("cus_image");
-        getRadio02().setText("이미지");
-        getRadio03().setVisibility(View.GONE);
-        getPreviewContentLayout().setVisibility(View.VISIBLE);
-        getEditTextPreview().setVisibility(View.GONE);
-        getImageViewPreview().setVisibility(View.VISIBLE);
-        getContentsLayout().setVisibility(View.GONE);
+        radio02.setTag("cus_image");
+        radio02.setText("이미지");
+        radio03.setVisibility(View.GONE);
+        previewContentLayout.setVisibility(View.VISIBLE);
+        editTextPreview.setVisibility(View.GONE);
+        imageViewPreview.setVisibility(View.VISIBLE);
+        contentsLayout.setVisibility(View.GONE);
 
-        getImageViewPreview().setOnClickListener(new View.OnClickListener() {
+        imageViewPreview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setImageView(getImageViewPreview());
+                setImageView(imageViewPreview);
                 pickFromGallery();
             }
         });
@@ -48,7 +48,7 @@ public class ImageOptionActivity extends NewOptionActivity {
             GlideApp.with(getApplicationContext())
                     .load(ref)
                     .override(Target.SIZE_ORIGINAL)
-                    .into(getImageViewPreview());
+                    .into(imageViewPreview);
         }
     }
 

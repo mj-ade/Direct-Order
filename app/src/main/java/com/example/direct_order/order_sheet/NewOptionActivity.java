@@ -28,25 +28,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 
 public abstract class NewOptionActivity extends ImageCropActivity {
-    private Spinner spinner;
-    private Spinner spinner2;
-    private LinearLayout parentNumLayout;
-    private TextView comment;
-    private EditText editTextTitle;
+    LinearLayout parentNumLayout, previewLayout, previewContentLayout, contentsLayout, contentsContainer;
+    TextView comment;
+    EditText editTextTitle, editTextPreview;
+    RadioGroup functionRadioGroup;
+    RadioButton radio01, radio02, radio03;
+    ImageView imageViewPreview;
+    int optionType, numOfOption;
+    private Spinner spinner, spinner2;
     private EditText editTextDesc;
     private LinearLayout functionLayout;
-    private RadioGroup functionRadioGroup;
-    private LinearLayout previewLayout;
     private RadioGroup radioGroup;
-    private RadioButton radio01, radio02, radio03;
-    private LinearLayout previewContentLayout;
-    private EditText editTextPreview;
-    private ImageView imageView;
-    private LinearLayout contentsLayout;
-    private LinearLayout contentsContainer;
     private ArrayAdapter<Integer> arrayAdapter;
-
-    private int numOfOption, optionType;
     private boolean isUploaded;
     private int parentNumber;
 
@@ -86,7 +79,7 @@ public abstract class NewOptionActivity extends ImageCropActivity {
         radio03 = findViewById(R.id.radio03);
         previewContentLayout = findViewById(R.id.preview_content_layout);
         editTextPreview = findViewById(R.id.edit_text_preview);
-        imageView = findViewById(R.id.input_imageView);
+        imageViewPreview = findViewById(R.id.input_imageView);
         contentsLayout = findViewById(R.id.contents_layout);
         contentsContainer = findViewById(R.id.contents_container);
 
@@ -132,7 +125,7 @@ public abstract class NewOptionActivity extends ImageCropActivity {
         editTextTitle.setText("");
         editTextDesc.setText("");
         editTextPreview.setText("");
-        imageView.setImageDrawable(getDrawable(R.drawable.ic_add_photo));
+        imageViewPreview.setImageDrawable(getDrawable(R.drawable.ic_add_photo));
 
         for (int i = 0; i < functionRadioGroup.getChildCount(); i++) {
             RadioButton rb = (RadioButton) functionRadioGroup.getChildAt(i);
@@ -241,7 +234,7 @@ public abstract class NewOptionActivity extends ImageCropActivity {
         setPreviewSticker(number - 1, parentNumber - 1, previewDesc);
 
         if(optionType % 2 == 1) {   // 이미지 관련 옵션
-            setUploadCompleteListener(new OnUploadCompleteListener() {  //upload image 횟수만큼 call
+            setUploadCompleteListener(new OnUploadCompleteListener() {
                 @Override
                 public void onUploadComplete() {
                     if (isUploaded) {
@@ -312,7 +305,7 @@ public abstract class NewOptionActivity extends ImageCropActivity {
     private boolean isNumberDuplicate(int number) {
         int index = number - 1;
         if (OrderSheetActivity.isUpdate) {
-            if (number != OrderSheetActivity.option.getNumber()) { // 문항 번호가 바뀌었을 때만 중복 확인
+            if (number != OrderSheetActivity.option.getNumber()) {
                 if (OrderSheetActivity.numberDup[index]) {
                     Toast.makeText(getApplicationContext(), "중복 번호", Toast.LENGTH_SHORT).show();
                     return true;
@@ -364,64 +357,4 @@ public abstract class NewOptionActivity extends ImageCropActivity {
     }
 
     protected abstract void addStickerView(int index, int parentIndex, String previewDesc);
-
-    public LinearLayout getParentNumLayout() {
-        return parentNumLayout;
-    }
-
-    public TextView getComment() {
-        return comment;
-    }
-
-    public EditText getEditTextTitle() {
-        return editTextTitle;
-    }
-
-    public RadioButton getRadio01() {
-        return radio01;
-    }
-
-    public RadioButton getRadio02() {
-        return radio02;
-    }
-
-    public RadioButton getRadio03() {
-        return radio03;
-    }
-
-    public EditText getEditTextPreview() {
-        return editTextPreview;
-    }
-
-    public ImageView getImageViewPreview() {
-        return imageView;
-    }
-
-    public RadioGroup getFunctionRadioGroup() {
-        return functionRadioGroup;
-    }
-
-    public LinearLayout getPreviewLayout() {
-        return previewLayout;
-    }
-
-    public LinearLayout getPreviewContentLayout() {
-        return previewContentLayout;
-    }
-
-    public LinearLayout getContentsLayout() {
-        return contentsLayout;
-    }
-
-    public LinearLayout getContentsContainer() {
-        return contentsContainer;
-    }
-
-    public int getNumOfOption() {
-        return numOfOption;
-    }
-
-    public int getOptionType() {
-        return optionType;
-    }
 }

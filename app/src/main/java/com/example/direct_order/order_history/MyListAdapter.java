@@ -159,7 +159,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.ViewHolder
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View myScrollView = inflater.inflate(R.layout.scroll_detail, null, false);
 
-                ImageView iv = (ImageView) myScrollView.findViewById(R.id.orderdetail);
+                ImageView iv = (ImageView) myScrollView.findViewById(R.id.order_detail);
 
                 doRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override

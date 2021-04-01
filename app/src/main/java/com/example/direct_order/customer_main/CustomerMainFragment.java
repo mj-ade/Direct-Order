@@ -105,7 +105,7 @@ public class CustomerMainFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
-            case R.id.openmap:
+            case R.id.open_map:
                 Intent intent = new Intent(getContext(), MapActivity.class);
                 startActivity(intent);
                 return true;

@@ -67,11 +67,13 @@ public class WriteReviewActivity extends AppCompatActivity {
                     if (document.exists()) {
                         shopid = (String) document.get("shopuid");
                         Log.d("WriteReview", "DocumentSnapshot data: " + document.getData());
-                    } else {
+                    }
+                    else {
                         Log.d("WriteReview", "No such document");
                     }
-                }else {
-                    Log.d("WriteReviewActivity", "get failed with ", task.getException());
+                }
+                else {
+                    Log.d("WriteReview", "get failed with ", task.getException());
                 }
             }
         });

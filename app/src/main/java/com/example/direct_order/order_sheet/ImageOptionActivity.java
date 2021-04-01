@@ -63,7 +63,7 @@ public class ImageOptionActivity extends NewOptionActivity {
             previewDesc = OrderSheetActivity.isUpdate ? OrderSheetActivity.option.getPreviewDesc() : "";
 
         if (previewDesc.trim().isEmpty()) {
-            Toast.makeText(this, "기본 이미지를 넣어주세요", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "이미지를 넣어주세요", Toast.LENGTH_SHORT).show();
             return null;
         }
         return test = previewDesc;
